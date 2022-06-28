@@ -52,16 +52,13 @@
       <HintPath>..\References\UnityEngine.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="UnityEngine.AudioModule">
-      <HintPath>..\References\UnityEngine.AudioModule.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="UnityEngine.CoreModule">
       <HintPath>..\References\UnityEngine.CoreModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="API.cs" />
     <Compile Include="Commands\ConsoleCmdReset.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
