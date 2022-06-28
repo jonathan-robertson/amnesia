@@ -79,7 +79,7 @@
 
 
 if $(ConfigurationName) == Release (
-    copy $(TargetPath) $(SolutionDir)latest\
+    copy $(TargetPath) $(SolutionDir)LatestReleaseBuild\
 )
 </PostBuildEvent>
   </PropertyGroup>
