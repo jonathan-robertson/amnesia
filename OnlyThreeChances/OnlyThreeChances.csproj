@@ -62,6 +62,7 @@
     <Compile Include="Commands\ConsoleCmdOnlyThreeChances.cs" />
     <Compile Include="Commands\ConsoleCmdReset.cs" />
     <Compile Include="Data\Config.cs" />
+    <Compile Include="Data\Values.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
