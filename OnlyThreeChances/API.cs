@@ -9,6 +9,7 @@ namespace OnlyThreeChances {
         public void InitMod(Mod _modInstance) {
             if (Config.Load()) {
                 ModEvents.PlayerSpawnedInWorld.RegisterHandler(OnPlayerSpawnedInWorld);
+                ModEvents.GameMessage.RegisterHandler(OnGameMessage);
             } else {
                 log.Error("Unable to load or recover from configuration issue; this mod will not activate.");
             }
@@ -41,6 +42,37 @@ namespace OnlyThreeChances {
             } catch (Exception e) {
                 log.Error("Failed to handle PlayerSpawnedInWorld event.", e);
             }
+        }
+
+        private bool OnGameMessage(ClientInfo clientInfo, EnumGameMessages messageType, string message, string mainName, bool localizeMain, string secondaryName, bool localizeSecondary) {
+            try {
+                if (messageType != EnumGameMessages.EntityWasKilled) {
+                    return true;
+                }
+
+                if (clientInfo == null || !GameManager.Instance.World.Players.dict.TryGetValue(clientInfo.entityId, out var killedPlayer)) {
+                    log.Warn("Message sent from a non-player client... that's odd... someone hacking?");
+                    return true;
+                }
+
+                // Note: if killed by another player, secondaryName will be populated with the name of a player
+
+                var livesRemaining = killedPlayer.GetCVar(Values.RemainingLivesCVar);
+                if (livesRemaining > Config.MaxLives) {
+                    // "shouldn't" have to do this since we auto-push changes as they're made and on login... but just in case:
+                    killedPlayer.SetCVar(Values.MaxLivesCVar, Config.MaxLives);
+                    livesRemaining = Config.MaxLives;
+                }
+
+                if (livesRemaining > 0) {
+                    killedPlayer.SetCVar(Values.RemainingLivesCVar, livesRemaining - 1);
+                } else if (livesRemaining == 0) {
+                    // TODO: wipe character
+                }
+            } catch (Exception e) {
+                log.Error("Failed to handle GameMessage event.", e);
+            }
+            return true;
         }
     }
 }
