@@ -1,0 +1,14 @@
+﻿<config>
+    <!-- remove final row -->
+    <remove xpath="/windows/window[@name='CharacterFrameWindow']/grid[@visible='{showstats}']/player_stats_entry[last()]" />
+
+    <!-- reverse colors on existing rows -->
+    <set xpath="/windows/window[@name='CharacterFrameWindow']/grid[@visible='{showstats}']/player_stats_entry[@backgroundcolor='[darkestGrey]']/@backgroundcolor">CHANGEME</set>
+    <set xpath="/windows/window[@name='CharacterFrameWindow']/grid[@visible='{showstats}']/player_stats_entry[@backgroundcolor='[darkGrey]']/@backgroundcolor">[darkestGrey]</set>
+    <set xpath="/windows/window[@name='CharacterFrameWindow']/grid[@visible='{showstats}']/player_stats_entry[@backgroundcolor='CHANGEME']/@backgroundcolor">[darkGrey]</set>
+
+    <!-- insert new row at top -->
+    <insertBefore xpath="/windows/window[@name='CharacterFrameWindow']/grid[@visible='{showstats}']/player_stats_entry[1]">
+        <player_stats_entry backgroundcolor="[darkestGrey]" textcontent="Remaining Lives" valuecontent="{cvar($LastPlayerLevel)}/2" />
+    </insertBefore>
+</config>
