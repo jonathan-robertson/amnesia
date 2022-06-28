@@ -1,9 +1,6 @@
 ﻿using OnlyThreeChances.Data;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OnlyThreeChances.Commands {
     internal class ConsoleCmdOnlyThreeChances : ConsoleCmdAbstract {

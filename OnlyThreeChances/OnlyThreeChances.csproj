@@ -64,6 +64,7 @@
     <Compile Include="Data\Config.cs" />
     <Compile Include="Data\Values.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utilities\ModLog.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Config\XUi\windows.xml">

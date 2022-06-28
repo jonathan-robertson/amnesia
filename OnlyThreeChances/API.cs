@@ -1,13 +1,16 @@
 ﻿using OnlyThreeChances.Data;
+using OnlyThreeChances.Utilities;
 
 namespace OnlyThreeChances {
     internal class API : IModApi {
+        private static readonly ModLog log = new ModLog(typeof(API));
+
         public void InitMod(Mod _modInstance) {
             if (Config.Load()) {
-                Log.Out($"[OnlyThreeChances] MaxLives: {Config.MaxLives}");
+                log.Info($"[OnlyThreeChances] MaxLives: {Config.MaxLives}");
                 // TODO: add hooks
             } else {
-                Log.Error("[OnlyThreeChances] Unable to load or recover from configuration issue; leaving this mod inactive.");
+                log.Error("Unable to load or recover from configuration issue; this mod will not activate.");
             }
             //throw new NotImplementedException();
         }
