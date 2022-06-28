@@ -4,7 +4,7 @@ namespace OnlyThreeChances.Commands {
     internal class ConsoleCmdReset : ConsoleCmdAbstract {
         private static readonly string[] Commands = new string[] { "resetTest", "rt" };
         private const string Description = "Reset personal stats back to zero";
-        private const string Help = "Here is the help text";
+        private const string Help = "TODO";
 
         public override string[] GetCommands() {
             return Commands;
