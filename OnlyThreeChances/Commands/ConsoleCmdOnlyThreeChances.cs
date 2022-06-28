@@ -52,7 +52,7 @@ Description Overview
                             return;
                         }
                         GameManager.Instance.World.Players.list.ForEach(p => {
-                            SdtdConsole.Instance.Output($"{p.GetCVar(Values.LivesRemainingCvar)}/{p.GetCVar(Values.MaxLivesCVar)} remaining for {p.GetDebugName()} ({p.entityId})");
+                            SdtdConsole.Instance.Output($"{p.GetCVar(Values.RemainingLivesCVar)}/{p.GetCVar(Values.MaxLivesCVar)} remaining for {p.GetDebugName()} ({p.entityId})");
                         });
                         return;
                     case "config":
@@ -94,7 +94,7 @@ Description Overview
         }
 
         private void HandleUpdate(List<string> _params) {
-            if (!int.TryParse(_params[2], out int livesRemaining)) {
+            if (!int.TryParse(_params[2], out int remainingLives)) {
                 SdtdConsole.Instance.Output("Unable to parse value: must be of type int");
                 return;
             }
@@ -103,8 +103,8 @@ Description Overview
                 SdtdConsole.Instance.Output("Unable to find this player; note: player must be online");
                 return;
             }
-            Config.SetLivesRemaining(player, livesRemaining);
-            SdtdConsole.Instance.Output($"Updated lives remaining for {player.GetDebugName()} to {livesRemaining}");
+            Config.SetRemainingLives(player, remainingLives);
+            SdtdConsole.Instance.Output($"Updated lives remaining for {player.GetDebugName()} to {remainingLives}");
         }
     }
 }

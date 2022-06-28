@@ -11,9 +11,9 @@ namespace OnlyThreeChances.Data {
 
         public static int MaxLives { get; private set; } = 2;
 
-        public static void SetLivesRemaining(EntityPlayer player, int livesRemaining) {
+        public static void SetRemainingLives(EntityPlayer player, int remainingLives) {
             if (player != null) {
-                player.SetCVar(Values.LivesRemainingCvar, livesRemaining);
+                player.SetCVar(Values.RemainingLivesCVar, remainingLives);
             }
         }
 

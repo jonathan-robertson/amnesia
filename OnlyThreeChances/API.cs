@@ -1,5 +1,6 @@
 ﻿using OnlyThreeChances.Data;
 using OnlyThreeChances.Utilities;
+using System;
 
 namespace OnlyThreeChances {
     internal class API : IModApi {
@@ -21,19 +22,24 @@ namespace OnlyThreeChances {
          * <remarks>This mod supports being dropped into an existing game, thanks to how we handle this process.</remarks>
          */
         private void OnPlayerSpawnedInWorld(ClientInfo clientInfo, RespawnType respawnType, Vector3i pos) {
-            if (respawnType != RespawnType.JoinMultiplayer && respawnType != RespawnType.EnterMultiplayer) {
-                return;
-            }
-            if (clientInfo == null || !GameManager.Instance.World.Players.dict.TryGetValue(clientInfo.entityId, out var player)) {
-                return;
-            }
+            try {
+                if (respawnType != RespawnType.JoinMultiplayer && respawnType != RespawnType.EnterMultiplayer) {
+                    return;
+                }
+                if (clientInfo == null || !GameManager.Instance.World.Players.dict.TryGetValue(clientInfo.entityId, out var player)) {
+                    return;
+                }
 
-            var playerMaxLives = player.GetCVar(Values.MaxLivesCVar);
-            if (playerMaxLives == 0) { // initialize player
-                player.SetCVar(Values.LivesRemainingCvar, Config.MaxLives);
-            }
-            if (playerMaxLives != Config.MaxLives) { // update maxLives
-                player.SetCVar(Values.MaxLivesCVar, Config.MaxLives);
+                var playerMaxLives = player.GetCVar(Values.MaxLivesCVar);
+                if (playerMaxLives == 0) { // initialize player
+                    // TODO: add buff for tracking/boosting player based on remaining lives
+                    player.SetCVar(Values.RemainingLivesCVar, Config.MaxLives);
+                }
+                if (playerMaxLives != Config.MaxLives) { // update maxLives
+                    player.SetCVar(Values.MaxLivesCVar, Config.MaxLives);
+                }
+            } catch (Exception e) {
+                log.Error("Failed to handle PlayerSpawnedInWorld event.", e);
             }
         }
     }

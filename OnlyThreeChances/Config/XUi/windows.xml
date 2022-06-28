@@ -9,6 +9,6 @@
 
     <!-- insert new row at top -->
     <insertBefore xpath="/windows/window[@name='CharacterFrameWindow']/grid[@visible='{showstats}']/player_stats_entry[1]">
-        <player_stats_entry backgroundcolor="[darkestGrey]" textcontent="Lives Remaining" valuecontent="{cvar(livesRemaining)}/{cvar(maxLives)}" />
+        <player_stats_entry backgroundcolor="[darkestGrey]" textcontent="Remaining Lives" valuecontent="{cvar(remainingLives)}/{cvar(maxLives)}" />
     </insertBefore>
 </config>
