@@ -7,7 +7,20 @@ namespace OnlyThreeChances.Data {
     internal class Config {
         private static readonly string filename = Path.Combine(GameIO.GetSaveGameDir(), "only-three-chances-config.xml");
 
-        public static int MaxLives { get; set; } = 2;
+        public static int MaxLives { get; private set; } = 2;
+
+        public static void SetLivesRemaining(EntityPlayer player, int livesRemaining) {
+            if (player != null) {
+                player.SetCVar(Values.LivesRemainingCvar, livesRemaining);
+            }
+        }
+
+        public static void SetMaxLives(int maxLives) {
+            if (MaxLives != maxLives) {
+                MaxLives = maxLives;
+                GameManager.Instance.World.Players.list.ForEach(p => p.SetCVar(Values.MaxLivesCVar, MaxLives));
+            }
+        }
 
         public static bool Save() {
             try {
