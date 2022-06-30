@@ -1,8 +1,14 @@
 # Amnesia [![Tested with A20.5 b2](https://img.shields.io/badge/A20.5%20b2-tested-blue.svg)](https://7daystodie.com/) [![Automated Release](https://github.com/jonathan-robertson/only-three-chances/actions/workflows/main.yml/badge.svg)](https://github.com/jonathan-robertson/only-three-chances/actions/workflows/main.yml)
 
-*Reset player progress every 3 deaths.*
+*Reset player progress after a configurable number of deaths.*
 
 ## Features
+
+- admin controls to fine-tune max lives for the server or view/adjust current remaining lives per player
+- does not yet include a way to recover lives
+- does not yet include configurable drop-all/delete-all bag override for final death
+
+## What is Reset?
 
 ### Supported
 
@@ -16,6 +22,12 @@ Learned Recipes | Reset All
 EXP To Next Level | Reset to 0
 ExpDeficit | Reset to 0
 
+### Planned
+
+Value | Description
+--- | ---
+Variable Bag Drop | Drop nothing, bag, toolbelt, bag & toolbelt, or delete all on death
+
 ### Considering
 
 Value | Description
@@ -25,7 +37,6 @@ LCBs Owned | Forget & Deactivate all LCBs
 Bed Owned | Clear Respawn Point
 Map Explored | Reset map exploration
 Map Waypoints | Clear all waypoints from map
-Variable Bag Drop | Drop nothing, bag, toolbelt, bag & toolbelt, or delete all on death
 Starting Quest | Give player starting quest
 Quests | Forget all active quests and quest history
 Trader Relationship | Reset all quest tier progress made with all traders
