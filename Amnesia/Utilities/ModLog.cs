@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace OnlyThreeChances.Utilities {
+namespace Amnesia.Utilities {
     internal class ModLog {
         private readonly string className;
 

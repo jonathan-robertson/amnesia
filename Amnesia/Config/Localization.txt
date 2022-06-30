@@ -1,0 +1,13 @@
+﻿Key,File,Type,english
+
+buffRemainingLivesReminderName,buffs,Buffs,"TODO: NAME"
+buffRemainingLivesReminderDesc,buffs,Buffs,"TODO: DESC"
+buffRemainingLivesReminderTooltip,buffs,Buffs,"{cvar(remainingLives)}/{cvar(maxLives)} lives remaining..."
+
+buffRemainingLivesEarlyWarningName,buffs,Buffs,"TODO: NAME"
+buffRemainingLivesEarlyWarningDesc,buffs,Buffs,"TODO: DESC"
+buffRemainingLivesEarlyWarningTooltip,buffs,Buffs,"{cvar(remainingLives)}/{cvar(maxLives)} lives remaining..."
+
+buffRemainingLivesFinalLifeName,buffs,Buffs,"Last Chance"
+buffRemainingLivesFinalLifeDesc,buffs,Buffs,"You're on the brink of death!\n\nYou have a heightened awareness and are constantly on edge, which helps in the apocalypse... but the next time you go down will certainly be your last.\n\n[FF0000]Seek Trader Jen's help to restore your remaining lives."
+buffRemainingLivesFinalLifeTooltip,buffs,Buffs,"[FF0000]LAST CHANCE: Dying again will reset your character progress!"

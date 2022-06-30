@@ -1,9 +1,9 @@
-﻿using OnlyThreeChances.Data;
-using OnlyThreeChances.Utilities;
+﻿using Amnesia.Data;
+using Amnesia.Utilities;
 using System;
 using System.Collections.Generic;
 
-namespace OnlyThreeChances {
+namespace Amnesia {
     internal class API : IModApi {
         private static readonly ModLog log = new ModLog(typeof(API));
 

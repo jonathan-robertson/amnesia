@@ -1,9 +1,9 @@
 ﻿<xml>
     <ModInfo>
-        <Name value="Only Three Chances" />
-        <Description value="Reset player progress every 3 deaths" />
+        <Name value="Amnesia" />
+        <Description value="Reset player progress after a number of deaths" />
         <Author value="Jonathan Robertson (Kanaverum)" />
         <Version value="0.1.0" />
-        <Website value="https://github.com/jonathan-robertson/only-three-chances" />
+        <Website value="https://github.com/jonathan-robertson/amnesia" />
     </ModInfo>
 </xml>

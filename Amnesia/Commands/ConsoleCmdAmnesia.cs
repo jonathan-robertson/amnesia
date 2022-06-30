@@ -1,12 +1,12 @@
-﻿using OnlyThreeChances.Data;
+﻿using Amnesia.Data;
 using System;
 using System.Collections.Generic;
 
-namespace OnlyThreeChances.Commands {
-    internal class ConsoleCmdOnlyThreeChances : ConsoleCmdAbstract {
+namespace Amnesia.Commands {
+    internal class Amnesia : ConsoleCmdAbstract {
         private static readonly string[] Commands = new string[] {
-            "onlyThreeChances",
-            "otc"
+            "amnesia",
+            "amn"
         };
 
         private static readonly string[] Options = new string[] {
@@ -18,7 +18,7 @@ namespace OnlyThreeChances.Commands {
         }
 
         public override string GetDescription() {
-            return "Configure or adjust settings for the Only Three Chances mod.";
+            return "Configure or adjust settings for the Amnesia mod.";
         }
 
         public override string GetHelp() {

@@ -1,10 +1,10 @@
-﻿using OnlyThreeChances.Utilities;
+﻿using Amnesia.Utilities;
 using System;
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
 
-namespace OnlyThreeChances.Data {
+namespace Amnesia.Data {
     internal class Config {
         private static readonly ModLog log = new ModLog(typeof(Config));
         private static readonly string filename = Path.Combine(GameIO.GetSaveGameDir(), "only-three-chances-config.xml");
@@ -45,7 +45,7 @@ namespace OnlyThreeChances.Data {
                     return false;
                 }
                 MaxLives = maxLives;
-                log.Info($"[OnlyThreeChances] Successfully loaded {filename}");
+                log.Info($"Successfully loaded {filename}");
                 return true;
             } catch (FileNotFoundException) {
                 log.Info($"No file detected, creating a config with defaults under {filename}");
