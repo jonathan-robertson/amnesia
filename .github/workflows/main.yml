@@ -23,7 +23,7 @@ jobs:
           cp LICENSE package
           cp ModInfo.xml package
           cp README.md package
-          cp -r Radio/Config package
+          cp -r Amnesia/Config package
           cp -r LatestReleaseBuild/* package
           cd package
           zip -qr "../${{ github.event.repository.name }}.zip" *
