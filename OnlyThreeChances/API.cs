@@ -63,12 +63,15 @@ namespace OnlyThreeChances {
                 // TODO: this logic might be better performed onRespawn (from death)
 
                 var livesRemaining = killedPlayer.GetCVar(Values.RemainingLivesCVar);
+
+                // cap lives to maximum(sanity check)
                 if (livesRemaining > Config.MaxLives) {
                     // "shouldn't" have to do this since we auto-push changes as they're made and on login... but just in case:
                     killedPlayer.SetCVar(Values.MaxLivesCVar, Config.MaxLives);
                     livesRemaining = Config.MaxLives;
                 }
 
+                // Calculate and apply remaining lives
                 if (livesRemaining > 0) {
                     killedPlayer.SetCVar(Values.RemainingLivesCVar, livesRemaining - 1);
                 } else if (livesRemaining == 0) {
