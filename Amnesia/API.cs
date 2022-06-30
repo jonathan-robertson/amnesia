@@ -2,6 +2,7 @@
 using Amnesia.Utilities;
 using System;
 using System.Collections.Generic;
+using static EntityBuffs;
 
 namespace Amnesia {
     internal class API : IModApi {
@@ -78,10 +79,26 @@ namespace Amnesia {
                     ResetPlayer(killedPlayer);
                     killedPlayer.SetCVar(Values.RemainingLivesCVar, Config.MaxLives);
                 }
+
+                // Apply the appropriate buff to reflect the player's situation
+                if (UpdateBuff(killedPlayer) != BuffStatus.Added) {
+                    log.Error($"Failed to add buff to player {killedPlayer.GetDebugName()}");
+                }
             } catch (Exception e) {
                 log.Error("Failed to handle GameMessage event.", e);
             }
             return true;
+        }
+
+        private BuffStatus UpdateBuff(EntityPlayer killedPlayer) {
+            var remainingLives = killedPlayer.GetCVar(Values.RemainingLivesCVar);
+            if (remainingLives == 0) {
+                return killedPlayer.Buffs.AddBuff("buffRemainingLivesFinalLife");
+            } else if (remainingLives <= 1) {
+                return killedPlayer.Buffs.AddBuff("buffRemainingLivesEarlyWarning");
+            } else {
+                return killedPlayer.Buffs.AddBuff("buffRemainingLivesReminder");
+            }
         }
 
         /**
