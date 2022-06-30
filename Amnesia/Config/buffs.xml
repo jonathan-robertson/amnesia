@@ -1,0 +1,64 @@
+﻿<config>
+    <!-- TODO: other icon that might work: icon="ui_game_symbol_skull_crusher" -->
+    <append xpath="/buffs">
+        <buff name="buffRemainingLivesReminder" name_key="buffRemainingLivesReminderName" description_key="buffRemainingLivesReminderDesc" icon="ui_game_symbol_near_death_trauma" showonhud="false">
+            <duration value="0" />
+            <stack_type value="ignore" />
+            <display_value_key value="Extra Lives {0}" />
+            <display_value value="remainingLives" />
+
+            <!-- trigger toolbelt message -->
+            <!--  -->
+            <effect_group>
+                <triggered_effect trigger="onSelfBuffStart" action="RemoveBuff" buff="buffRemainingLivesEarlyWarning" />
+                <triggered_effect trigger="onSelfBuffStart" action="RemoveBuff" buff="buffRemainingLivesFinalLife" />
+                <triggered_effect trigger="onSelfBuffStart" action="ShowToolbeltMessage" message_key="buffRemainingLivesReminderTooltip" sound="" />
+            </effect_group>
+        </buff>
+        <buff name="buffRemainingLivesEarlyWarning" name_key="buffRemainingLivesEarlyWarningName" description_key="buffRemainingLivesEarlyWarningDesc" icon="ui_game_symbol_near_death_trauma" icon_color="255,128,0">
+            <duration value="0" />
+            <stack_type value="ignore" />
+            <display_value_key value="Chances: {0}" />
+            <display_value value="remainingLives" />
+
+            <!-- trigger toolbelt message -->
+            <!-- retain in buffs for character sheet for instructions on recovery -->
+            <effect_group>
+                <triggered_effect trigger="onSelfBuffStart" action="RemoveBuff" buff="buffRemainingLivesReminder" />
+                <triggered_effect trigger="onSelfBuffStart" action="RemoveBuff" buff="buffRemainingLivesFinalLife" />
+                <triggered_effect trigger="onSelfBuffStart" action="ShowToolbeltMessage" message_key="buffRemainingLivesEarlyWarningTooltip" sound="" />
+            </effect_group>
+        </buff>
+        <buff name="buffRemainingLivesFinalLife" name_key="buffRemainingLivesFinalLifeName" description_key="buffRemainingLivesFinalLifeDesc" icon="ui_game_symbol_near_death_trauma" icon_color="255,0,0" icon_blink="true">
+            <duration value="0" />
+            <stack_type value="ignore" />
+            <display_value_key value="Last Chance" />
+            <display_value value="x" />
+
+            <effect_group>
+                <triggered_effect trigger="onSelfBuffStart" action="RemoveBuff" buff="buffRemainingLivesReminder" />
+                <triggered_effect trigger="onSelfBuffStart" action="RemoveBuff" buff="buffRemainingLivesEarlyWarning" />
+                <triggered_effect trigger="onSelfBuffStart" action="ShowToolbeltMessage" message_key="buffRemainingLivesFinalLifeTooltip" sound="" />
+            </effect_group>
+
+            <effect_group>
+
+
+                <!-- Pros -->
+                <!-- TODO: boost PlayerExpGain passive_effect -->
+                <!-- TODO: boost DismemberChance, ; decapitation, 0-1;  tags are "head,arm,leg" -->
+                <!-- TODO: boost LootGamestage? -->
+                <!-- TODO: boost CriticalChance? -->
+                <!-- TODO: boost CriticalChance? -->
+
+                <!-- TODO: reduce or.. boost? LandClaimDamageModifier -->
+
+                <!-- Cons -->
+                <!-- TODO: reduce LootGamestage -->
+                <!-- TODO: increase LockPickTime -->
+                <!-- TODO: increase LockPickBreakChance -->
+            </effect_group>
+        </buff>
+    </append>
+    <!-- TODO: explore how onCombatEntered works: perhaps a screen effect could be added when on last life onCombatEntered as a reminder -->
+</config>

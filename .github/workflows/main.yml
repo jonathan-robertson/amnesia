@@ -24,7 +24,7 @@ jobs:
           cp ModInfo.xml package
           cp README.md package
           cp -r Radio/Config package
-          cp -r latest/* package
+          cp -r LatestReleaseBuild/* package
           cd package
           zip -qr "../${{ github.event.repository.name }}.zip" *
 
