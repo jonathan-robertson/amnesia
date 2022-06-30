@@ -1,13 +1,21 @@
 ﻿Key,File,Type,english
 
-buffRemainingLivesReminderName,buffs,Buffs,"TODO: NAME"
-buffRemainingLivesReminderDesc,buffs,Buffs,"TODO: DESC"
-buffRemainingLivesReminderTooltip,buffs,Buffs,"{cvar(remainingLives)}/{cvar(maxLives)} lives remaining..."
+buffAmnesiaMentallyStableName,buffs,Buffs,"Mentally Stable"
+buffAmnesiaMentallyStableDesc,buffs,Buffs,"Your mind and memory are healthy and you feel ready to take on the world!\n\nExperiencing severe trauma (death) will negatively impact your mental state and will eventually cause you to lose your mind...\n\n[FF8000]Remaining Lives: {cvar(remainingLives)}/{cvar(maxLives)}"
+buffAmnesiaMentallyStableTooltip,buffs,Buffs,"Mentally Stable: Your mind and memory are healthy and you feel ready to take on the world!"
 
-buffRemainingLivesEarlyWarningName,buffs,Buffs,"TODO: NAME"
-buffRemainingLivesEarlyWarningDesc,buffs,Buffs,"TODO: DESC"
-buffRemainingLivesEarlyWarningTooltip,buffs,Buffs,"{cvar(remainingLives)}/{cvar(maxLives)} lives remaining..."
+buffAmnesiaMentallyUneasyName,buffs,Buffs,"Mentally Uneasy"
+buffAmnesiaMentallyUneasyDesc,buffs,Buffs,"Feeling a little overwhelmed, you realize surviving the apocalypse is tougher than you expected.\n\nYou can only handle significant trauma a few more times before losing your mind...\n\n[FF8000]Remaining Lives: {cvar(remainingLives)}/{cvar(maxLives)}"
+buffAmnesiaMentallyUneasyTooltip,buffs,Buffs,"Mentally Uneasy: Significant Trauma has taken its toll on your mind and spirit"
 
-buffRemainingLivesFinalLifeName,buffs,Buffs,"Last Chance"
-buffRemainingLivesFinalLifeDesc,buffs,Buffs,"You're on the brink of death!\n\nYou have a heightened awareness and are constantly on edge, which helps in the apocalypse... but the next time you go down will certainly be your last.\n\n[FF0000]Seek Trader Jen's help to restore your remaining lives."
-buffRemainingLivesFinalLifeTooltip,buffs,Buffs,"[FF0000]LAST CHANCE: Dying again will reset your character progress!"
+buffAmnesiaMentallyUnhingedName,buffs,Buffs,"Mentally Unhinged"
+buffAmnesiaMentallyUnhingedDesc,buffs,Buffs,"You feel your sensibility slipping away. Adrenaline is coursing through your veins, granting a heightened awareness while making tasks requiring focus more difficult.\n\n[FF0000]Experiencing significant trauma 1 more time will cause you to forget almost everything you're learned."
+buffAmnesiaMentallyUnhingedTooltip,buffs,Buffs,"Mentally Unhinged: going down once more will cause a mental break - you will forget everything"
+
+buffAmnesiaMemoryLossName,buffs,Buffs,"Memory Loss"
+buffAmnesiaMemoryLossDesc,buffs,Buffs,"What was it you were doing again? You find it hard to recall...\n\n[FF8000]Oh look, it's the apocalypse.\n\n[FFFFFF]You feel a sense that mistakes were made, but perhaps you can find a more effective method of survival this time around."
+buffAmnesiaMemoryLossTooltip,buffs,Buffs,"Memory Loss: Significant trauma has caused memory loss. You barely recall who you once were..."
+
+buffAmnesiaPositiveOutlookName,buffs,Buffs,"Positive Outlook"
+buffAmnesiaPositiveOutlookDesc,buffs,Buffs,"Starting fresh is always hard, but you're feeling especially positive about your situation and the future.\n\nSure, the world has gone to hell, but that doesn't mean your attitude needs to!\n\n[00FF00]XP Gain is Quadrupled!"
+buffAmnesiaPositiveOutlookTooltip,buffs,Buffs,"Positive Outlook: [00FF00]XP Gain Quadrupled!"

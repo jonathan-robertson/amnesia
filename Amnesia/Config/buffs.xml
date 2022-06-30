@@ -1,50 +1,41 @@
 ﻿<config>
     <!-- TODO: other icon that might work: icon="ui_game_symbol_skull_crusher" -->
     <append xpath="/buffs">
-        <buff name="buffRemainingLivesReminder" name_key="buffRemainingLivesReminderName" description_key="buffRemainingLivesReminderDesc" icon="ui_game_symbol_near_death_trauma" showonhud="false">
+        <buff name="buffAmnesiaMentallyStable" name_key="buffAmnesiaMentallyStableName" description_key="buffAmnesiaMentallyStableDesc" icon="ui_game_symbol_intellect" showonhud="false" remove_on_death="false">
             <duration value="0" />
             <stack_type value="ignore" />
-            <display_value_key value="Extra Lives {0}" />
-            <display_value value="remainingLives" />
 
-            <!-- trigger toolbelt message -->
-            <!--  -->
             <effect_group>
-                <triggered_effect trigger="onSelfBuffStart" action="RemoveBuff" buff="buffRemainingLivesEarlyWarning" />
-                <triggered_effect trigger="onSelfBuffStart" action="RemoveBuff" buff="buffRemainingLivesFinalLife" />
-                <triggered_effect trigger="onSelfBuffStart" action="ShowToolbeltMessage" message_key="buffRemainingLivesReminderTooltip" sound="" />
+                <triggered_effect trigger="onSelfBuffStart" action="RemoveBuff" buff="buffAmnesiaMentallyUneasy" />
+                <triggered_effect trigger="onSelfBuffStart" action="RemoveBuff" buff="buffAmnesiaMentallyUnhinged" />
+                <triggered_effect trigger="onSelfBuffStart" action="ShowToolbeltMessage" message_key="buffAmnesiaMentallyStableTooltip" />
             </effect_group>
         </buff>
-        <buff name="buffRemainingLivesEarlyWarning" name_key="buffRemainingLivesEarlyWarningName" description_key="buffRemainingLivesEarlyWarningDesc" icon="ui_game_symbol_near_death_trauma" icon_color="255,128,0">
+        <buff name="buffAmnesiaMentallyUneasy" name_key="buffAmnesiaMentallyUneasyName" description_key="buffAmnesiaMentallyUneasyDesc" icon="ui_game_symbol_intellect" icon_color="255,128,0" remove_on_death="false">
             <duration value="0" />
             <stack_type value="ignore" />
-            <display_value_key value="Chances: {0}" />
-            <display_value value="remainingLives" />
 
-            <!-- trigger toolbelt message -->
-            <!-- retain in buffs for character sheet for instructions on recovery -->
             <effect_group>
-                <triggered_effect trigger="onSelfBuffStart" action="RemoveBuff" buff="buffRemainingLivesReminder" />
-                <triggered_effect trigger="onSelfBuffStart" action="RemoveBuff" buff="buffRemainingLivesFinalLife" />
-                <triggered_effect trigger="onSelfBuffStart" action="ShowToolbeltMessage" message_key="buffRemainingLivesEarlyWarningTooltip" sound="" />
+                <triggered_effect trigger="onSelfBuffStart" action="RemoveBuff" buff="buffAmnesiaMentallyStable" />
+                <triggered_effect trigger="onSelfBuffStart" action="RemoveBuff" buff="buffAmnesiaMentallyUnhinged" />
+                <triggered_effect trigger="onSelfBuffStart" action="ShowToolbeltMessage" message_key="buffAmnesiaMentallyUneasyTooltip" />
+            </effect_group>
+            <effect_group>
+                <!-- TODO: possibly add [optional] minor debuffs here to encourage players to recover? -->
             </effect_group>
         </buff>
-        <buff name="buffRemainingLivesFinalLife" name_key="buffRemainingLivesFinalLifeName" description_key="buffRemainingLivesFinalLifeDesc" icon="ui_game_symbol_near_death_trauma" icon_color="255,0,0" icon_blink="true">
+        <buff name="buffAmnesiaMentallyUnhinged" name_key="buffAmnesiaMentallyUnhingedName" description_key="buffAmnesiaMentallyUnhingedDesc" icon="ui_game_symbol_intellect" icon_color="255,0,0" icon_blink="true" remove_on_death="false">
             <duration value="0" />
             <stack_type value="ignore" />
-            <display_value_key value="Last Chance" />
-            <display_value value="x" />
 
             <effect_group>
-                <triggered_effect trigger="onSelfBuffStart" action="RemoveBuff" buff="buffRemainingLivesReminder" />
-                <triggered_effect trigger="onSelfBuffStart" action="RemoveBuff" buff="buffRemainingLivesEarlyWarning" />
-                <triggered_effect trigger="onSelfBuffStart" action="ShowToolbeltMessage" message_key="buffRemainingLivesFinalLifeTooltip" sound="" />
+                <triggered_effect trigger="onSelfBuffStart" action="RemoveBuff" buff="buffAmnesiaMentallyStable" />
+                <triggered_effect trigger="onSelfBuffStart" action="RemoveBuff" buff="buffAmnesiaMentallyUneasy" />
+                <triggered_effect trigger="onSelfBuffStart" action="ShowToolbeltMessage" message_key="buffAmnesiaMentallyUnhingedTooltip" />
             </effect_group>
 
             <effect_group>
-
-
-                <!-- Pros -->
+                <!-- Buffs -->
                 <!-- TODO: boost PlayerExpGain passive_effect -->
                 <!-- TODO: boost DismemberChance, ; decapitation, 0-1;  tags are "head,arm,leg" -->
                 <!-- TODO: boost LootGamestage? -->
@@ -53,10 +44,47 @@
 
                 <!-- TODO: reduce or.. boost? LandClaimDamageModifier -->
 
-                <!-- Cons -->
+                <!-- Debuffs -->
                 <!-- TODO: reduce LootGamestage -->
                 <!-- TODO: increase LockPickTime -->
                 <!-- TODO: increase LockPickBreakChance -->
+            </effect_group>
+        </buff>
+
+        <buff name="buffAmnesiaMemoryLoss" name_key="buffAmnesiaMemoryLossName" description_key="buffAmnesiaMemoryLossDesc" icon="ui_game_symbol_skull_crusher" icon_color="255,0,0" remove_on_death="false">
+            <duration value="10" />
+            <stack_type value="ignore" />
+            <display_value_key value="Memory Loss" />
+            <display_value value="x" />
+
+            <effect_group>
+                <triggered_effect trigger="onSelfBuffStart" action="ShowToolbeltMessage" message_key="buffAmnesiaMemoryLossTooltip" sound="" />
+            </effect_group>
+        </buff>
+
+        <buff name="buffAmnesiaPositiveOutlook" name_key="buffAmnesiaPositiveOutlookName" description_key="buffAmnesiaPositiveOutlookDesc" icon="ui_game_symbol_xp" icon_color="0,255,0" remove_on_death="false">
+            <duration value="0" />
+            <display_value value="$positiveOutlookTime" />
+            <display_value_format value="time" />
+
+            <effect_group name="startup">
+                <!-- TODO: consider setting to @amnesiaPositiveOutlookTime value instead and base this value off of... the level the player was able to achieve last? -->
+                <triggered_effect trigger="onSelfBuffStart" action="ModifyCVar" cvar="$positiveOutlookTime" operation="set" value="1800" />
+                <triggered_effect trigger="onSelfBuffStack" action="ModifyCVar" cvar="$positiveOutlookTime" operation="set" value="1800" />
+            </effect_group>
+            <effect_group name="activeEffects">
+                <!-- TODO: consider setting to @amnesiaPositiveOutlookXpBoost value instead and base this value off of... the level the player was able to achieve last? -->
+                <!-- 4x multiplier -->
+                <passive_effect name="PlayerExpGain" operation="perc_add" value="3" />
+            </effect_group>
+            <effect_group name="update">
+                <triggered_effect trigger="onSelfBuffUpdate" action="ModifyCVar" cvar="$positiveOutlookTime" operation="subtract" value="1" />
+                <triggered_effect trigger="onSelfBuffUpdate" action="RemoveBuff" buff="buffAmnesiaPositiveOutlook">
+                    <requirement name="CVarCompare" cvar="$positiveOutlookTime" operation="LTE" value="0" />
+                </triggered_effect>
+            </effect_group>
+            <effect_group name="cleanup">
+                <triggered_effect trigger="onSelfBuffRemove" action="ModifyCVar" cvar="$positiveOutlookTime" operation="set" value="0" />
             </effect_group>
         </buff>
     </append>

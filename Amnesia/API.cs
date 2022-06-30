@@ -7,6 +7,13 @@ using static EntityBuffs;
 namespace Amnesia {
     internal class API : IModApi {
         private static readonly ModLog log = new ModLog(typeof(API));
+        private static readonly List<RespawnType> respawnTypesToMonitor = new List<RespawnType>{
+            RespawnType.JoinMultiplayer,
+            RespawnType.EnterMultiplayer
+        };
+        private static readonly List<EnumGameMessages> gameMessageTypesToMonitor = new List<EnumGameMessages>{
+            EnumGameMessages.EntityWasKilled
+        };
 
         public void InitMod(Mod _modInstance) {
             if (Config.Load()) {
@@ -26,22 +33,27 @@ namespace Amnesia {
          */
         private void OnPlayerSpawnedInWorld(ClientInfo clientInfo, RespawnType respawnType, Vector3i pos) {
             try {
-                if (respawnType != RespawnType.JoinMultiplayer && respawnType != RespawnType.EnterMultiplayer) {
-                    return;
-                }
-                if (clientInfo == null || !GameManager.Instance.World.Players.dict.TryGetValue(clientInfo.entityId, out var player)) {
-                    return;
+                if (!respawnTypesToMonitor.Contains(respawnType)) {
+                    return; // exit early if we don't care about the presented respawnType
                 }
 
-                // TODO: possibly include logic here if RespawnType.Died
+                // Fetch player if possible
+                if (clientInfo == null || !GameManager.Instance.World.Players.dict.TryGetValue(clientInfo.entityId, out EntityPlayer player)) {
+                    log.Warn("JoinMultiplayer/EnterMultiplayer event sent from a non-player client... may want to investigate");
+                    return; // exit early if player cannot be found in active world
+                }
 
                 var playerMaxLives = player.GetCVar(Values.MaxLivesCVar);
                 if (playerMaxLives == 0) { // initialize player
-                    // TODO: add buff for tracking/boosting player based on remaining lives
                     player.SetCVar(Values.RemainingLivesCVar, Config.MaxLives);
                 }
                 if (playerMaxLives != Config.MaxLives) { // update maxLives
                     player.SetCVar(Values.MaxLivesCVar, Config.MaxLives);
+                }
+
+                // Apply the appropriate buff to reflect the player's situation
+                if (UpdateBuff(player) != BuffStatus.Added) {
+                    log.Error($"Failed to add buff to player {player.GetDebugName()}");
                 }
             } catch (Exception e) {
                 log.Error("Failed to handle PlayerSpawnedInWorld event.", e);
@@ -50,54 +62,53 @@ namespace Amnesia {
 
         private bool OnGameMessage(ClientInfo clientInfo, EnumGameMessages messageType, string message, string mainName, bool localizeMain, string secondaryName, bool localizeSecondary) {
             try {
-                if (messageType != EnumGameMessages.EntityWasKilled) {
-                    return true;
+                if (!gameMessageTypesToMonitor.Contains(messageType)) {
+                    return true; // exit early, do not interrupt other mods from processing event
                 }
 
-                if (clientInfo == null || !GameManager.Instance.World.Players.dict.TryGetValue(clientInfo.entityId, out var killedPlayer)) {
-                    log.Warn("Message sent from a non-player client... that's odd... someone hacking?");
-                    return true;
+                if (clientInfo == null || !GameManager.Instance.World.Players.dict.TryGetValue(clientInfo.entityId, out var player)) {
+                    log.Warn("EntityWasKilled event sent from a non-player client... may want to investigate");
+                    return true; // exit early, do not interrupt other mods from processing event
                 }
 
-                // Note: if killed by another player, secondaryName will be populated with the name of a player
-
-                // TODO: this logic might be better performed onRespawn (from death)
-
-                var livesRemaining = killedPlayer.GetCVar(Values.RemainingLivesCVar);
+                var livesRemaining = player.GetCVar(Values.RemainingLivesCVar);
 
                 // cap lives to maximum(sanity check)
                 if (livesRemaining > Config.MaxLives) {
                     // "shouldn't" have to do this since we auto-push changes as they're made and on login... but just in case:
-                    killedPlayer.SetCVar(Values.MaxLivesCVar, Config.MaxLives);
+                    player.SetCVar(Values.MaxLivesCVar, Config.MaxLives);
                     livesRemaining = Config.MaxLives;
                 }
 
                 // Calculate and apply remaining lives
                 if (livesRemaining > 0) {
-                    killedPlayer.SetCVar(Values.RemainingLivesCVar, livesRemaining - 1);
+                    player.SetCVar(Values.RemainingLivesCVar, livesRemaining - 1);
                 } else if (livesRemaining == 0) {
-                    ResetPlayer(killedPlayer);
-                    killedPlayer.SetCVar(Values.RemainingLivesCVar, Config.MaxLives);
+                    ResetPlayer(player);
+                    player.SetCVar(Values.RemainingLivesCVar, Config.MaxLives);
+                    player.Buffs.AddBuff("buffAmnesiaMemoryLoss");
+
+                    // TODO: wrap this in a config check
+                    player.Buffs.AddBuff("buffAmnesiaPositiveOutlook");
                 }
 
-                // Apply the appropriate buff to reflect the player's situation
-                if (UpdateBuff(killedPlayer) != BuffStatus.Added) {
-                    log.Error($"Failed to add buff to player {killedPlayer.GetDebugName()}");
+                if (UpdateBuff(player) != BuffStatus.Added) {
+                    log.Error($"Failed to add buff to player {player.GetDebugName()}");
                 }
             } catch (Exception e) {
                 log.Error("Failed to handle GameMessage event.", e);
             }
-            return true;
+            return true; // do not interrupt other mods from processing event
         }
 
         private BuffStatus UpdateBuff(EntityPlayer killedPlayer) {
             var remainingLives = killedPlayer.GetCVar(Values.RemainingLivesCVar);
             if (remainingLives == 0) {
-                return killedPlayer.Buffs.AddBuff("buffRemainingLivesFinalLife");
+                return killedPlayer.Buffs.AddBuff("buffAmnesiaMentallyUnhinged");
             } else if (remainingLives <= 1) {
-                return killedPlayer.Buffs.AddBuff("buffRemainingLivesEarlyWarning");
+                return killedPlayer.Buffs.AddBuff("buffAmnesiaMentallyUneasy");
             } else {
-                return killedPlayer.Buffs.AddBuff("buffRemainingLivesReminder");
+                return killedPlayer.Buffs.AddBuff("buffAmnesiaMentallyStable");
             }
         }
 
@@ -136,8 +147,6 @@ namespace Amnesia {
                 player.Progression.bProgressionStatsChanged = true;
                 player.bPlayerStatsChanged = true;
                 SingletonMonoBehaviour<ConnectionManager>.Instance.SendPackage(NetPackageManager.GetPackage<NetPackagePlayerStats>().Setup(player), false, player.entityId);
-
-                // TODO: give short buff to display Tooltip notice on client screen explaining that a reset just happened
             }
 
             /* TODO: Maybe this can be added later. Does not work as is written; probably needs to send some net packages to update the client
