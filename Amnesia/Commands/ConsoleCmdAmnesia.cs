@@ -10,7 +10,9 @@ namespace Amnesia.Commands {
         };
 
         private static readonly string[] Options = new string[] {
-            "MaxLives"
+            "maxLives",
+            "warnAtLife",
+            "enablePositiveOutlook"
         };
 
         public override string[] GetCommands() {
@@ -33,13 +35,16 @@ Description Overview
 {j++}. View current mod options
 {j++}. List remaining lives for all players
 {j++}. Configure a given option
+    - maxLives: how many lives players start with
+    - warnAtLife: when to start warning players about amnesia
+    - enablePositiveOutlook: whether to grant temporary buff that boosts xp growth after memory loss
 {j++}. Update a specific player's remaining lives";
         }
 
         public override void Execute(List<string> _params, CommandSenderInfo _senderInfo) {
             try {
                 if (_params.Count == 0) {
-                    SdtdConsole.Instance.Output($"MaxLives: {Config.MaxLives}");
+                    SdtdConsole.Instance.Output(Config.AsString());
                     return;
                 }
                 switch (_params[0].ToLower()) {

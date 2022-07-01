@@ -43,16 +43,32 @@ namespace Amnesia {
                     return; // exit early if player cannot be found in active world
                 }
 
-                var playerMaxLives = player.GetCVar(Values.MaxLivesCVar);
-                if (playerMaxLives == 0) { // initialize player
-                    player.SetCVar(Values.RemainingLivesCVar, Config.MaxLives);
-                }
-                if (playerMaxLives != Config.MaxLives) { // update maxLives
+                // Initialize player and/or adjust max lives
+                var maxLivesSnapshot = player.GetCVar(Values.MaxLivesCVar);
+                var remainingLivesSnapshot = player.GetCVar(Values.RemainingLivesCVar);
+
+                // update max lives if necessary
+                if (maxLivesSnapshot != Config.MaxLives) {
+                    // increase so player has same count fewer than max before and after
+                    if (maxLivesSnapshot < Config.MaxLives) {
+                        var increase = Config.MaxLives - maxLivesSnapshot;
+                        player.SetCVar(Values.RemainingLivesCVar, remainingLivesSnapshot + increase);
+                    }
                     player.SetCVar(Values.MaxLivesCVar, Config.MaxLives);
                 }
 
+                // cap remaining lives to max lives if necessary
+                if (remainingLivesSnapshot > Config.MaxLives) {
+                    player.SetCVar(Values.RemainingLivesCVar, Config.MaxLives);
+                }
+
+                // Remove Positive Outlook if admin disabled it since player's last login
+                if (!Config.EnablePositiveOutlook) {
+                    player.Buffs.RemoveBuff("buffAmnesiaPositiveOutlook");
+                }
+
                 // Apply the appropriate buff to reflect the player's situation
-                if (UpdateBuff(player) != BuffStatus.Added) {
+                if (UpdateAmnesiaBuff(player) != BuffStatus.Added) {
                     log.Error($"Failed to add buff to player {player.GetDebugName()}");
                 }
             } catch (Exception e) {
@@ -87,12 +103,12 @@ namespace Amnesia {
                     ResetPlayer(player);
                     player.SetCVar(Values.RemainingLivesCVar, Config.MaxLives);
                     player.Buffs.AddBuff("buffAmnesiaMemoryLoss");
-
-                    // TODO: wrap this in a config check
-                    player.Buffs.AddBuff("buffAmnesiaPositiveOutlook");
+                    if (Config.EnablePositiveOutlook) {
+                        player.Buffs.AddBuff("buffAmnesiaPositiveOutlook");
+                    }
                 }
 
-                if (UpdateBuff(player) != BuffStatus.Added) {
+                if (UpdateAmnesiaBuff(player) != BuffStatus.Added) {
                     log.Error($"Failed to add buff to player {player.GetDebugName()}");
                 }
             } catch (Exception e) {
@@ -101,14 +117,14 @@ namespace Amnesia {
             return true; // do not interrupt other mods from processing event
         }
 
-        private BuffStatus UpdateBuff(EntityPlayer killedPlayer) {
-            var remainingLives = killedPlayer.GetCVar(Values.RemainingLivesCVar);
+        public static BuffStatus UpdateAmnesiaBuff(EntityPlayer player) {
+            var remainingLives = player.GetCVar(Values.RemainingLivesCVar);
             if (remainingLives == 0) {
-                return killedPlayer.Buffs.AddBuff("buffAmnesiaMentallyUnhinged");
-            } else if (remainingLives <= 1) {
-                return killedPlayer.Buffs.AddBuff("buffAmnesiaMentallyUneasy");
+                return player.Buffs.AddBuff("buffAmnesiaMentallyUnhinged");
+            } else if (remainingLives <= Config.WarnAtLife) {
+                return player.Buffs.AddBuff("buffAmnesiaMentallyUneasy");
             } else {
-                return killedPlayer.Buffs.AddBuff("buffAmnesiaMentallyStable");
+                return player.Buffs.AddBuff("buffAmnesiaMentallyStable");
             }
         }
 

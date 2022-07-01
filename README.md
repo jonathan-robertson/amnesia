@@ -4,9 +4,22 @@
 
 ## Features
 
-- admin controls to fine-tune max lives for the server or view/adjust current remaining lives per player
-- does not yet include a way to recover lives
-- does not yet include configurable drop-all/delete-all bag override for final death
+After dying some configurable number of times, the player will experience `Memory Loss`. This will immediately reset "their progress" back to zero.
+
+What "their progress" refers to is largely up to the admin. Several options are available to fine-tune the `Memory Loss` experience.
+
+> :warning: NOTE: This mod is in progress; plans for many more options are being worked on
+
+### Admin Controls
+
+- view/adjust remaining lives per player
+- adjust configs as follows:
+
+Option | Default | Description
+--- | :---: | ---
+maxLives | 2 | how many lives players start with
+warnAtLife | 1 | when to start warning players about amnesia
+enablePositiveOutlook | true | whether to grant temporary buff that boosts xp growth after memory loss
 
 ## What is Reset?
 
