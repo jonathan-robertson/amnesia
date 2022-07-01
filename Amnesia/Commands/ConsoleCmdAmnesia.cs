@@ -10,7 +10,9 @@ namespace Amnesia.Commands {
         };
 
         private static readonly string[] Options = new string[] {
-            "MaxLives"
+            "maxLives",
+            "warnAtLife",
+            "enablePositiveOutlook"
         };
 
         public override string[] GetCommands() {
@@ -33,13 +35,16 @@ Description Overview
 {j++}. View current mod options
 {j++}. List remaining lives for all players
 {j++}. Configure a given option
+    - maxLives: how many lives players start with
+    - warnAtLife: when to start warning players about amnesia
+    - enablePositiveOutlook: whether to grant temporary buff that boosts xp growth after memory loss
 {j++}. Update a specific player's remaining lives";
         }
 
         public override void Execute(List<string> _params, CommandSenderInfo _senderInfo) {
             try {
                 if (_params.Count == 0) {
-                    SdtdConsole.Instance.Output($"MaxLives: {Config.MaxLives}");
+                    SdtdConsole.Instance.Output(Config.AsString());
                     return;
                 }
                 switch (_params[0].ToLower()) {
@@ -47,6 +52,9 @@ Description Overview
                         if (_params.Count != 1) {
                             break;
                         }
+
+                        // TODO: is there a way to check this in player data without the players needing to be on?
+
                         if (GameManager.Instance.World.Players.Count == 0) {
                             SdtdConsole.Instance.Output("There are no players currently online");
                             return;
@@ -80,12 +88,22 @@ Description Overview
         private void HandleConfig(List<string> _params) {
             switch (_params[1].ToLower()) {
                 case "maxlives":
-                    if (int.TryParse(_params[2], out int value)) {
-                        Config.SetMaxLives(value);
-                        SdtdConsole.Instance.Output($"Successfully updated; MaxLives set to {value}");
-                    } else {
-                        SdtdConsole.Instance.Output("Unable to parse value: must be of type int");
-                    }
+                    ApplyInt(_params[2], v => {
+                        Config.SetMaxLives(v);
+                        SdtdConsole.Instance.Output($"Successfully updated to {v}");
+                    });
+                    break;
+                case "warnatlife":
+                    ApplyInt(_params[2], v => {
+                        Config.SetWarnAtLife(v);
+                        SdtdConsole.Instance.Output($"Successfully updated to {v}");
+                    });
+                    break;
+                case "enablepositiveoutlook":
+                    ApplyBool(_params[2], v => {
+                        Config.SetEnablePositiveOutlook(v);
+                        SdtdConsole.Instance.Output($"Successfully updated to {v}");
+                    });
                     break;
                 default:
                     SdtdConsole.Instance.Output("Invald parameter provided");
@@ -105,6 +123,24 @@ Description Overview
             }
             Config.SetRemainingLives(player, remainingLives);
             SdtdConsole.Instance.Output($"Updated lives remaining for {player.GetDebugName()} to {remainingLives}");
+        }
+
+        private static bool ApplyInt(string param, Action<int> onSuccess) {
+            if (!int.TryParse(param, out var value)) {
+                SdtdConsole.Instance.Output($"Unable to parse value; expecting int");
+                return false;
+            }
+            onSuccess(value);
+            return true;
+        }
+
+        private static bool ApplyBool(string param, Action<bool> onSuccess) {
+            if (!bool.TryParse(param, out var value)) {
+                SdtdConsole.Instance.Output($"Unable to parse value; expecting bool");
+                return false;
+            }
+            onSuccess(value);
+            return true;
         }
     }
 }
