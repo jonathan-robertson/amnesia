@@ -52,6 +52,9 @@ Description Overview
                         if (_params.Count != 1) {
                             break;
                         }
+
+                        // TODO: is there a way to check this in player data without the players needing to be on?
+
                         if (GameManager.Instance.World.Players.Count == 0) {
                             SdtdConsole.Instance.Output("There are no players currently online");
                             return;

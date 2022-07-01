@@ -23,6 +23,8 @@ namespace Amnesia.Data {
         public static void SetRemainingLives(EntityPlayer player, int remainingLives) {
             if (player != null) {
                 player.SetCVar(Values.RemainingLivesCVar, remainingLives);
+                // TODO: is there a way to apply this to the player data without the player needing to be on?
+                API.AdjustToMaxOrRemainingLivesChange(player);
             }
         }
 
@@ -34,7 +36,7 @@ namespace Amnesia.Data {
             if (MaxLives != value) {
                 MaxLives = value;
                 Save();
-                GameManager.Instance.World.Players.list.ForEach(p => p.SetCVar(Values.MaxLivesCVar, MaxLives));
+                GameManager.Instance.World.Players.list.ForEach(p => API.AdjustToMaxOrRemainingLivesChange(p));
             }
         }
 
@@ -46,7 +48,6 @@ namespace Amnesia.Data {
             if (WarnAtLife != value) {
                 WarnAtLife = value;
                 Save();
-                // TODO: trigger reshuffle of buffs
                 GameManager.Instance.World.Players.list.ForEach(p => API.UpdateAmnesiaBuff(p));
             }
         }

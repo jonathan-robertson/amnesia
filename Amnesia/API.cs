@@ -43,24 +43,7 @@ namespace Amnesia {
                     return; // exit early if player cannot be found in active world
                 }
 
-                // Initialize player and/or adjust max lives
-                var maxLivesSnapshot = player.GetCVar(Values.MaxLivesCVar);
-                var remainingLivesSnapshot = player.GetCVar(Values.RemainingLivesCVar);
-
-                // update max lives if necessary
-                if (maxLivesSnapshot != Config.MaxLives) {
-                    // increase so player has same count fewer than max before and after
-                    if (maxLivesSnapshot < Config.MaxLives) {
-                        var increase = Config.MaxLives - maxLivesSnapshot;
-                        player.SetCVar(Values.RemainingLivesCVar, remainingLivesSnapshot + increase);
-                    }
-                    player.SetCVar(Values.MaxLivesCVar, Config.MaxLives);
-                }
-
-                // cap remaining lives to max lives if necessary
-                if (remainingLivesSnapshot > Config.MaxLives) {
-                    player.SetCVar(Values.RemainingLivesCVar, Config.MaxLives);
-                }
+                AdjustToMaxOrRemainingLivesChange(player);
 
                 // Remove Positive Outlook if admin disabled it since player's last login
                 if (!Config.EnablePositiveOutlook) {
@@ -73,6 +56,27 @@ namespace Amnesia {
                 }
             } catch (Exception e) {
                 log.Error("Failed to handle PlayerSpawnedInWorld event.", e);
+            }
+        }
+
+        public static void AdjustToMaxOrRemainingLivesChange(EntityPlayer player) {
+            // Initialize player and/or adjust max lives
+            var maxLivesSnapshot = player.GetCVar(Values.MaxLivesCVar);
+            var remainingLivesSnapshot = player.GetCVar(Values.RemainingLivesCVar);
+
+            // update max lives if necessary
+            if (maxLivesSnapshot != Config.MaxLives) {
+                // increase so player has same count fewer than max before and after
+                if (maxLivesSnapshot < Config.MaxLives) {
+                    var increase = Config.MaxLives - maxLivesSnapshot;
+                    player.SetCVar(Values.RemainingLivesCVar, remainingLivesSnapshot + increase);
+                }
+                player.SetCVar(Values.MaxLivesCVar, Config.MaxLives);
+            }
+
+            // cap remaining lives to max lives if necessary
+            if (remainingLivesSnapshot > Config.MaxLives) {
+                player.SetCVar(Values.RemainingLivesCVar, Config.MaxLives);
             }
         }
 
