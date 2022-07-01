@@ -88,12 +88,22 @@ Description Overview
         private void HandleConfig(List<string> _params) {
             switch (_params[1].ToLower()) {
                 case "maxlives":
-                    if (int.TryParse(_params[2], out int value)) {
-                        Config.SetMaxLives(value);
-                        SdtdConsole.Instance.Output($"Successfully updated; MaxLives set to {value}");
-                    } else {
-                        SdtdConsole.Instance.Output("Unable to parse value: must be of type int");
-                    }
+                    ApplyInt(_params[2], v => {
+                        Config.SetMaxLives(v);
+                        SdtdConsole.Instance.Output($"Successfully updated to {v}");
+                    });
+                    break;
+                case "warnatlife":
+                    ApplyInt(_params[2], v => {
+                        Config.SetWarnAtLife(v);
+                        SdtdConsole.Instance.Output($"Successfully updated to {v}");
+                    });
+                    break;
+                case "enablepositiveoutlook":
+                    ApplyBool(_params[2], v => {
+                        Config.SetEnablePositiveOutlook(v);
+                        SdtdConsole.Instance.Output($"Successfully updated to {v}");
+                    });
                     break;
                 default:
                     SdtdConsole.Instance.Output("Invald parameter provided");
@@ -113,6 +123,24 @@ Description Overview
             }
             Config.SetRemainingLives(player, remainingLives);
             SdtdConsole.Instance.Output($"Updated lives remaining for {player.GetDebugName()} to {remainingLives}");
+        }
+
+        private static bool ApplyInt(string param, Action<int> onSuccess) {
+            if (!int.TryParse(param, out var value)) {
+                SdtdConsole.Instance.Output($"Unable to parse value; expecting int");
+                return false;
+            }
+            onSuccess(value);
+            return true;
+        }
+
+        private static bool ApplyBool(string param, Action<bool> onSuccess) {
+            if (!bool.TryParse(param, out var value)) {
+                SdtdConsole.Instance.Output($"Unable to parse value; expecting bool");
+                return false;
+            }
+            onSuccess(value);
+            return true;
         }
     }
 }

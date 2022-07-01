@@ -52,13 +52,13 @@
         </buff>
 
         <buff name="buffAmnesiaMemoryLoss" name_key="buffAmnesiaMemoryLossName" description_key="buffAmnesiaMemoryLossDesc" icon="ui_game_symbol_skull_crusher" icon_color="255,0,0" remove_on_death="false">
-            <duration value="10" />
+            <duration value="30" />
             <stack_type value="ignore" />
             <display_value_key value="Memory Loss" />
             <display_value value="x" />
 
             <effect_group>
-                <triggered_effect trigger="onSelfBuffStart" action="ShowToolbeltMessage" message_key="buffAmnesiaMemoryLossTooltip" sound="" />
+                <triggered_effect trigger="onSelfBuffStart" action="ShowToolbeltMessage" message_key="buffAmnesiaMemoryLossTooltip" />
             </effect_group>
         </buff>
 

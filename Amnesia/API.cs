@@ -43,17 +43,13 @@ namespace Amnesia {
                     return; // exit early if player cannot be found in active world
                 }
 
-                AdjustToMaxOrRemainingLivesChange(player);
-
                 // Remove Positive Outlook if admin disabled it since player's last login
                 if (!Config.EnablePositiveOutlook) {
                     player.Buffs.RemoveBuff("buffAmnesiaPositiveOutlook");
                 }
 
-                // Apply the appropriate buff to reflect the player's situation
-                if (UpdateAmnesiaBuff(player) != BuffStatus.Added) {
-                    log.Error($"Failed to add buff to player {player.GetDebugName()}");
-                }
+                // Update player's max/remaining lives to fit new MaxLives changes if necessary
+                AdjustToMaxOrRemainingLivesChange(player);
             } catch (Exception e) {
                 log.Error("Failed to handle PlayerSpawnedInWorld event.", e);
             }
@@ -77,6 +73,11 @@ namespace Amnesia {
             // cap remaining lives to max lives if necessary
             if (remainingLivesSnapshot > Config.MaxLives) {
                 player.SetCVar(Values.RemainingLivesCVar, Config.MaxLives);
+            }
+
+            // Apply the appropriate buff to reflect the player's situation
+            if (UpdateAmnesiaBuff(player) != BuffStatus.Added) {
+                log.Error($"Failed to add buff to player {player.GetDebugName()}");
             }
         }
 
