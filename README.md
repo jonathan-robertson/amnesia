@@ -1,6 +1,6 @@
 # Amnesia [![Tested with A20.5 b2](https://img.shields.io/badge/A20.5%20b2-tested-blue.svg)](https://7daystodie.com/) [![Automated Release](https://github.com/jonathan-robertson/amnesia/actions/workflows/main.yml/badge.svg)](https://github.com/jonathan-robertson/amnesia/actions/workflows/main.yml)
 
-*Reset player progress after a configurable number of deaths.*
+![amnesia social image](https://github.com/jonathan-robertson/amnesia/raw/media/amnesia-logo-social.jpg)
 
 ## Features
 
@@ -66,3 +66,7 @@ Value | Description
 Mark Base on Map | If LCB is reset, the base will no longer be defended and can be raided by anyone online
 Base Destroyed | Chunks containing player LCBs are reset
 Vehicles Destroyed | Destroying all vehicles seems overboard
+
+## Attribution
+
+- Much thanks to [all-free-download.com](https://all-free-download.com/free-vector/download/brain_icon_shiny_dark_blue_design_6833698.html) for the brain image used in this logo's background.
