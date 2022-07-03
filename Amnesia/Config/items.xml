@@ -1,0 +1,29 @@
+﻿<config>
+    <append xpath="/items">
+        <item name="amnesiaSmellingSalts">
+            <property name="Tags" value="medical" />
+            <property name="HoldType" value="16" />
+            <property name="Meshfile" value="#Other/Items?Health/painkillersPrefab.prefab" />
+            <property name="DropMeshfile" value="#Other/Items?Misc/sack_droppedPrefab.prefab" />
+            <property name="CustomIcon" value="resourceTestosteroneExtract" />
+            <property name="CustomIconTint" value="FFFFFF" />
+            <property name="Material" value="Morganic" />
+            <property name="EconomicValue" value="2000" />
+            <property name="Stacknumber" value="1" /> <!-- STK loot -->
+            <property name="DisplayType" value="amnesiaSmellingSalts" />
+            <property name="TintColor" value="120,255,120" />
+            <property name="Group" value="Science,CFChemicals,Medical" />
+            <property class="Action0">
+                <property name="Class" value="Eat" />
+                <property name="Delay" value="1.0" />
+                <property name="Use_time" value="..." />
+                <property name="Sound_start" value="player_painkillers" />
+                <requirement name="NotHasBuff" buff="buffAmnesiaRecoverLife" />
+            </property>
+            <effect_group tiered="false">
+                <triggered_effect trigger="onSelfPrimaryActionEnd" action="AddBuff" buff="buffAmnesiaRecoverLife" />
+                <display_value name="lifeRestoreCount" value="1" />
+            </effect_group>
+        </item>
+    </append>
+</config>

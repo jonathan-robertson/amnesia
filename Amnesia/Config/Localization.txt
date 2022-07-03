@@ -19,3 +19,12 @@ buffAmnesiaMemoryLossTooltip,buffs,Buffs,"Memory Loss: Significant trauma has ca
 buffAmnesiaPositiveOutlookName,buffs,Buffs,"Positive Outlook"
 buffAmnesiaPositiveOutlookDesc,buffs,Buffs,"Starting fresh is always hard, but you're feeling especially positive about your situation and the future.\n\nSure, the world has gone to hell, but that doesn't mean your attitude needs to!\n\n[00FF00]XP Gain is Quadrupled!"
 buffAmnesiaPositiveOutlookTooltip,buffs,Buffs,"Positive Outlook: [00FF00]XP Gain Quadrupled!"
+
+amnesiaSmellingSalts,items,Medical,"Smelling Salts"
+amnesiaSmellingSaltsDesc,items,Medical,"Use to recover 1 life in exchange for 1 skill point.\n\nCan take up to 30 seconds to have an effect."
+
+statRemainingLives,ui_display,Item stat,"Lives Restored"
+buffAmnesiaRecoverLifeTooltip,buffs,Buffs,"You huff the smelling salts and wait for them to take effect"
+buffAmnesiaRecoverLifeMaxedTooltip,buffs,Buffs,"No Effect; You already have the maximum number of lives"
+buffAmnesiaRecoverLifeMissingPointTooltip,buffs,Buffs,"No Effect: You don't have any skill points available"
+buffAmnesiaRecoverLifeSuccessTooltip,buffs,Buffs,"You recovered 1 life in exchange for 1 skill point"

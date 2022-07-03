@@ -87,6 +87,34 @@
                 <triggered_effect trigger="onSelfBuffRemove" action="ModifyCVar" cvar="$positiveOutlookTime" operation="set" value="0" />
             </effect_group>
         </buff>
+
+        <buff name="buffAmnesiaRecoverLife" hidden="true">
+            <duration value="0" />
+            <effect_group>
+                <triggered_effect trigger="onSelfBuffStart" action="ShowToolbeltMessage" message_key="buffAmnesiaRecoverLifeTooltip" />
+            </effect_group>
+        </buff>
+        <buff name="buffAmnesiaRecoverLifeMaxed" hidden="true">
+            <duration value="2" />
+            <effect_group>
+                <triggered_effect trigger="onSelfBuffStart" action="RemoveBuff" buff="buffAmnesiaRecoverLife" />
+                <triggered_effect trigger="onSelfBuffStart" action="ShowToolbeltMessage" message_key="buffAmnesiaRecoverLifeMaxedTooltip" />
+            </effect_group>
+        </buff>
+        <buff name="buffAmnesiaRecoverLifeMissingPoint" hidden="true">
+            <duration value="2" />
+            <effect_group>
+                <triggered_effect trigger="onSelfBuffStart" action="RemoveBuff" buff="buffAmnesiaRecoverLife" />
+                <triggered_effect trigger="onSelfBuffStart" action="ShowToolbeltMessage" message_key="buffAmnesiaRecoverLifeMissingPointTooltip" />
+            </effect_group>
+        </buff>
+        <buff name="buffAmnesiaRecoverLifeSuccess" hidden="true">
+            <duration value="2" />
+            <effect_group>
+                <triggered_effect trigger="onSelfBuffStart" action="RemoveBuff" buff="buffAmnesiaRecoverLife" />
+                <triggered_effect trigger="onSelfBuffStart" action="ShowToolbeltMessage" message_key="buffAmnesiaRecoverLifeSuccessTooltip" />
+            </effect_group>
+        </buff>
     </append>
     <!-- TODO: explore how onCombatEntered works: perhaps a screen effect could be added when on last life onCombatEntered as a reminder -->
 </config>

@@ -2,6 +2,7 @@
 using Amnesia.Utilities;
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 using static EntityBuffs;
 
 namespace Amnesia {
@@ -19,9 +20,72 @@ namespace Amnesia {
             if (Config.Load()) {
                 ModEvents.PlayerSpawnedInWorld.RegisterHandler(OnPlayerSpawnedInWorld);
                 ModEvents.GameMessage.RegisterHandler(OnGameMessage);
+                ModEvents.SavePlayerData.RegisterHandler(OnSavePlayerData);
             } else {
                 log.Error("Unable to load or recover from configuration issue; this mod will not activate.");
             }
+        }
+
+        private void OnSavePlayerData(ClientInfo clientInfo, PlayerDataFile playerDataFile) {
+            // TODO: get player
+            // TODO: check if player has 1 free skill point and remove if present, then give response buff saying it was successful and trigger refresh
+            // TODO: or if 1 free skillpoint not present, give response buff saying it was not successful and give item back
+
+            // [!] ALTERNATIVE DIALOG OPTION PLANS
+            // One could use this requirement with PlayerItemCount item_name="<item name>" (An expensive function that should be used sparingly.)
+            // this would be used to confirm if the player has enough money for the dialog option. Actual money removal can be handled later.
+            // <requirement name="PlayerItemCount" item_name="casinoCoin" operation="GTE" value="5000"/>
+
+            // Fetch player if possible
+            if (clientInfo == null || !GameManager.Instance.World.Players.dict.TryGetValue(clientInfo.entityId, out EntityPlayer player)) {
+                log.Warn("OnSavePlayerData called for a client who is no longer logged in... may want to investigate");
+                return; // exit early if player cannot be found in active world
+            }
+
+            if (player.Buffs.HasBuff("buffAmnesiaRecoverLife")) {
+
+                // ensure player is in sync with max lives
+                AdjustToMaxOrRemainingLivesChange(player);
+                var remainingLives = player.GetCVar(Values.RemainingLivesCVar);
+                if (remainingLives >= Config.MaxLives) {
+                    player.Buffs.AddBuff("buffAmnesiaRecoverLifeMaxed");
+                    GiveItem(clientInfo, player, "amnesiaSmellingSalts", 1);
+                    return; // at max
+                }
+
+                // ensure skill point is available
+                if (player.Progression.SkillPoints == 0) {
+                    player.Buffs.AddBuff("buffAmnesiaRecoverLifeMissingPoint");
+                    GiveItem(clientInfo, player, "amnesiaSmellingSalts", 1);
+                    return; // not enough skill points
+                }
+
+                // restore 1 life
+                player.Buffs.AddBuff("buffAmnesiaRecoverLifeSuccess");
+                player.Progression.SkillPoints--;
+                player.Progression.bProgressionStatsChanged = true;
+                player.SetCVar(Values.RemainingLivesCVar, remainingLives + 1);
+            }
+
+            log.Info($"saving data for player {clientInfo.playerName}");
+        }
+
+        private void GiveItem(ClientInfo clientInfo, EntityPlayer player, string name, int count) {
+            ItemValue _itemValue = ItemClass.GetItem(name, false);
+            ItemStack itemStack = new ItemStack(_itemValue, count);
+
+            var entityItem = (EntityItem)EntityFactory.CreateEntity(new EntityCreationData {
+                entityClass = EntityClass.FromString("item"),
+                id = EntityFactory.nextEntityID++,
+                itemStack = itemStack,
+                pos = player.position,
+                rot = new Vector3(20f, 0f, 20f),
+                lifetime = 60f,
+                belongsPlayerId = clientInfo.entityId
+            });
+            GameManager.Instance.World.SpawnEntityInWorld(entityItem);
+            clientInfo.SendPackage(NetPackageManager.GetPackage<NetPackageEntityCollect>().Setup(entityItem.entityId, clientInfo.entityId));
+            GameManager.Instance.World.RemoveEntity(entityItem.entityId, EnumRemoveEntityReason.Despawned);
         }
 
         /**
