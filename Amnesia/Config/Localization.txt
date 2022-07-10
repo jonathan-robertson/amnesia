@@ -1,11 +1,11 @@
 ﻿Key,File,Type,english
 
 buffAmnesiaMentallyStableName,buffs,Buffs,"Mentally Stable"
-buffAmnesiaMentallyStableDesc,buffs,Buffs,"Your mind and memory are healthy and you feel ready to take on the world!\n\nExperiencing severe trauma (death) will negatively impact your mental state and will eventually cause you to lose your mind...\n\n[FF8000]Remaining Lives: {cvar(remainingLives)}/{cvar(maxLives)}"
+buffAmnesiaMentallyStableDesc,buffs,Buffs,"Your mind and memory are healthy and you feel ready to take on the world!\n\nExperiencing severe trauma (death) will negatively impact your mental state and will eventually cause you to lose your mind...\n\n[FF8000]Remaining Lives: {cvar(amnesiaRemainingLives)}/{cvar(amnesiaMaxLives)}"
 buffAmnesiaMentallyStableTooltip,buffs,Buffs,"Mentally Stable: Your mind and memory are healthy and you feel ready to take on the world!"
 
 buffAmnesiaMentallyUneasyName,buffs,Buffs,"Mentally Uneasy"
-buffAmnesiaMentallyUneasyDesc,buffs,Buffs,"Feeling a little overwhelmed, you realize surviving the apocalypse is tougher than you expected.\n\nYou can only handle significant trauma a few more times before losing your mind...\n\n[FF8000]Remaining Lives: {cvar(remainingLives)}/{cvar(maxLives)}"
+buffAmnesiaMentallyUneasyDesc,buffs,Buffs,"Feeling a little overwhelmed, you realize surviving the apocalypse is tougher than you expected.\n\nYou can only handle significant trauma a few more times before losing your mind...\n\n[FF8000]Remaining Lives: {cvar(amnesiaRemainingLives)}/{cvar(amnesiaMaxLives)}"
 buffAmnesiaMentallyUneasyTooltip,buffs,Buffs,"Mentally Uneasy: Significant Trauma has taken its toll on your mind and spirit"
 
 buffAmnesiaMentallyUnhingedName,buffs,Buffs,"Mentally Unhinged"
@@ -21,7 +21,7 @@ buffAmnesiaPositiveOutlookDesc,buffs,Buffs,"Starting fresh is always hard, but y
 buffAmnesiaPositiveOutlookTooltip,buffs,Buffs,"Positive Outlook: [00FF00]XP Gain Quadrupled!"
 
 amnesiaSmellingSalts,items,Medical,"Smelling Salts"
-amnesiaSmellingSaltsDesc,items,Medical,"Use to recover 1 life in exchange for 1 skill point.\n\nCan take up to 30 seconds to have an effect."
+amnesiaSmellingSaltsDesc,items,Medical,"Use to recover 1 life in exchange for 1 skill point.\n\nMay blur vision and prevent movement for a few seconds."
 
 statRemainingLives,ui_display,Item stat,"Lives Restored"
 buffAmnesiaRecoverLifeTooltip,buffs,Buffs,"You huff the smelling salts and wait for them to take effect"

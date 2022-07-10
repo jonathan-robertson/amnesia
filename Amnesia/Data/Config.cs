@@ -7,17 +7,35 @@ using System.Xml.Linq;
 namespace Amnesia.Data {
     internal class Config {
         private static readonly ModLog log = new ModLog(typeof(Config));
-        private static readonly string filename = Path.Combine(GameIO.GetSaveGameDir(), "only-three-chances-config.xml");
-        private const string MaxLivesName = "maxLives";
-        private const string WarnAtLifeName = "warnAtLife";
-        private const string EnablePositiveOutlookName = "enablePositiveOutlook";
+        private static readonly string filename = Path.Combine(GameIO.GetSaveGameDir(), "amnesia.xml");
+
+        public static string MaxLivesName { get; private set; } = "maxLives";
+        public static string WarnAtLifeName { get; private set; } = "warnAtLife";
+        public static string EnablePositiveOutlookName { get; private set; } = "enablePositiveOutlook";
+        public static string ResetFactionPointsName { get; private set; } = "resetFactionPoints";
 
         public static int MaxLives { get; private set; } = 2;
         public static int WarnAtLife { get; private set; } = 1;
         public static bool EnablePositiveOutlook { get; private set; } = true;
+        // TODO: add/support options in console for this
+        public static bool ResetLevels { get; private set; } = false;
+
+        // TODO: recommend against this + clearIntroQuests both being enabled if not also resetting levels
+        // TODO: default to false
+        // TODO: add/support options in console for this
+        public static bool ResetQuests { get; private set; } = true;
+        // TODO: add/support options in console for this
+        public static bool ClearIntroQuests { get; private set; } = false;
+        // TODO: add/support options in console for this
+        public static bool RemoveSharedQuests { get; private set; } = false;
+        public static bool ResetFactionPoints { get; private set; } = false;
 
         public static string AsString() {
-            return $"MaxLives: {MaxLives}\nWarnAtLife: {WarnAtLife}\nEnablePositiveOutlook: {EnablePositiveOutlook}";
+            return $@"=== Amnesia Configuration ===
+{MaxLivesName}: {MaxLives}
+{WarnAtLifeName}: {WarnAtLife}
+{EnablePositiveOutlookName}: {EnablePositiveOutlook}
+{ResetFactionPointsName}: {ResetFactionPoints}";
         }
 
         public static void SetRemainingLives(EntityPlayer player, int remainingLives) {
@@ -48,7 +66,7 @@ namespace Amnesia.Data {
             if (WarnAtLife != value) {
                 WarnAtLife = value;
                 Save();
-                GameManager.Instance.World.Players.list.ForEach(p => API.UpdateAmnesiaBuff(p));
+                GameManager.Instance.World.Players.list.ForEach(p => p.SetCVar(Values.WarnAtLifeCVar, WarnAtLife));
             }
         }
 
@@ -66,12 +84,24 @@ namespace Amnesia.Data {
             }
         }
 
+        /**
+         * <summary>Enable or disable the process to erase trader relationships on final death.</summary>
+         * <param name="value">New value to set ResetFactionPoints to.</param>
+         */
+        public static void SetResetFactionPoints(bool value) {
+            if (ResetFactionPoints != value) {
+                ResetFactionPoints = value;
+                Save();
+            }
+        }
+
         public static bool Save() {
             try {
                 new XElement("config",
                     new XElement(MaxLivesName, MaxLives),
                     new XElement(WarnAtLifeName, WarnAtLife),
-                    new XElement(EnablePositiveOutlookName, EnablePositiveOutlook)
+                    new XElement(EnablePositiveOutlookName, EnablePositiveOutlook),
+                    new XElement(ResetFactionPointsName, ResetFactionPoints)
                 ).Save(filename);
                 log.Info($"Successfully saved {filename}");
                 return true;
@@ -87,6 +117,7 @@ namespace Amnesia.Data {
                 MaxLives = ParseInt(config, MaxLivesName);
                 WarnAtLife = ParseInt(config, WarnAtLifeName);
                 EnablePositiveOutlook = ParseBool(config, EnablePositiveOutlookName);
+                ResetFactionPoints = ParseBool(config, ResetFactionPointsName);
                 log.Info($"Successfully loaded {filename}");
                 return true;
             } catch (FileNotFoundException) {

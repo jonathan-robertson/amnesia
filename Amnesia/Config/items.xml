@@ -2,26 +2,31 @@
     <append xpath="/items">
         <item name="amnesiaSmellingSalts">
             <property name="Tags" value="medical" />
+
+            <property name="DisplayType" value="amnesiaSmellingSalts" />
+            <property name="DescriptionKey" value="amnesiaSmellingSaltsDesc" />
+            <property name="CustomIcon" value="resourceTestosteroneExtract" />
+            <property name="CustomIconTint" value="17,17,17" />
+            <property name="TintColor" value="17,17,17" />
+            <property name="Stacknumber" value="1" />
+            <property name="EconomicValue" value="20000" />
+            <property name="SellableToTrader" value="false" />
+
             <property name="HoldType" value="16" />
             <property name="Meshfile" value="#Other/Items?Health/painkillersPrefab.prefab" />
             <property name="DropMeshfile" value="#Other/Items?Misc/sack_droppedPrefab.prefab" />
-            <property name="CustomIcon" value="resourceTestosteroneExtract" />
-            <property name="CustomIconTint" value="FFFFFF" />
             <property name="Material" value="Morganic" />
-            <property name="EconomicValue" value="2000" />
-            <property name="Stacknumber" value="1" /> <!-- STK loot -->
-            <property name="DisplayType" value="amnesiaSmellingSalts" />
-            <property name="TintColor" value="120,255,120" />
             <property name="Group" value="Science,CFChemicals,Medical" />
             <property class="Action0">
                 <property name="Class" value="Eat" />
                 <property name="Delay" value="1.0" />
                 <property name="Use_time" value="..." />
-                <property name="Sound_start" value="player_painkillers" />
-                <requirement name="NotHasBuff" buff="buffAmnesiaRecoverLife" />
+                <property name="Sound_start" value="player_blooddraw" />
+                <requirement name="CVarCompare" cvar="amnesiaRemainingLives" operation="LT" value="@amnesiaMaxLives" />
             </property>
             <effect_group tiered="false">
-                <triggered_effect trigger="onSelfPrimaryActionEnd" action="AddBuff" buff="buffAmnesiaRecoverLife" />
+                <triggered_effect trigger="onSelfPrimaryActionEnd" action="PlaySound" sound="spawnInStinger" />
+                <triggered_effect trigger="onSelfPrimaryActionEnd" action="ModifyCVar" cvar="amnesiaRemainingLives" operation="add" value="1" />
                 <display_value name="lifeRestoreCount" value="1" />
             </effect_group>
         </item>

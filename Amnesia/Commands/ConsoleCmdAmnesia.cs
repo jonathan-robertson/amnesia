@@ -1,4 +1,5 @@
 ﻿using Amnesia.Data;
+using Amnesia.Handlers;
 using System;
 using System.Collections.Generic;
 
@@ -10,9 +11,10 @@ namespace Amnesia.Commands {
         };
 
         private static readonly string[] Options = new string[] {
-            "maxLives",
-            "warnAtLife",
-            "enablePositiveOutlook"
+            Config.MaxLivesName,
+            Config.WarnAtLifeName,
+            Config.EnablePositiveOutlookName,
+            Config.ResetFactionPointsName
         };
 
         public override string[] GetCommands() {
@@ -35,9 +37,11 @@ Description Overview
 {j++}. View current mod options
 {j++}. List remaining lives for all players
 {j++}. Configure a given option
-    - maxLives: how many lives players start with
-    - warnAtLife: when to start warning players about amnesia
-    - enablePositiveOutlook: whether to grant temporary buff that boosts xp growth after memory loss
+    - {Config.MaxLivesName}: how many lives players start with
+    - {Config.WarnAtLifeName}: when to start warning players about amnesia
+    - {Config.EnablePositiveOutlookName}: whether to grant temporary buff that boosts xp growth after memory loss
+    - {Config.ResetFactionPointsName}: whether to erase relationship progression with trader
+        - [!] SYSTEM WILL KICK PLAYER ON FINAL DEATH IF {Config.ResetFactionPointsName} IS ENABLED! THIS IS NECESSARY TO WIPE RELATIONSHIPS.
 {j++}. Update a specific player's remaining lives";
         }
 
@@ -48,6 +52,36 @@ Description Overview
                     return;
                 }
                 switch (_params[0].ToLower()) {
+                    case "resetplayer": // TODO: remove
+                        if (_senderInfo.RemoteClientInfo == null || !GameManager.Instance.World.Players.dict.TryGetValue(_senderInfo.RemoteClientInfo.entityId, out var playerToReset)) {
+                            SdtdConsole.Instance.Output("RemoteClientInfo and/or player is null; if using telnet, you need to actually be inside the game instead.");
+                            return;
+                        }
+                        GameMessage.ResetPlayer(playerToReset);
+                        return;
+                    case "resetquests": // TODO: remove
+                        if (_senderInfo.RemoteClientInfo == null || !GameManager.Instance.World.Players.dict.TryGetValue(_senderInfo.RemoteClientInfo.entityId, out var playerToQuestReset)) {
+                            SdtdConsole.Instance.Output("RemoteClientInfo and/or player is null; if using telnet, you need to actually be inside the game instead.");
+                            return;
+                        }
+                        API.ResetAfterDisconnectMap.Add(_senderInfo.RemoteClientInfo.entityId, true);
+                        ConnectionManager.Instance.DisconnectClient(_senderInfo.RemoteClientInfo);
+                        return;
+                    case "points": // TODO: remove
+                        if (_senderInfo.RemoteClientInfo == null || !GameManager.Instance.World.Players.dict.TryGetValue(_senderInfo.RemoteClientInfo.entityId, out var player)) {
+                            SdtdConsole.Instance.Output("RemoteClientInfo and/or player is null; if using telnet, you need to actually be inside the game instead.");
+                            return;
+                        }
+
+                        if (player.QuestJournal == null || player.QuestJournal.QuestFactionPoints == null || player.QuestJournal.QuestFactionPoints.Count == 0) {
+                            SdtdConsole.Instance.Output("QuestJournal and/or QuestFactionPoints is null; try again after completing at least 1 quest.");
+                            return;
+                        }
+
+                        foreach (var kvp in player.QuestJournal.QuestFactionPoints) {
+                            SdtdConsole.Instance.Output($"- {kvp.Key}: {kvp.Value}");
+                        }
+                        return;
                     case "list":
                         if (_params.Count != 1) {
                             break;
@@ -86,29 +120,36 @@ Description Overview
         }
 
         private void HandleConfig(List<string> _params) {
-            switch (_params[1].ToLower()) {
-                case "maxlives":
-                    ApplyInt(_params[2], v => {
-                        Config.SetMaxLives(v);
-                        SdtdConsole.Instance.Output($"Successfully updated to {v}");
-                    });
-                    break;
-                case "warnatlife":
-                    ApplyInt(_params[2], v => {
-                        Config.SetWarnAtLife(v);
-                        SdtdConsole.Instance.Output($"Successfully updated to {v}");
-                    });
-                    break;
-                case "enablepositiveoutlook":
-                    ApplyBool(_params[2], v => {
-                        Config.SetEnablePositiveOutlook(v);
-                        SdtdConsole.Instance.Output($"Successfully updated to {v}");
-                    });
-                    break;
-                default:
-                    SdtdConsole.Instance.Output("Invald parameter provided");
-                    break;
+            if (Config.MaxLivesName.EqualsCaseInsensitive(_params[1])) {
+                ApplyInt(_params[2], v => {
+                    Config.SetMaxLives(v);
+                    SdtdConsole.Instance.Output($"Successfully updated to {v}");
+                });
+                return;
             }
+            if (Config.WarnAtLifeName.EqualsCaseInsensitive(_params[1])) {
+                ApplyInt(_params[2], v => {
+                    Config.SetWarnAtLife(v);
+                    SdtdConsole.Instance.Output($"Successfully updated to {v}");
+                });
+                return;
+            }
+            if (Config.EnablePositiveOutlookName.EqualsCaseInsensitive(_params[1])) {
+                ApplyBool(_params[2], v => {
+                    Config.SetEnablePositiveOutlook(v);
+                    SdtdConsole.Instance.Output($"Successfully updated to {v}");
+                });
+                return;
+            }
+            if (Config.ResetFactionPointsName.EqualsCaseInsensitive(_params[1])) {
+                ApplyBool(_params[2], v => {
+                    Config.SetResetFactionPoints(v);
+                    SdtdConsole.Instance.Output($"Successfully updated to {v}");
+                });
+                return;
+            }
+
+            SdtdConsole.Instance.Output("Invald parameter provided");
         }
 
         private void HandleUpdate(List<string> _params) {

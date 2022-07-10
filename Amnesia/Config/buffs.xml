@@ -1,5 +1,20 @@
 ﻿<config>
-    <!-- TODO: other icon that might work: icon="ui_game_symbol_skull_crusher" -->
+    <append xpath="/buffs/buff[@name='buffStatusCheck02']">
+        <effect_group>
+            <triggered_effect trigger="onSelfBuffUpdate" action="AddBuff" buff="buffAmnesiaMentallyUnhinged">
+                <requirement name="CVarCompare" cvar="amnesiaRemainingLives" operation="Equals" value="0" />
+            </triggered_effect>
+            <triggered_effect trigger="onSelfBuffUpdate" action="AddBuff" buff="buffAmnesiaMentallyUneasy">
+                <requirement name="CVarCompare" cvar="amnesiaRemainingLives" operation="GT" value="0" />
+                <requirement name="CVarCompare" cvar="amnesiaRemainingLives" operation="LTE" value="@amnesiaWarnAtLife" />
+            </triggered_effect>
+            <triggered_effect trigger="onSelfBuffUpdate" action="AddBuff" buff="buffAmnesiaMentallyStable">
+                <requirement name="CVarCompare" cvar="amnesiaRemainingLives" operation="GT" value="0" />
+                <requirement name="CVarCompare" cvar="amnesiaRemainingLives" operation="GT" value="@amnesiaWarnAtLife" />
+            </triggered_effect>
+        </effect_group>
+    </append>
+
     <append xpath="/buffs">
         <buff name="buffAmnesiaMentallyStable" name_key="buffAmnesiaMentallyStableName" description_key="buffAmnesiaMentallyStableDesc" icon="ui_game_symbol_intellect" showonhud="false" remove_on_death="false">
             <duration value="0" />
@@ -69,8 +84,8 @@
 
             <effect_group name="startup">
                 <!-- TODO: consider setting to @amnesiaPositiveOutlookTime value instead and base this value off of... the level the player was able to achieve last? -->
-                <triggered_effect trigger="onSelfBuffStart" action="ModifyCVar" cvar="$positiveOutlookTime" operation="set" value="1800" />
-                <triggered_effect trigger="onSelfBuffStack" action="ModifyCVar" cvar="$positiveOutlookTime" operation="set" value="1800" />
+                <triggered_effect trigger="onSelfBuffStart" action="ModifyCVar" cvar="$positiveOutlookTime" operation="set" value="3600" />
+                <triggered_effect trigger="onSelfBuffStack" action="ModifyCVar" cvar="$positiveOutlookTime" operation="set" value="3600" />
             </effect_group>
             <effect_group name="activeEffects">
                 <!-- TODO: consider setting to @amnesiaPositiveOutlookXpBoost value instead and base this value off of... the level the player was able to achieve last? -->
@@ -85,34 +100,6 @@
             </effect_group>
             <effect_group name="cleanup">
                 <triggered_effect trigger="onSelfBuffRemove" action="ModifyCVar" cvar="$positiveOutlookTime" operation="set" value="0" />
-            </effect_group>
-        </buff>
-
-        <buff name="buffAmnesiaRecoverLife" hidden="true">
-            <duration value="0" />
-            <effect_group>
-                <triggered_effect trigger="onSelfBuffStart" action="ShowToolbeltMessage" message_key="buffAmnesiaRecoverLifeTooltip" />
-            </effect_group>
-        </buff>
-        <buff name="buffAmnesiaRecoverLifeMaxed" hidden="true">
-            <duration value="2" />
-            <effect_group>
-                <triggered_effect trigger="onSelfBuffStart" action="RemoveBuff" buff="buffAmnesiaRecoverLife" />
-                <triggered_effect trigger="onSelfBuffStart" action="ShowToolbeltMessage" message_key="buffAmnesiaRecoverLifeMaxedTooltip" />
-            </effect_group>
-        </buff>
-        <buff name="buffAmnesiaRecoverLifeMissingPoint" hidden="true">
-            <duration value="2" />
-            <effect_group>
-                <triggered_effect trigger="onSelfBuffStart" action="RemoveBuff" buff="buffAmnesiaRecoverLife" />
-                <triggered_effect trigger="onSelfBuffStart" action="ShowToolbeltMessage" message_key="buffAmnesiaRecoverLifeMissingPointTooltip" />
-            </effect_group>
-        </buff>
-        <buff name="buffAmnesiaRecoverLifeSuccess" hidden="true">
-            <duration value="2" />
-            <effect_group>
-                <triggered_effect trigger="onSelfBuffStart" action="RemoveBuff" buff="buffAmnesiaRecoverLife" />
-                <triggered_effect trigger="onSelfBuffStart" action="ShowToolbeltMessage" message_key="buffAmnesiaRecoverLifeSuccessTooltip" />
             </effect_group>
         </buff>
     </append>
