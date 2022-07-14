@@ -1,5 +1,6 @@
 ﻿using Amnesia.Utilities;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
@@ -12,11 +13,25 @@ namespace Amnesia.Data {
         public static string MaxLivesName { get; private set; } = "MaxLives";
         public static string WarnAtLifeName { get; private set; } = "WarnAtLife";
         public static string EnablePositiveOutlookName { get; private set; } = "EnablePositiveOutlook";
-        public static string ResetLevelsName { get; private set; } = "ResetLevelsName";
-        public static string ResetQuestsName { get; private set; } = "ResetQuestsName";
-        public static string ClearIntroQuestsName { get; private set; } = "ClearIntroQuestsName";
+        public static string ResetLevelsName { get; private set; } = "ResetLevels";
+        public static string ResetQuestsName { get; private set; } = "ResetQuests";
+        public static string ClearIntroQuestsName { get; private set; } = "ClearIntroQuests";
         public static string RemoveSharedQuestsName { get; private set; } = "RemoveSharedQuests";
         public static string ResetFactionPointsName { get; private set; } = "ResetFactionPoints";
+
+        private static readonly string disconnectionWarning = "\n        - [!] SYSTEM WILL DISCONNECT PLAYER ON FINAL DEATH IF ENABLED!";
+        private static readonly Dictionary<string, string> FieldNamesAndDescriptionsDict = new Dictionary<string, string> {
+            { MaxLivesName, "how many lives players start with\n        - reducing this number will reduce remaining lives for all players only if remaining lives are below the new max\n        - increasing this number will also increase remaining lives for all players by the difference between the old max lives and new max lives"},
+            { WarnAtLifeName, "when to start warning players about amnesia" },
+            { EnablePositiveOutlookName, $"whether to grant temporary buff that boosts xp growth at initial join and on memory loss" },
+            { ResetLevelsName, "whether to reset player levels on memory loss" },
+            { ResetQuestsName, $"whether to remove player quests on memory loss{disconnectionWarning}" },
+            { ClearIntroQuestsName, $"whether the intro quests should *also* be removed on memory loss\n        - [!] {ResetQuestsName} MUST BE ENABLED FOR THIS OPTION TO MATTER." },
+            { RemoveSharedQuestsName, $"whether to remove all shared quests on memory loss (party members would need to re-share quests){disconnectionWarning}" },
+            { ResetFactionPointsName, $"whether to erase relationship progression with trader on memory loss{disconnectionWarning}" }
+        };
+        public static List<string> FieldNames { get; private set; } = FieldNamesAndDescriptionsDict.Keys.ToList();
+        public static string FieldNamesAndDescriptions { get; private set; } = "    - " + string.Join("\n    - ", FieldNamesAndDescriptionsDict.Select(kvp => kvp.Key + ": " + kvp.Value));
 
         public static int MaxLives { get; private set; } = 2;
         public static int WarnAtLife { get; private set; } = 1;
@@ -46,6 +61,11 @@ namespace Amnesia.Data {
 {ResetFactionPointsName}: {ResetFactionPoints}";
         }
 
+        /**
+         * <summary>Adjust the remaining lives for a player.</summary>
+         * <param name="player">The player to set remaining lives for.</param>
+         * <param name="remainingLives">The remaining lives to set for this player.</param>
+         */
         public static void SetRemainingLives(EntityPlayer player, int remainingLives) {
             if (player != null) {
                 player.SetCVar(Values.RemainingLivesCVar, remainingLives);
@@ -56,7 +76,7 @@ namespace Amnesia.Data {
 
         /**
          * <summary>Adjust the maximum number of lives a player has.</summary>
-         * <param name="value">The number of lives to set MaxLives to.</param>
+         * <param name="value">New value to use.</param>
          */
         public static void SetMaxLives(int value) {
             if (MaxLives != value) {
@@ -68,7 +88,7 @@ namespace Amnesia.Data {
 
         /**
          * <summary>Adjust the maximum number of lives a player has.</summary>
-         * <param name="value">The number of lives to set MaxLives to.</param>
+         * <param name="value">New value to use.</param>
          */
         public static void SetWarnAtLife(int value) {
             if (WarnAtLife != value) {
@@ -80,7 +100,7 @@ namespace Amnesia.Data {
 
         /**
          * <summary>Enable or disable PositiveOutlook buff on memory loss.</summary>
-         * <param name="value">New value to set EnablePositiveOutlook to.</param>
+         * <param name="value">New value to use.</param>
          */
         public static void SetEnablePositiveOutlook(bool value) {
             if (EnablePositiveOutlook != value) {
@@ -93,8 +113,52 @@ namespace Amnesia.Data {
         }
 
         /**
+         * <summary>Enable or disable ResetLevels on memory loss.</summary>
+         * <param name="value">New value to use.</param>
+         */
+        public static void SetResetLevels(bool value) {
+            if (ResetLevels != value) {
+                ResetLevels = value;
+                Save();
+            }
+        }
+
+        /**
+         * <summary>Enable or disable ResetQuests on memory loss.</summary>
+         * <param name="value">New value to use.</param>
+         */
+        public static void SetResetQuests(bool value) {
+            if (ResetQuests != value) {
+                ResetQuests = value;
+                Save();
+            }
+        }
+
+        /**
+         * <summary>Enable or disable ClearIntroQuests on memory loss.</summary>
+         * <param name="value">New value to use.</param>
+         */
+        public static void SetClearIntroQuests(bool value) {
+            if (ClearIntroQuests != value) {
+                ClearIntroQuests = value;
+                Save();
+            }
+        }
+
+        /**
+         * <summary>Enable or disable RemoveSharedQuests on memory loss.</summary>
+         * <param name="value">New value to use.</param>
+         */
+        public static void SetRemoveSharedQuests(bool value) {
+            if (RemoveSharedQuests != value) {
+                RemoveSharedQuests = value;
+                Save();
+            }
+        }
+
+        /**
          * <summary>Enable or disable the process to erase trader relationships on final death.</summary>
-         * <param name="value">New value to set ResetFactionPoints to.</param>
+         * <param name="value">New value to use.</param>
          */
         public static void SetResetFactionPoints(bool value) {
             if (ResetFactionPoints != value) {
@@ -109,6 +173,10 @@ namespace Amnesia.Data {
                     new XElement(MaxLivesName, MaxLives),
                     new XElement(WarnAtLifeName, WarnAtLife),
                     new XElement(EnablePositiveOutlookName, EnablePositiveOutlook),
+                    new XElement(ResetLevelsName, ResetLevels),
+                    new XElement(ResetQuestsName, ResetQuests),
+                    new XElement(ClearIntroQuestsName, ClearIntroQuests),
+                    new XElement(RemoveSharedQuestsName, RemoveSharedQuests),
                     new XElement(ResetFactionPointsName, ResetFactionPoints)
                 ).Save(filename);
                 log.Info($"Successfully saved {filename}");
@@ -125,6 +193,10 @@ namespace Amnesia.Data {
                 MaxLives = ParseInt(config, MaxLivesName);
                 WarnAtLife = ParseInt(config, WarnAtLifeName);
                 EnablePositiveOutlook = ParseBool(config, EnablePositiveOutlookName);
+                ResetLevels = ParseBool(config, ResetLevelsName);
+                ResetQuests = ParseBool(config, ResetQuestsName);
+                ClearIntroQuests = ParseBool(config, ClearIntroQuestsName);
+                RemoveSharedQuests = ParseBool(config, RemoveSharedQuestsName);
                 ResetFactionPoints = ParseBool(config, ResetFactionPointsName);
                 log.Info($"Successfully loaded {filename}");
                 return true;

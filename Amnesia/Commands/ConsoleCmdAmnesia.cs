@@ -10,13 +10,6 @@ namespace Amnesia.Commands {
             "amn"
         };
 
-        private static readonly string[] Options = new string[] {
-            Config.MaxLivesName,
-            Config.WarnAtLifeName,
-            Config.EnablePositiveOutlookName,
-            Config.ResetFactionPointsName
-        };
-
         public override string[] GetCommands() {
             return Commands;
         }
@@ -31,17 +24,13 @@ namespace Amnesia.Commands {
             return $@"Usage:
   {i++}. {GetCommands()[0]}
   {i++}. {GetCommands()[0]} list
-  {i++}. {GetCommands()[0]} config <{string.Join(" / ", Options)}> <value>
+  {i++}. {GetCommands()[0]} config <{string.Join(" / ", Config.FieldNames)}> <value>
   {i++}. {GetCommands()[0]} update <user id / player name / entity id> <remainingLives>
 Description Overview
 {j++}. View current mod options
 {j++}. List remaining lives for all players
 {j++}. Configure a given option
-    - {Config.MaxLivesName}: how many lives players start with
-    - {Config.WarnAtLifeName}: when to start warning players about amnesia
-    - {Config.EnablePositiveOutlookName}: whether to grant temporary buff that boosts xp growth after memory loss
-    - {Config.ResetFactionPointsName}: whether to erase relationship progression with trader
-        - [!] SYSTEM WILL KICK PLAYER ON FINAL DEATH IF {Config.ResetFactionPointsName} IS ENABLED! THIS IS NECESSARY TO WIPE RELATIONSHIPS.
+{Config.FieldNamesAndDescriptions}
 {j++}. Update a specific player's remaining lives";
         }
 
@@ -90,7 +79,7 @@ Description Overview
                         }
 
                         foreach (var kvp in player.QuestJournal.QuestFactionPoints) {
-                            SdtdConsole.Instance.Output($"- {kvp.Key}: {kvp.Value}");
+                            SdtdConsole.Instance.Output($"{kvp.Key}: {kvp.Value}");
                         }
                         return;
                     case "list":
@@ -148,6 +137,34 @@ Description Overview
             if (Config.EnablePositiveOutlookName.EqualsCaseInsensitive(_params[1])) {
                 ApplyBool(_params[2], v => {
                     Config.SetEnablePositiveOutlook(v);
+                    SdtdConsole.Instance.Output($"Successfully updated to {v}");
+                });
+                return;
+            }
+            if (Config.ResetLevelsName.EqualsCaseInsensitive(_params[1])) {
+                ApplyBool(_params[2], v => {
+                    Config.SetResetLevels(v);
+                    SdtdConsole.Instance.Output($"Successfully updated to {v}");
+                });
+                return;
+            }
+            if (Config.ResetQuestsName.EqualsCaseInsensitive(_params[1])) {
+                ApplyBool(_params[2], v => {
+                    Config.SetResetQuests(v);
+                    SdtdConsole.Instance.Output($"Successfully updated to {v}");
+                });
+                return;
+            }
+            if (Config.ClearIntroQuestsName.EqualsCaseInsensitive(_params[1])) {
+                ApplyBool(_params[2], v => {
+                    Config.SetClearIntroQuests(v);
+                    SdtdConsole.Instance.Output($"Successfully updated to {v}");
+                });
+                return;
+            }
+            if (Config.RemoveSharedQuestsName.EqualsCaseInsensitive(_params[1])) {
+                ApplyBool(_params[2], v => {
+                    Config.SetRemoveSharedQuests(v);
                     SdtdConsole.Instance.Output($"Successfully updated to {v}");
                 });
                 return;

@@ -3,7 +3,7 @@
         <Name value="Amnesia" />
         <Description value="Reset player progress after a configurable number of deaths" />
         <Author value="Jonathan Robertson (Kanaverum)" />
-        <Version value="0.3.0" />
+        <Version value="0.4.0" />
         <Website value="https://github.com/jonathan-robertson/amnesia" />
     </ModInfo>
 </xml>
