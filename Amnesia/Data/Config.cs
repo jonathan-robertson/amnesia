@@ -9,21 +9,25 @@ namespace Amnesia.Data {
         private static readonly ModLog log = new ModLog(typeof(Config));
         private static readonly string filename = Path.Combine(GameIO.GetSaveGameDir(), "amnesia.xml");
 
-        public static string MaxLivesName { get; private set; } = "maxLives";
-        public static string WarnAtLifeName { get; private set; } = "warnAtLife";
-        public static string EnablePositiveOutlookName { get; private set; } = "enablePositiveOutlook";
-        public static string ResetFactionPointsName { get; private set; } = "resetFactionPoints";
+        public static string MaxLivesName { get; private set; } = "MaxLives";
+        public static string WarnAtLifeName { get; private set; } = "WarnAtLife";
+        public static string EnablePositiveOutlookName { get; private set; } = "EnablePositiveOutlook";
+        public static string ResetLevelsName { get; private set; } = "ResetLevelsName";
+        public static string ResetQuestsName { get; private set; } = "ResetQuestsName";
+        public static string ClearIntroQuestsName { get; private set; } = "ClearIntroQuestsName";
+        public static string RemoveSharedQuestsName { get; private set; } = "RemoveSharedQuests";
+        public static string ResetFactionPointsName { get; private set; } = "ResetFactionPoints";
 
         public static int MaxLives { get; private set; } = 2;
         public static int WarnAtLife { get; private set; } = 1;
         public static bool EnablePositiveOutlook { get; private set; } = true;
         // TODO: add/support options in console for this
-        public static bool ResetLevels { get; private set; } = false;
+        public static bool ResetLevels { get; private set; } = true;
 
         // TODO: recommend against this + clearIntroQuests both being enabled if not also resetting levels
         // TODO: default to false
         // TODO: add/support options in console for this
-        public static bool ResetQuests { get; private set; } = true;
+        public static bool ResetQuests { get; private set; } = false;
         // TODO: add/support options in console for this
         public static bool ClearIntroQuests { get; private set; } = false;
         // TODO: add/support options in console for this
@@ -35,6 +39,10 @@ namespace Amnesia.Data {
 {MaxLivesName}: {MaxLives}
 {WarnAtLifeName}: {WarnAtLife}
 {EnablePositiveOutlookName}: {EnablePositiveOutlook}
+{ResetLevelsName}: {ResetLevels}
+{ResetQuestsName}: {ResetQuests}
+{ClearIntroQuestsName}: {ClearIntroQuests}
+{RemoveSharedQuestsName}: {RemoveSharedQuests}
 {ResetFactionPointsName}: {ResetFactionPoints}";
         }
 

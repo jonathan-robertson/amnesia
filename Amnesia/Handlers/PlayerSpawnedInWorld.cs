@@ -44,9 +44,12 @@ namespace Amnesia.Handlers {
                         // TODO: KICKING DOES NOT TRIGGER OnPlayerDisconnected, it seems... but does give the client a message :-/
                         //GameUtils.KickPlayerForClientInfo(clientInfo, new GameUtils.KickPlayerData(GameUtils.EKickReason.ManualKick, 0, default, factionResetKickReason));
                         //clientInfo.SendPackage(NetPackageManager.GetPackage<NetPackagePlayerDisconnect>().Setup(player));
-                        if (API.ResetAfterDisconnectMap.ContainsKey(clientInfo.entityId)) {
-                            ConnectionManager.Instance.DisconnectClient(clientInfo);
-                        }
+
+
+                        // TODO: if we're going to kick, we have to update death state to not dead first (or after?) and make sure the game knows it
+                        //if (API.ResetAfterDisconnectMap.ContainsKey(clientInfo.entityId)) {
+                        //    ConnectionManager.Instance.DisconnectClient(clientInfo);
+                        //}
                         break;
                 }
             } catch (Exception e) {

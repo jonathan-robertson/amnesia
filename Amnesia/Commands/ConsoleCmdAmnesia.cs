@@ -64,8 +64,19 @@ Description Overview
                             SdtdConsole.Instance.Output("RemoteClientInfo and/or player is null; if using telnet, you need to actually be inside the game instead.");
                             return;
                         }
-                        API.ResetAfterDisconnectMap.Add(_senderInfo.RemoteClientInfo.entityId, true);
-                        ConnectionManager.Instance.DisconnectClient(_senderInfo.RemoteClientInfo);
+                        SdtdConsole.Instance.Output($"Queuing up {_senderInfo.RemoteClientInfo.entityId} for reset on disconnect.");
+                        if (!API.ResetAfterDisconnectMap.ContainsKey(_senderInfo.RemoteClientInfo.entityId)) {
+                            API.ResetAfterDisconnectMap.Add(_senderInfo.RemoteClientInfo.entityId, true);
+                        }
+                        //SdtdConsole.Instance.Output($"Disconnecting {_senderInfo.RemoteClientInfo.entityId} for reset.");
+                        //ThreadManager.StartCoroutine(DisconnectWithDelay(_senderInfo.RemoteClientInfo));
+                        return;
+                    case "resettest": // TODO: remove
+                        if (_senderInfo.RemoteClientInfo == null || !GameManager.Instance.World.Players.dict.TryGetValue(_senderInfo.RemoteClientInfo.entityId, out var playerForResetTest)) {
+                            SdtdConsole.Instance.Output("RemoteClientInfo and/or player is null; if using telnet, you need to actually be inside the game instead.");
+                            return;
+                        }
+                        GameEventManager.Current.HandleAction("game_on_death", playerForResetTest, playerForResetTest, false);
                         return;
                     case "points": // TODO: remove
                         if (_senderInfo.RemoteClientInfo == null || !GameManager.Instance.World.Players.dict.TryGetValue(_senderInfo.RemoteClientInfo.entityId, out var player)) {
