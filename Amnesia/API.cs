@@ -14,7 +14,7 @@ namespace Amnesia {
                 log.Error("Successfully loaded config; activating Amnesia mod.");
                 ModEvents.PlayerSpawnedInWorld.RegisterHandler(PlayerSpawnedInWorld.Handle);
                 ModEvents.GameMessage.RegisterHandler(GameMessage.Handle);
-                //ModEvents.PlayerDisconnected.RegisterHandler(PlayerDisconnected.Handle);
+                ModEvents.PlayerDisconnected.RegisterHandler(PlayerDisconnected.Handle);
                 //ModEvents.SavePlayerData.RegisterHandler(SavePlayerData.Handle);
                 //ModEvents.GameStartDone.RegisterHandler(GameStartDone.Handle);
             } else {

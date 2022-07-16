@@ -1,12 +1,14 @@
 ﻿using Amnesia.Data;
 using Amnesia.Utilities;
 using System;
+using System.Collections;
+using UnityEngine;
 
 namespace Amnesia.Handlers {
     internal class PlayerSpawnedInWorld {
         private static readonly ModLog log = new ModLog(typeof(PlayerSpawnedInWorld));
 
-        private static readonly string factionResetKickReason = "This server is configured to erase some settings from your player file when you die for the final time. Please feel free to reconnect whenever you're ready.";
+        private static readonly string factionResetKickReason = "This server is configured to erase some settings from your player file when you die for the final time. Please reconnect whenever you're ready.";
 
         /**
          * <summary>Handle player spawning into world.</summary>
@@ -50,11 +52,37 @@ namespace Amnesia.Handlers {
                         //if (API.ResetAfterDisconnectMap.ContainsKey(clientInfo.entityId)) {
                         //    ConnectionManager.Instance.DisconnectClient(clientInfo);
                         //}
+
+                        // Try without controlled delay
+                        //if (API.ResetAfterDisconnectMap.TryGetValue(clientInfo.entityId, out var value) && value) {
+                        if (API.ResetAfterDisconnectMap.ContainsKey(clientInfo.entityId)) {
+                            //API.ResetAfterDisconnectMap[clientInfo.entityId] = false; // try disconnecting, but only once
+                            GameUtils.KickPlayerForClientInfo(clientInfo, new GameUtils.KickPlayerData(GameUtils.EKickReason.ManualKick, 0, default(DateTime), factionResetKickReason));
+                        }
+
+                        // Try with controlled delay
+                        /*
+                        clientInfo.SendPackage(NetPackageManager.GetPackage<NetPackagePlayerDenied>().Setup(kickData));
+                        string str = clientInfo.ToString();
+                        string str2 = "Kicking player (";
+                        GameUtils.KickPlayerData kickPlayerData = kickData;
+                        Log.Out(str2 + kickPlayerData.ToString() + "): " + str);
+                        ThreadManager.StartCoroutine(disconnectLater(0.5f, clientInfo));
+                        */
                         break;
                 }
             } catch (Exception e) {
                 log.Error("Failed to handle PlayerSpawnedInWorld event.", e);
             }
         }
+
+        /*
+        protected static IEnumerator disconnectLater(float _delayInSec, ClientInfo _clientInfo) {
+            // TODO: whisper to this player explaining upcoming disconnection?
+            yield return new WaitForSecondsRealtime(_delayInSec);
+            SingletonMonoBehaviour<ConnectionManager>.Instance.DisconnectClient(_clientInfo, false, false);
+            yield break;
+        }
+        */
     }
 }
