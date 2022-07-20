@@ -45,7 +45,7 @@ namespace Amnesia.Handlers {
                     return;
                 }
 
-                if (QuestHelper.ResetQuests(player)) {
+                if ((Config.ForgetActiveQuests || Config.ForgetInactiveQuests) && QuestHelper.ResetQuests(player)) {
                     // TODO: fix NRE that client experiences after getting kicked
                     // TODO: delay for a bit?
 
@@ -60,13 +60,6 @@ namespace Amnesia.Handlers {
                     ThreadManager.StartCoroutine(saveLater(2.0f, clientInfo, player));
                     return;
                 }
-
-                // TODO: reset the following...
-                /*
-                _bw.Write(this.playerKills);
-                _bw.Write(this.zombieKills);
-                _bw.Write(this.deaths);
-                */
 
                 // TODO: update cvar, but... is this sanity check really necessary since we *should* be doing this on login and admin change? (confirm this)
                 player.SetCVar(Values.WarnAtLifeCVar, Config.WarnAtLife);

@@ -15,10 +15,12 @@ namespace Amnesia.Handlers {
                         log.Debug($"EnumGameMessages.EntityWasKilled {clientInfo.entityId}");
 
                         // TODO: add admin option for this
-                        var killerClient = ConnectionManager.Instance.Clients.GetForNameOrId(secondaryName);
-                        if (killerClient != null) {
-                            log.Trace($"{mainName} was killed by {secondaryName}, so {mainName} will NOT lose a life.");
-                            return true; // being killed in pvp doesn't count against player
+                        if (mainName != secondaryName) {
+                            var killerClient = ConnectionManager.Instance.Clients.GetForNameOrId(secondaryName);
+                            if (killerClient != null) {
+                                log.Trace($"{mainName} was killed by {secondaryName}, so {mainName} will NOT lose a life.");
+                                return true; // being killed in pvp doesn't count against player
+                            }
                         }
 
                         if (!API.Obituary.ContainsKey(clientInfo.entityId)) {
