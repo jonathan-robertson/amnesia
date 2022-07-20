@@ -1,4 +1,5 @@
-﻿using Amnesia.Utilities;
+﻿using Amnesia.Data;
+using Amnesia.Utilities;
 using System;
 
 namespace Amnesia.Handlers {
@@ -7,24 +8,95 @@ namespace Amnesia.Handlers {
 
         public static void Handle(ClientInfo clientInfo, PlayerDataFile playerDataFile) {
             try {
-                // [!] ALTERNATIVE DIALOG OPTION PLANS
-                // One could use this requirement with PlayerItemCount item_name="<item name>" (An expensive function that should be used sparingly.)
-                // this would be used to confirm if the player has enough money for the dialog option. Actual money removal can be handled later.
-                // <requirement name="PlayerItemCount" item_name="casinoCoin" operation="GTE" value="5000"/>
+                log.Trace($"SavePlayerData called for player {clientInfo.entityId}");
+
+                if (!API.Obituary.ContainsKey(clientInfo.entityId)) {
+                    log.Trace($"Player {clientInfo.entityId} not queued for reset; skipping");
+                    return;
+                }
+                API.Obituary.Remove(clientInfo.entityId);
+
+                if (clientInfo == null || !GameManager.Instance.World.Players.dict.TryGetValue(clientInfo.entityId, out var player)) {
+                    log.Warn("EntityWasKilled event sent from a non-player client... may want to investigate");
+                    return; // exit early, do not interrupt other mods from processing event
+                }
 
                 /*
-                if (clientInfo != null && GameManager.Instance.World.Players.dict.TryGetValue(clientInfo.entityId, out var player)) {
-                    NetPackageEntityAddExpClient package = NetPackageManager.GetPackage<NetPackageEntityAddExpClient>().Setup(player.entityId, 1, Progression.XPTypes.Kill);
-                    SingletonMonoBehaviour<ConnectionManager>.Instance.SendPackage(package, _onlyClientsAttachedToAnEntity: false, player.entityId);
-                    //GameManager.Instance.SharedKillServer(killedEntity.entityId, entityId, xpModifier);
+                 * TODO: add mechanic to handle final death differently for kill by zombie (or natural death) vs kill by player
+                 * Perhaps "Total Bag/Equipment Deletion if not killed by player or Total Bag/Equipment drop if killed by player"
+                 */
 
-                    log.Info($"OnSavePlayerData: {player.GetDebugName()} - SkillPoints: {player.Progression.SkillPoints}");
+                var livesRemaining = player.GetCVar(Values.RemainingLivesCVar);
+                log.Debug($"{player.GetDebugName()} livesRemaining: {livesRemaining}");
+
+                // cap lives to maximum(sanity check)
+                if (livesRemaining > Config.MaxLives) {
+                    // "shouldn't" have to do this since we auto-push changes as they're made and on login... but just in case:
+                    player.SetCVar(Values.MaxLivesCVar, Config.MaxLives);
+                    livesRemaining = Config.MaxLives;
                 }
+
+                // Calculate and apply remaining lives
+                if (livesRemaining > 0) {
+                    log.Trace($"more lives remaining for {player.GetDebugName()}");
+                    player.SetCVar(Values.RemainingLivesCVar, livesRemaining - 1);
+                    return;
+                }
+
+                if (QuestHelper.ResetQuests(player)) {
+                    // TODO: fix NRE that client experiences after getting kicked
+                    // TODO: notice on server: "ERR DisconnectClient: Player EOS_00025c9cf4e449d4ad60b0041d54bcf6 not found"
+                    GameUtils.KickPlayerForClientInfo(clientInfo, new GameUtils.KickPlayerData(GameUtils.EKickReason.ManualKick, 0, default(DateTime), API.QuestResetKickReason));
+                    WritePlayerData(clientInfo, player);
+
+                    return;
+                }
+
+                // TODO: reset the following...
+                /*
+                _bw.Write(this.playerKills);
+                _bw.Write(this.zombieKills);
+                _bw.Write(this.deaths);
                 */
 
-                //ProcessRecovery(clientInfo);
+                // TODO: update cvar, but... is this sanity check really necessary since we *should* be doing this on login and admin change? (confirm this)
+                player.SetCVar(Values.WarnAtLifeCVar, Config.WarnAtLife);
+
+                // Reset Player
+                log.Trace($"lives have expired for {player.GetDebugName()}");
+                PlayerHelper.ResetPlayer(player);
+                log.Trace($"returning lives to {Config.MaxLives} for {player.GetDebugName()}");
+                player.SetCVar(Values.RemainingLivesCVar, Config.MaxLives);
+
+                player.Buffs.AddBuff("buffAmnesiaMemoryLoss");
+                if (Config.EnablePositiveOutlook) {
+                    log.Trace($"triggered: apply positive outlook for {player.GetDebugName()}");
+                    player.Buffs.AddBuff("buffAmnesiaPositiveOutlook");
+                } else {
+                    log.Trace($"skipped: apply positive outlook for {player.GetDebugName()}");
+                }
             } catch (Exception e) {
                 log.Error("Failed to handle OnSavePlayerData", e);
+            }
+        }
+
+        private static void WritePlayerData(ClientInfo clientInfo, EntityPlayer player, bool saveMap = false) {
+
+            var pdf = new PlayerDataFile();
+            pdf.FromPlayer(player);
+            pdf.Save(GameIO.GetPlayerDataDir(), clientInfo.InternalId.CombinedString);
+
+            //clientInfo.latestPlayerData = pdf;
+            //clientInfo.latestPlayerData.Save(GameIO.GetPlayerDataDir(), clientInfo.InternalId.CombinedString);
+
+            if (saveMap && player.ChunkObserver.mapDatabase != null) {
+                ThreadManager.AddSingleTask(
+                    new ThreadManager.TaskFunctionDelegate(player.ChunkObserver.mapDatabase.SaveAsync),
+                    new MapChunkDatabase.DirectoryPlayerId(GameIO.GetPlayerDataDir(),
+                    clientInfo.InternalId.CombinedString),
+                    null,
+                    false,
+                    true);
             }
         }
     }

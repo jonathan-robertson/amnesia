@@ -69,6 +69,8 @@
     <Compile Include="Handlers\SavePlayerData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utilities\ModLog.cs" />
+    <Compile Include="Utilities\PlayerHelper.cs" />
+    <Compile Include="Utilities\QuestHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Config\buffs.xml">

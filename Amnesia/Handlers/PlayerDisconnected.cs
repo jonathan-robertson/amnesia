@@ -9,7 +9,7 @@ namespace Amnesia.Handlers {
 
         public static void Handle(ClientInfo clientInfo, bool forShutdown) {
             try {
-                if (API.ResetAfterDisconnectMap.ContainsKey(clientInfo.entityId)) {
+                if (API.Obituary.ContainsKey(clientInfo.entityId)) {
                     log.Trace($"Player {clientInfo.entityId} disconnected for quest removal.");
 
                     if (clientInfo.latestPlayerData == null) {
@@ -25,12 +25,6 @@ namespace Amnesia.Handlers {
                         questJournal = ResetQuests(clientInfo.entityId, questJournal);
                     } else {
                         log.Trace($"skipped: reset quests for {clientInfo.entityId}");
-                    }
-                    if (Config.RemoveSharedQuests) { // NOTE: this might happen on its own due to the player being disconnected
-                        log.Trace($"triggered: clear shared quests for {clientInfo.entityId}");
-                        questJournal.RemoveAllSharedQuests();
-                    } else {
-                        log.Trace($"skipped: clear shared quests for {clientInfo.entityId}");
                     }
                     if (Config.ResetFactionPoints) {
                         log.Trace($"triggered: reset faction points for {clientInfo.entityId}");
@@ -59,7 +53,7 @@ namespace Amnesia.Handlers {
                     clientInfo.latestPlayerData.questJournal = questJournal;
                     clientInfo.latestPlayerData.bModifiedSinceLastSave = true;
 
-                    API.ResetAfterDisconnectMap.Remove(clientInfo.entityId);
+                    API.Obituary.Remove(clientInfo.entityId);
 
                     log.Trace($"Player {clientInfo.entityId} quest removal succeeded.");
                 } else {

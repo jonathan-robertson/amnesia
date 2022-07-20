@@ -7,15 +7,17 @@ namespace Amnesia {
     internal class API : IModApi {
         private static readonly ModLog log = new ModLog(typeof(API));
 
-        public static Dictionary<int, bool> ResetAfterDisconnectMap { get; private set; } = new Dictionary<int, bool>();
+        public static string QuestResetKickReason { get; private set; } = "This server is configured to erase some settings from your player file when you die for the final time. Please reconnect whenever you're ready.";
+
+        public static Dictionary<int, bool> Obituary { get; private set; } = new Dictionary<int, bool>();
 
         public void InitMod(Mod _modInstance) {
             if (Config.Load()) {
                 log.Error("Successfully loaded config; activating Amnesia mod.");
                 ModEvents.PlayerSpawnedInWorld.RegisterHandler(PlayerSpawnedInWorld.Handle);
                 ModEvents.GameMessage.RegisterHandler(GameMessage.Handle);
-                ModEvents.PlayerDisconnected.RegisterHandler(PlayerDisconnected.Handle);
-                //ModEvents.SavePlayerData.RegisterHandler(SavePlayerData.Handle);
+                //ModEvents.PlayerDisconnected.RegisterHandler(PlayerDisconnected.Handle);
+                ModEvents.SavePlayerData.RegisterHandler(SavePlayerData.Handle);
                 //ModEvents.GameStartDone.RegisterHandler(GameStartDone.Handle);
             } else {
                 log.Error("Unable to load or recover from configuration issue; this mod will not activate.");

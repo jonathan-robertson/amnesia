@@ -1,5 +1,5 @@
 ﻿using Amnesia.Data;
-using Amnesia.Handlers;
+using Amnesia.Utilities;
 using System;
 using System.Collections.Generic;
 
@@ -46,7 +46,23 @@ Description Overview
                             SdtdConsole.Instance.Output("RemoteClientInfo and/or player is null; if using telnet, you need to actually be inside the game instead.");
                             return;
                         }
-                        GameMessage.ResetPlayer(playerToReset);
+                        PlayerHelper.ResetPlayer(playerToReset);
+                        return;
+                    case "quests":
+                        if (_senderInfo.RemoteClientInfo == null || !GameManager.Instance.World.Players.dict.TryGetValue(_senderInfo.RemoteClientInfo.entityId, out var playerForQuestList)) {
+                            SdtdConsole.Instance.Output("RemoteClientInfo and/or player is null; if using telnet, you need to actually be inside the game instead.");
+                            return;
+                        }
+                        if (playerForQuestList.QuestJournal == null || playerForQuestList.QuestJournal.quests == null || playerForQuestList.QuestJournal.quests.Count == 0) {
+                            SdtdConsole.Instance.Output("We're not seeing that you currently have any quests.");
+                            return;
+                        }
+                        playerForQuestList.QuestJournal.quests.ForEach(quest => {
+                            SdtdConsole.Instance.Output($"- {quest.ID}: {quest.GetPOIName()}; {quest.CurrentState}");
+                            if (quest.Objectives != null) {
+                                quest.Objectives.ForEach(o => SdtdConsole.Instance.Output($"    - {o.ID}: {o.ObjectiveValueType}; {o.ObjectiveState}; {o.Description}"));
+                            }
+                        });
                         return;
                     case "resetquests": // TODO: remove
                         if (_senderInfo.RemoteClientInfo == null || !GameManager.Instance.World.Players.dict.TryGetValue(_senderInfo.RemoteClientInfo.entityId, out var playerToQuestReset)) {
@@ -54,8 +70,8 @@ Description Overview
                             return;
                         }
                         SdtdConsole.Instance.Output($"Queuing up {_senderInfo.RemoteClientInfo.entityId} for reset on disconnect.");
-                        if (!API.ResetAfterDisconnectMap.ContainsKey(_senderInfo.RemoteClientInfo.entityId)) {
-                            API.ResetAfterDisconnectMap.Add(_senderInfo.RemoteClientInfo.entityId, true);
+                        if (!API.Obituary.ContainsKey(_senderInfo.RemoteClientInfo.entityId)) {
+                            API.Obituary.Add(_senderInfo.RemoteClientInfo.entityId, true);
                         }
                         //SdtdConsole.Instance.Output($"Disconnecting {_senderInfo.RemoteClientInfo.entityId} for reset.");
                         //ThreadManager.StartCoroutine(DisconnectWithDelay(_senderInfo.RemoteClientInfo));
@@ -141,35 +157,28 @@ Description Overview
                 });
                 return;
             }
-            if (Config.ResetLevelsName.EqualsCaseInsensitive(_params[1])) {
+            if (Config.ForgetLevelsAndSkillsName.EqualsCaseInsensitive(_params[1])) {
                 ApplyBool(_params[2], v => {
                     Config.SetResetLevels(v);
                     SdtdConsole.Instance.Output($"Successfully updated to {v}");
                 });
                 return;
             }
-            if (Config.ResetQuestsName.EqualsCaseInsensitive(_params[1])) {
+            if (Config.ForgetActiveQuests.EqualsCaseInsensitive(_params[1])) {
                 ApplyBool(_params[2], v => {
                     Config.SetResetQuests(v);
                     SdtdConsole.Instance.Output($"Successfully updated to {v}");
                 });
                 return;
             }
-            if (Config.ClearIntroQuestsName.EqualsCaseInsensitive(_params[1])) {
+            if (Config.ForgetIntroQuests.EqualsCaseInsensitive(_params[1])) {
                 ApplyBool(_params[2], v => {
                     Config.SetClearIntroQuests(v);
                     SdtdConsole.Instance.Output($"Successfully updated to {v}");
                 });
                 return;
             }
-            if (Config.RemoveSharedQuestsName.EqualsCaseInsensitive(_params[1])) {
-                ApplyBool(_params[2], v => {
-                    Config.SetRemoveSharedQuests(v);
-                    SdtdConsole.Instance.Output($"Successfully updated to {v}");
-                });
-                return;
-            }
-            if (Config.ResetFactionPointsName.EqualsCaseInsensitive(_params[1])) {
+            if (Config.ForgetInactiveQuests.EqualsCaseInsensitive(_params[1])) {
                 ApplyBool(_params[2], v => {
                     Config.SetResetFactionPoints(v);
                     SdtdConsole.Instance.Output($"Successfully updated to {v}");
