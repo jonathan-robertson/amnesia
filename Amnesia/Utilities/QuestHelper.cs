@@ -151,11 +151,17 @@ namespace Amnesia.Utilities {
             return player.QuestJournal.quests.Remove(quest);
         }
 
-        private static void GiveStarterQuestIfMissing(EntityPlayer player) {
+        private static void GiveStarterQuestIfMissing(EntityPlayer player) { // TODO: TEST THIS
             // TODO: does not fire... perhaps issue this on each player's login?
             //GameEventManager.Current.HandleAction("game_first_spawn", player, player, false, "", "", false);
+
             // TODO: perhaps.. just create the quest and put it in the quests list? Using QuestJournal.Add might not be necessary at all
-            log.Warn("GiveStarterQuestIfMissing is NOT YET IMPLEMENTED");
+            if (!player.QuestJournal.quests.Select(q => q.ID).Contains("quest_BasicSurvival1")) {
+                log.Trace("quest_BasicSurvival1 is missing; trying to add");
+                player.QuestJournal.AddQuest(QuestClass.CreateQuest("quest_BasicSurvival1"));
+            } else {
+                log.Trace("quest_BasicSurvival1 is NOT missing");
+            }
         }
     }
 }
