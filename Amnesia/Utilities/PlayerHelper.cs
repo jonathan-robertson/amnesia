@@ -52,6 +52,11 @@ namespace Amnesia.Utilities {
                     }
                 }
 
+                // Zero out Player KD Stats
+                player.Died = 0;
+                player.KilledPlayers = 0;
+                player.KilledZombies = 0;
+
                 // Inform client cycles of level adjustment for health/stamina/food/water max values
                 player.SetCVar("$LastPlayerLevel", player.Progression.Level);
 

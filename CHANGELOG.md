@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - add more admin options
 - add support for quest reset (buggy)
 - disable loss of life when dying to pvp
+- remove player kill/death stats on mem loss
 
 ## [0.3.0] - 2022-07-02
 
