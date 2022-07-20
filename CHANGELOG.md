@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - update config file to amnesia.xml
 - add more admin options
 - add support for quest reset (buggy)
+- disable loss of life when dying to pvp
 
 ## [0.3.0] - 2022-07-02
 
