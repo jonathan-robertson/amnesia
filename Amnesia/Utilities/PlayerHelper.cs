@@ -18,8 +18,8 @@ namespace Amnesia.Utilities {
             log.Info($"resetting {player.GetDebugName()}"); // TODO: remove
 
 
-            log.Debug($"Resetting Levels? {Config.ResetLevels}");
-            if (Config.ResetLevels) {
+            log.Debug($"Resetting Levels? {Config.ForgetLevelsAndSkills}");
+            if (Config.ForgetLevelsAndSkills) {
                 log.Debug($"Resetting Levels");
                 player.Progression.ResetProgression(true);
                 player.Progression.Level = 1;
@@ -37,7 +37,7 @@ namespace Amnesia.Utilities {
 
                 // Return all skill points rewarded from completed quest; should cover vanilla quest_BasicSurvival8, for example
                 log.Debug($"Updating skill points to {player.Progression.SkillPoints}");
-                if (!Config.ClearIntroQuests) {
+                if (!Config.ForgetIntroQuests) {
                     try {
                         player.Progression.SkillPoints = player.QuestJournal.quests
                             .Where(q => q.CurrentState == Quest.QuestState.Completed)

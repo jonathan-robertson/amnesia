@@ -1,6 +1,8 @@
 ﻿using Amnesia.Data;
 using Amnesia.Utilities;
 using System;
+using System.Collections;
+using UnityEngine;
 
 namespace Amnesia.Handlers {
     internal class SavePlayerData {
@@ -45,10 +47,17 @@ namespace Amnesia.Handlers {
 
                 if (QuestHelper.ResetQuests(player)) {
                     // TODO: fix NRE that client experiences after getting kicked
-                    // TODO: notice on server: "ERR DisconnectClient: Player EOS_00025c9cf4e449d4ad60b0041d54bcf6 not found"
-                    GameUtils.KickPlayerForClientInfo(clientInfo, new GameUtils.KickPlayerData(GameUtils.EKickReason.ManualKick, 0, default(DateTime), API.QuestResetKickReason));
-                    WritePlayerData(clientInfo, player);
+                    // TODO: delay for a bit?
 
+
+                    // Safe disconnection that allows the client to affirm the disconnection? - still experiences NRE on disconnection :P
+                    //clientInfo.SendPackage(NetPackageManager.GetPackage<NetPackagePlayerDenied>()
+                    //    .Setup(new GameUtils.KickPlayerData(GameUtils.EKickReason.ManualKick, 0, default(DateTime), API.QuestResetKickReason)));
+
+                    //ConnectionManager.Instance.DisconnectClient(clientInfo);
+
+                    GameUtils.KickPlayerForClientInfo(clientInfo, new GameUtils.KickPlayerData(GameUtils.EKickReason.ManualKick, 0, default(DateTime), API.QuestResetKickReason));
+                    ThreadManager.StartCoroutine(saveLater(2.0f, clientInfo, player));
                     return;
                 }
 
@@ -80,10 +89,17 @@ namespace Amnesia.Handlers {
             }
         }
 
+        protected static IEnumerator saveLater(float _delayInSec, ClientInfo clientInfo, EntityPlayer player) {
+            yield return new WaitForSecondsRealtime(_delayInSec);
+            WritePlayerData(clientInfo, player);
+            yield break;
+        }
+
         private static void WritePlayerData(ClientInfo clientInfo, EntityPlayer player, bool saveMap = false) {
 
             var pdf = new PlayerDataFile();
             pdf.FromPlayer(player);
+            pdf.bModifiedSinceLastSave = true;
             pdf.Save(GameIO.GetPlayerDataDir(), clientInfo.InternalId.CombinedString);
 
             //clientInfo.latestPlayerData = pdf;

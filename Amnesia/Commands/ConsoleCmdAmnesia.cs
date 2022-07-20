@@ -164,21 +164,21 @@ Description Overview
                 });
                 return;
             }
-            if (Config.ForgetActiveQuests.EqualsCaseInsensitive(_params[1])) {
+            if (Config.ForgetActiveQuestsName.EqualsCaseInsensitive(_params[1])) {
                 ApplyBool(_params[2], v => {
                     Config.SetResetQuests(v);
                     SdtdConsole.Instance.Output($"Successfully updated to {v}");
                 });
                 return;
             }
-            if (Config.ForgetIntroQuests.EqualsCaseInsensitive(_params[1])) {
+            if (Config.ForgetIntroQuestsName.EqualsCaseInsensitive(_params[1])) {
                 ApplyBool(_params[2], v => {
                     Config.SetClearIntroQuests(v);
                     SdtdConsole.Instance.Output($"Successfully updated to {v}");
                 });
                 return;
             }
-            if (Config.ForgetInactiveQuests.EqualsCaseInsensitive(_params[1])) {
+            if (Config.ForgetInactiveQuestsName.EqualsCaseInsensitive(_params[1])) {
                 ApplyBool(_params[2], v => {
                     Config.SetResetFactionPoints(v);
                     SdtdConsole.Instance.Output($"Successfully updated to {v}");

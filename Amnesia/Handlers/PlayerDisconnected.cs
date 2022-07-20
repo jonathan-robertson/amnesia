@@ -20,13 +20,13 @@ namespace Amnesia.Handlers {
                     // TODO: cloning might not be necessary
                     var questJournal = clientInfo.latestPlayerData.questJournal.Clone();
 
-                    if (Config.ResetQuests) {
+                    if (Config.ForgetActiveQuests) {
                         log.Trace($"triggered: reset quests for {clientInfo.entityId}");
                         questJournal = ResetQuests(clientInfo.entityId, questJournal);
                     } else {
                         log.Trace($"skipped: reset quests for {clientInfo.entityId}");
                     }
-                    if (Config.ResetFactionPoints) {
+                    if (Config.ForgetInactiveQuests) {
                         log.Trace($"triggered: reset faction points for {clientInfo.entityId}");
                         //questJournal.QuestFactionPoints.Clear();
                         // TODO: try looping thorugh each entry and setting to zero (maybe missing entries are skipped in the save process?)
@@ -76,7 +76,7 @@ namespace Amnesia.Handlers {
                 entityId = entityId
             };
             questJournal.quests
-                .Where(quest => Config.ClearIntroQuests || !IsIntroQuest(quest))
+                .Where(quest => Config.ForgetIntroQuests || !IsIntroQuest(quest))
                 .Where(quest => quest.CurrentState == Quest.QuestState.InProgress || quest.CurrentState == Quest.QuestState.ReadyForTurnIn)
                 .ToList().ForEach(quest => {
                     try {
@@ -91,7 +91,7 @@ namespace Amnesia.Handlers {
                 });
 
             // Start player with intro quest if all quests including intro quests were removed
-            if (Config.ClearIntroQuests && QuestClass.s_Quests.ContainsKey("quest_BasicSurvival1")) {
+            if (Config.ForgetIntroQuests && QuestClass.s_Quests.ContainsKey("quest_BasicSurvival1")) {
                 Quest quest = QuestClass.CreateQuest("quest_BasicSurvival1");
                 if (quest != null) {
                     questJournal.AddQuest(quest);
