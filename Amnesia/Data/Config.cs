@@ -18,15 +18,16 @@ namespace Amnesia.Data {
         public static string ForgetInactiveQuestsName { get; private set; } = "ForgetInactiveQuests";
         public static string ForgetIntroQuestsName { get; private set; } = "ForgetIntroQuests";
 
+        private static readonly string experimentalWarning = "\n        - [!] EXPERIMENTAL FEATURE - USE AT YOUR OWN RISK...";
         private static readonly string disconnectionWarning = "\n        - [!] SYSTEM WILL DISCONNECT PLAYER ON FINAL DEATH IF ENABLED!";
         private static readonly Dictionary<string, string> FieldNamesAndDescriptionsDict = new Dictionary<string, string> {
             { MaxLivesName, "how many lives players start with\n        - reducing this number will reduce remaining lives for all players only if remaining lives are below the new max\n        - increasing this number will also increase remaining lives for all players by the difference between the old max lives and new max lives"},
             { WarnAtLifeName, "number of lives remaining when system should start warning players about amnesia" },
             { EnablePositiveOutlookName, $"whether to grant temporary buff that boosts xp growth at initial server join and on memory loss" },
             { ForgetLevelsAndSkillsName, "whether to player levels and skills should be forgotten on memory loss" },
-            { ForgetActiveQuestsName, $"whether ongoing quests should be forgotten on memory loss{disconnectionWarning}" },
-            { ForgetInactiveQuestsName, $"whether completed quests (AND TRADER TIER LEVELS) should be forgotten on memory loss{disconnectionWarning}" },
-            { ForgetIntroQuestsName, $"whether the intro quests should be forgotten/reset on memory loss{disconnectionWarning}" }
+            { ForgetActiveQuestsName, $"whether ongoing quests should be forgotten on memory loss{disconnectionWarning}{experimentalWarning}" },
+            { ForgetInactiveQuestsName, $"whether completed quests (AND TRADER TIER LEVELS) should be forgotten on memory loss{disconnectionWarning}{experimentalWarning}" },
+            { ForgetIntroQuestsName, $"whether the intro quests should be forgotten/reset on memory loss{disconnectionWarning}{experimentalWarning}" }
         };
         public static List<string> FieldNames { get; private set; } = FieldNamesAndDescriptionsDict.Keys.ToList();
         public static string FieldNamesAndDescriptions { get; private set; } = "    - " + string.Join("\n    - ", FieldNamesAndDescriptionsDict.Select(kvp => kvp.Key + ": " + kvp.Value));
