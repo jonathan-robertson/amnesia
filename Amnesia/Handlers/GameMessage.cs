@@ -1,4 +1,5 @@
-﻿using Amnesia.Utilities;
+﻿using Amnesia.Data;
+using Amnesia.Utilities;
 using System;
 
 namespace Amnesia.Handlers {
@@ -6,6 +7,7 @@ namespace Amnesia.Handlers {
         private static readonly ModLog log = new ModLog(typeof(GameMessage));
 
         public static bool Handle(ClientInfo clientInfo, EnumGameMessages messageType, string message, string mainName, bool localizeMain, string secondaryName, bool localizeSecondary) {
+            if (!Config.Loaded) { return true; } // do not interrupt other mods from processing event
             try {
                 switch (messageType) {
                     case EnumGameMessages.EntityWasKilled:

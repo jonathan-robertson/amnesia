@@ -9,6 +9,7 @@ namespace Amnesia.Handlers {
         private static readonly ModLog log = new ModLog(typeof(SavePlayerData));
 
         public static void Handle(ClientInfo clientInfo, PlayerDataFile playerDataFile) {
+            if (!Config.Loaded) { return; }
             try {
                 log.Trace($"SavePlayerData called for player {clientInfo.entityId}");
 

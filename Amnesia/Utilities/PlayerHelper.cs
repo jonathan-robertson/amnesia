@@ -75,60 +75,6 @@ namespace Amnesia.Utilities {
                 player.bPlayerStatsChanged = true;
                 ConnectionManager.Instance.SendPackage(NetPackageManager.GetPackage<NetPackagePlayerStats>().Setup(player), false, player.entityId);
             }
-
-            /*
-            if (resetQuests && !resetAfterDisconnectMap.ContainsKey(player.entityId)) {
-                resetAfterDisconnectMap.Add(player.entityId, true);
-                // TODO: KICKING DOES NOT TRIGGER OnPlayerDisconnected
-                //GameUtils.KickPlayerForClientInfo(clientInfo, new GameUtils.KickPlayerData(GameUtils.EKickReason.ManualKick, 0, default, factionResetKickReason));
-                //clientInfo.SendPackage(NetPackageManager.GetPackage<NetPackagePlayerDisconnect>().Setup(player));
-                ConnectionManager.Instance.DisconnectClient(clientInfo);
-            }
-            */
-            /*
-               GameManager.Instance.World.RemoveEntity(clientInfo.entityId, EnumRemoveEntityReason.Despawned);
-
-               log.Debug($"{player.GetDebugName()} -> dead: {player.IsDead()}");
-
-               var playerDataFile = new PlayerDataFile();
-               playerDataFile.FromPlayer(player);
-               playerDataFile.questJournal.QuestFactionPoints.Clear();
-
-
-
-               SingletonMonoBehaviour<ConnectionManager>.Instance.SetClientEntityId(clientInfo, clientInfo.entityId, playerDataFile);
-               // TODO: get/store chunkViewDim instead?
-               clientInfo.SendPackage(NetPackageManager.GetPackage<NetPackagePlayerId>().Setup(player.entityId, player.TeamNumber, playerDataFile, 12));
-
-
-               */
-            /*
-             * make sure bloaded = true before sending
-            SingletonMonoBehaviour<ConnectionManager>.Instance.SetClientEntityId(_cInfo, num4, playerDataFile);
-            _cInfo.SendPackage(NetPackageManager.GetPackage<NetPackagePlayerId>().Setup(num4, num2, playerDataFile, _chunkViewDim));
-             */
-
-
-
-            /* TODO: Maybe this can be added later. Does not work as is written; probably needs to send some net packages to update the client
-            var removeLandclaims = true; // TODO: could be a param
-            var removeSleepingBag = true; // TODO: could be a param
-
-            if (removeLandclaims) {
-                PersistentPlayerData playerDataFromEntityID = GameManager.Instance.persistentPlayers.GetPlayerDataFromEntityID(player.entityId);
-                if (playerDataFromEntityID.LPBlocks != null) {
-                    playerDataFromEntityID.LPBlocks.Clear();
-                }
-                NavObjectManager.Instance.UnRegisterNavObjectByOwnerEntity(player, "land_claim");
-                SdtdConsole.Instance.Output("removed land claims.");
-            }
-            if (removeSleepingBag) {
-                PersistentPlayerData playerDataFromEntityID = GameManager.Instance.persistentPlayers.GetPlayerDataFromEntityID(player.entityId);
-                player.SpawnPoints.Clear();
-                playerDataFromEntityID.ClearBedroll();
-                SdtdConsole.Instance.Output("removed sleeping bag and respawn target.");
-            }
-            */
         }
     }
 }

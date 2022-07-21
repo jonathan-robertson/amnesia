@@ -14,6 +14,7 @@ namespace Amnesia.Handlers {
          * <remarks>This mod supports being dropped into an existing game, thanks to how we handle this process.</remarks>
          */
         public static void Handle(ClientInfo clientInfo, RespawnType respawnType, Vector3i pos) {
+            if (!Config.Loaded) { return; }
             try {
                 log.Trace($"PlayerSpawnedInWorld called for player {clientInfo.entityId}");
 
@@ -37,53 +38,12 @@ namespace Amnesia.Handlers {
                         }
 
                         // Update player's max/remaining lives to fit new MaxLives changes if necessary
-                        API.AdjustToMaxOrRemainingLivesChange(player);
-                        break;
-                    case RespawnType.Died:
-                        log.Trace($"RespawnType.Died");
-
-
-
-                        // TODO: KICKING DOES NOT TRIGGER OnPlayerDisconnected, it seems... but does give the client a message :-/
-                        //GameUtils.KickPlayerForClientInfo(clientInfo, new GameUtils.KickPlayerData(GameUtils.EKickReason.ManualKick, 0, default, factionResetKickReason));
-                        //clientInfo.SendPackage(NetPackageManager.GetPackage<NetPackagePlayerDisconnect>().Setup(player));
-
-
-                        // TODO: if we're going to kick, we have to update death state to not dead first (or after?) and make sure the game knows it
-                        //if (API.ResetAfterDisconnectMap.ContainsKey(clientInfo.entityId)) {
-                        //    ConnectionManager.Instance.DisconnectClient(clientInfo);
-                        //}
-
-                        // Try without controlled delay
-                        //if (API.ResetAfterDisconnectMap.TryGetValue(clientInfo.entityId, out var value) && value) {
-                        /*if (API.ResetAfterDisconnectMap.ContainsKey(clientInfo.entityId)) {
-                            //API.ResetAfterDisconnectMap[clientInfo.entityId] = false; // try disconnecting, but only once
-                            GameUtils.KickPlayerForClientInfo(clientInfo, new GameUtils.KickPlayerData(GameUtils.EKickReason.ManualKick, 0, default(DateTime), API.QuestResetKickReason));
-                        }*/
-
-                        // Try with controlled delay
-                        /*
-                        clientInfo.SendPackage(NetPackageManager.GetPackage<NetPackagePlayerDenied>().Setup(kickData));
-                        string str = clientInfo.ToString();
-                        string str2 = "Kicking player (";
-                        GameUtils.KickPlayerData kickPlayerData = kickData;
-                        Log.Out(str2 + kickPlayerData.ToString() + "): " + str);
-                        ThreadManager.StartCoroutine(disconnectLater(0.5f, clientInfo));
-                        */
+                        Config.AdjustToMaxOrRemainingLivesChange(player);
                         break;
                 }
             } catch (Exception e) {
                 log.Error("Failed to handle PlayerSpawnedInWorld event.", e);
             }
         }
-
-        /*
-        protected static IEnumerator disconnectLater(float _delayInSec, ClientInfo _clientInfo) {
-            // TODO: whisper to this player explaining upcoming disconnection?
-            yield return new WaitForSecondsRealtime(_delayInSec);
-            SingletonMonoBehaviour<ConnectionManager>.Instance.DisconnectClient(_clientInfo, false, false);
-            yield break;
-        }
-        */
     }
 }
