@@ -1,6 +1,6 @@
 # Amnesia [![Tested with A20.5 b2](https://img.shields.io/badge/A20.5%20b2-tested-blue.svg)](https://7daystodie.com/) [![Automated Release](https://github.com/jonathan-robertson/amnesia/actions/workflows/main.yml/badge.svg)](https://github.com/jonathan-robertson/amnesia/actions/workflows/main.yml)
 
-*Reset player progress after a configurable number of deaths.*
+![amnesia social image](https://github.com/jonathan-robertson/amnesia/raw/media/amnesia-logo-social.jpg)
 
 ## Features
 
@@ -23,46 +23,38 @@ enablePositiveOutlook | true | whether to grant temporary buff that boosts xp gr
 
 ## What is Reset?
 
-### Supported
-
 Value | Description
 --- | ---
 Player Level | Return to level 1
 Assigned Skills | Reset All
-Book Skills | Reset All
-Unspent Skills | Reset to 0
+Unspent Skill Points | Reset to 0
+Learned Books | Reset All
 Learned Recipes | Reset All
 EXP To Next Level | Reset to 0
 ExpDeficit | Reset to 0
-
-### Planned
-
-Value | Description
---- | ---
-Variable Bag Drop | Drop nothing, bag, toolbelt, bag & toolbelt, or delete all on death
-
-### Considering
-
-Value | Description
---- | ---
-Vehicles Owned | Forget all Vehicles
-LCBs Owned | Forget & Deactivate all LCBs
-Bed Owned | Clear Respawn Point
-Map Explored | Reset map exploration
-Map Waypoints | Clear all waypoints from map
-Starting Quest | Give player starting quest
-Quests | Forget all active quests and quest history
-Trader Relationship | Reset all quest tier progress made with all traders
-Vending Machines | Reset ownership for all
 Score | Reset total zombies killed, players killed, deaths, and more
-Party | Remove from active party
-Allies | Remove all friends (2-way removal)
-Name | Scramble player name following first death
+Quests | Forget all active quests and quest history
+Trader Relationship | Reset all quest tier progress made with all traders; this is a calculated value based on completed quests
+Starting Quest | Give player starting quest
 
-### Not Considering
+### What *Isn't* Reset?
 
 Value | Description
 --- | ---
-Mark Base on Map | If LCB is reset, the base will no longer be defended and can be raided by anyone online
-Base Destroyed | Chunks containing player LCBs are reset
-Vehicles Destroyed | Destroying all vehicles seems overboard
+Bag | Your server determines what to do with items on death in the same way it always does
+Map Explored | You'll remember your map
+Map Waypoints | You'll remember your waypoints
+Vehicles Owned | Vehicles not forgotten
+LCBs Owned | You'll remember all waypoints you currently posses
+Bed Owned | Your respawn point will remain
+Vending Machines | Any vending machines you own or have rented will not be forgotten
+Party | Removing from a party will not happen
+Allies | You would never forget your friends
+Name | Nah. Everyone knows you by your name
+Mark Base on Map | We will not shout out your base location to players upon your final death
+Base Destroyed | We will not delete your base - you worked hard for that!
+Vehicles Destroyed | Losing all your stats is hard enough - removing your vehicle would be a step too far
+
+## Attribution
+
+- Much thanks to [all-free-download.com](https://all-free-download.com/free-vector/download/brain_icon_shiny_dark_blue_design_6833698.html) for the brain image used in this logo's background.

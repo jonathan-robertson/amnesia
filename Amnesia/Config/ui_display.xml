@@ -1,0 +1,7 @@
+<config>
+    <append xpath="/ui_display_info/item_display">
+        <item_display_info display_type="amnesiaSmellingSalts" display_group="groupConsumables">
+            <display_entry name="lifeRestoreCount" title_key="statRemainingLives" />
+        </item_display_info>
+    </append>
+</config>

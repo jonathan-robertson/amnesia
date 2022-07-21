@@ -1,11 +1,11 @@
 ﻿Key,File,Type,english
 
 buffAmnesiaMentallyStableName,buffs,Buffs,"Mentally Stable"
-buffAmnesiaMentallyStableDesc,buffs,Buffs,"Your mind and memory are healthy and you feel ready to take on the world!\n\nExperiencing severe trauma (death) will negatively impact your mental state and will eventually cause you to lose your mind...\n\n[FF8000]Remaining Lives: {cvar(remainingLives)}/{cvar(maxLives)}"
+buffAmnesiaMentallyStableDesc,buffs,Buffs,"Your mind and memory are healthy and you feel ready to take on the world!\n\nExperiencing severe trauma (death) will negatively impact your mental state and will eventually cause you to lose your mind...\n\n[FF8000]Remaining Lives: {cvar(amnesiaRemainingLives)}/{cvar(amnesiaMaxLives)}"
 buffAmnesiaMentallyStableTooltip,buffs,Buffs,"Mentally Stable: Your mind and memory are healthy and you feel ready to take on the world!"
 
 buffAmnesiaMentallyUneasyName,buffs,Buffs,"Mentally Uneasy"
-buffAmnesiaMentallyUneasyDesc,buffs,Buffs,"Feeling a little overwhelmed, you realize surviving the apocalypse is tougher than you expected.\n\nYou can only handle significant trauma a few more times before losing your mind...\n\n[FF8000]Remaining Lives: {cvar(remainingLives)}/{cvar(maxLives)}"
+buffAmnesiaMentallyUneasyDesc,buffs,Buffs,"Feeling a little overwhelmed, you realize surviving the apocalypse is tougher than you expected.\n\nYou can only handle significant trauma a few more times before losing your mind...\n\n[FF8000]Remaining Lives: {cvar(amnesiaRemainingLives)}/{cvar(amnesiaMaxLives)}"
 buffAmnesiaMentallyUneasyTooltip,buffs,Buffs,"Mentally Uneasy: Significant Trauma has taken its toll on your mind and spirit"
 
 buffAmnesiaMentallyUnhingedName,buffs,Buffs,"Mentally Unhinged"
@@ -17,5 +17,14 @@ buffAmnesiaMemoryLossDesc,buffs,Buffs,"What was it you were doing again? You fin
 buffAmnesiaMemoryLossTooltip,buffs,Buffs,"Memory Loss: Significant trauma has caused memory loss. You barely recall who you once were..."
 
 buffAmnesiaPositiveOutlookName,buffs,Buffs,"Positive Outlook"
-buffAmnesiaPositiveOutlookDesc,buffs,Buffs,"Starting fresh is always hard, but you're feeling especially positive about your situation and the future.\n\nSure, the world has gone to hell, but that doesn't mean your attitude needs to!\n\n[00FF00]XP Gain is Quadrupled!"
-buffAmnesiaPositiveOutlookTooltip,buffs,Buffs,"Positive Outlook: [00FF00]XP Gain Quadrupled!"
+buffAmnesiaPositiveOutlookDesc,buffs,Buffs,"Starting fresh is always hard, but you're feeling especially positive about your situation and the future.\n\nSure, the world has gone to hell, but that doesn't mean your attitude needs to!\n\n[00FF00]XP Gain is Doubled!"
+buffAmnesiaPositiveOutlookTooltip,buffs,Buffs,"Positive Outlook: [00FF00]XP Gain Doubled!"
+
+amnesiaSmellingSalts,items,Medical,"Smelling Salts"
+amnesiaSmellingSaltsDesc,items,Medical,"Use to recover 1 life in exchange for 1 skill point.\n\nMay blur vision and prevent movement for a few seconds."
+
+statRemainingLives,ui_display,Item stat,"Lives Restored"
+buffAmnesiaRecoverLifeTooltip,buffs,Buffs,"You huff the smelling salts and wait for them to take effect"
+buffAmnesiaRecoverLifeMaxedTooltip,buffs,Buffs,"No Effect; You already have the maximum number of lives"
+buffAmnesiaRecoverLifeMissingPointTooltip,buffs,Buffs,"No Effect: You don't have any skill points available"
+buffAmnesiaRecoverLifeSuccessTooltip,buffs,Buffs,"You recovered 1 life in exchange for 1 skill point"

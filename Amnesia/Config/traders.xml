@@ -1,0 +1,5 @@
+﻿<config>
+    <insertAfter xpath="/traders/trader_info/tier_items/item[@name='drinkJarGrandpasForgettingElixir']">
+        <item name="amnesiaSmellingSalts" count="1" />
+    </insertAfter>
+</config>

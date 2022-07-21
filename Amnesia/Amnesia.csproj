@@ -62,14 +62,30 @@
     <Compile Include="Commands\ConsoleCmdAmnesia.cs" />
     <Compile Include="Data\Config.cs" />
     <Compile Include="Data\Values.cs" />
+    <Compile Include="Handlers\GameMessage.cs" />
+    <Compile Include="Handlers\GameStartDone.cs" />
+    <Compile Include="Handlers\PlayerDisconnected.cs" />
+    <Compile Include="Handlers\PlayerSpawnedInWorld.cs" />
+    <Compile Include="Handlers\SavePlayerData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utilities\ModLog.cs" />
+    <Compile Include="Utilities\PlayerHelper.cs" />
+    <Compile Include="Utilities\QuestHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Config\buffs.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Config\items.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Config\Localization.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Config\traders.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Config\ui_display.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Config\XUi\windows.xml">
