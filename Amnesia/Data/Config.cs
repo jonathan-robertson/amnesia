@@ -10,6 +10,10 @@ namespace Amnesia.Data {
         private static readonly ModLog log = new ModLog(typeof(Config));
         private static readonly string filename = Path.Combine(GameIO.GetSaveGameDir(), "amnesia.xml");
 
+        public static string QuestResetKickReason { get; private set; } = "This server is configured to erase some settings from your player file when you die for the final time. Please reconnect whenever you're ready.";
+
+        public static bool Loaded { get; private set; } = false;
+
         public static string MaxLivesName { get; private set; } = "MaxLives";
         public static string WarnAtLifeName { get; private set; } = "WarnAtLife";
         public static string EnablePositiveOutlookName { get; private set; } = "EnablePositiveOutlook";
@@ -52,6 +56,27 @@ namespace Amnesia.Data {
 {ForgetIntroQuestsName}: {ForgetIntroQuests}";
         }
 
+        public static void AdjustToMaxOrRemainingLivesChange(EntityPlayer player) {
+            // Initialize player and/or adjust max lives
+            var maxLivesSnapshot = player.GetCVar(Values.MaxLivesCVar);
+            var remainingLivesSnapshot = player.GetCVar(Values.RemainingLivesCVar);
+
+            // update max lives if necessary
+            if (maxLivesSnapshot != Config.MaxLives) {
+                // increase so player has same count fewer than max before and after
+                if (maxLivesSnapshot < Config.MaxLives) {
+                    var increase = Config.MaxLives - maxLivesSnapshot;
+                    player.SetCVar(Values.RemainingLivesCVar, remainingLivesSnapshot + increase);
+                }
+                player.SetCVar(Values.MaxLivesCVar, Config.MaxLives);
+            }
+
+            // cap remaining lives to max lives if necessary
+            if (remainingLivesSnapshot > Config.MaxLives) {
+                player.SetCVar(Values.RemainingLivesCVar, Config.MaxLives);
+            }
+        }
+
         /**
          * <summary>Adjust the remaining lives for a player.</summary>
          * <param name="player">The player to set remaining lives for.</param>
@@ -61,7 +86,7 @@ namespace Amnesia.Data {
             if (player != null) {
                 player.SetCVar(Values.RemainingLivesCVar, remainingLives);
                 // TODO: is there a way to apply this to the player data without the player needing to be on?
-                API.AdjustToMaxOrRemainingLivesChange(player);
+                AdjustToMaxOrRemainingLivesChange(player);
             }
         }
 
@@ -73,7 +98,7 @@ namespace Amnesia.Data {
             if (MaxLives != value) {
                 MaxLives = value;
                 Save();
-                GameManager.Instance.World.Players.list.ForEach(p => API.AdjustToMaxOrRemainingLivesChange(p));
+                GameManager.Instance.World.Players.list.ForEach(p => AdjustToMaxOrRemainingLivesChange(p));
             }
         }
 
@@ -159,6 +184,7 @@ namespace Amnesia.Data {
                     new XElement(ForgetInactiveQuestsName, ForgetInactiveQuests)
                 ).Save(filename);
                 log.Info($"Successfully saved {filename}");
+                Loaded = true;
                 return true;
             } catch (Exception e) {
                 log.Error($"Failed to save {filename}", e);
@@ -166,7 +192,7 @@ namespace Amnesia.Data {
             }
         }
 
-        public static bool Load() {
+        public static void Load() {
             try {
                 XElement config = XElement.Load(filename);
                 MaxLives = ParseInt(config, MaxLivesName);
@@ -177,14 +203,13 @@ namespace Amnesia.Data {
                 ForgetIntroQuests = ParseBool(config, ForgetIntroQuestsName);
                 ForgetInactiveQuests = ParseBool(config, ForgetInactiveQuestsName);
                 log.Info($"Successfully loaded {filename}");
-                return true;
+                Loaded = true;
             } catch (FileNotFoundException) {
                 log.Info($"No file detected, creating a config with defaults under {filename}");
-                Save();
-                return true;
+                Loaded = Save();
             } catch (Exception e) {
-                log.Error($"Failed to load {filename}", e);
-                return false;
+                log.Error($"Failed to load {filename}; Amnesia will remain disabled until server restart - fix file (possibly delete or try updating settings) then try restarting server.", e);
+                Loaded = false;
             }
         }
 

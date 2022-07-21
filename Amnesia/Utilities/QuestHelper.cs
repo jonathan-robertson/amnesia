@@ -195,43 +195,5 @@ Objective Type: {objective.GetType().Name}", e);
             //player.QuestJournal.AddQuest(quest);
             return true;
         }
-
-        /*
-2022-07-20T11:13:51 256.554 INF [Amnesia.Utilities.QuestHelper] TRACE: quest_basicsurvival1
-  - CurrentState: InProgress
-  - Active: True
-  - IsIntroQuest: True
-  - QuestClass: QuestClass
-  - Tracked: False
-!quest.ID.EqualsCaseInsensitive('quest_BasicSurvival1') False
-2022-07-20T11:13:51 256.554 INF [Amnesia.Utilities.QuestHelper] TRACE: tier1_fetch
-  - CurrentState: InProgress
-  - Active: True
-  - IsIntroQuest: False
-  - QuestClass: QuestClass
-  - Tracked: True
-!quest.ID.EqualsCaseInsensitive('quest_BasicSurvival1') True
-2022-07-20T11:13:51 256.554 INF [Amnesia.Utilities.QuestHelper] TRACE: Removing tier1_fetch
-2022-07-20T11:13:51 256.557 ERR [Amnesia.Utilities.QuestHelper] Failed to reset quests.
-2022-07-20T11:13:52 256.564 EXC Object reference not set to an instance of an object.
-  at Quest.RemoveMapObject () [0x00053] in <e2b6e198645f47e5b8fbb6e48578450b>:0
-  at Amnesia.Utilities.QuestHelper.PreProcessTrickyQuestObjectives (EntityPlayer player, Quest quest) [0x00123] in C:\Users\jract\source\repos\amnesia\Amnesia\Utilities\QuestHelper.cs:123
-  at Amnesia.Utilities.QuestHelper.RemoveActiveQuest (EntityPlayer player, Quest quest) [0x00075] in C:\Users\jract\source\repos\amnesia\Amnesia\Utilities\QuestHelper.cs:57
-  at Amnesia.Utilities.QuestHelper.RemoveQuest (EntityPlayer player, Quest quest) [0x000c8] in C:\Users\jract\source\repos\amnesia\Amnesia\Utilities\QuestHelper.cs:39
-  at Amnesia.Utilities.QuestHelper+<>c__DisplayClass1_1.<ResetQuests>b__0 (Quest q) [0x00000] in C:\Users\jract\source\repos\amnesia\Amnesia\Utilities\QuestHelper.cs:19
-  at System.Collections.Generic.List`1[T].ForEach (System.Action`1[T] action) [0x00024] in <695d1cc93cca45069c528c15c9fdd749>:0
-  at Amnesia.Utilities.QuestHelper.ResetQuests (EntityPlayer player) [0x00023] in C:\Users\jract\source\repos\amnesia\Amnesia\Utilities\QuestHelper.cs:19
-UnityEngine.StackTraceUtility:ExtractStringFromException(Object)
-Log:Exception(Exception)
-Amnesia.Utilities.ModLog:Error(String, Exception) (at C:\Users\jract\source\repos\amnesia\Amnesia\Utilities\ModLog.cs:33)
-Amnesia.Utilities.QuestHelper:ResetQuests(EntityPlayer) (at C:\Users\jract\source\repos\amnesia\Amnesia\Utilities\QuestHelper.cs:25)
-Amnesia.Handlers.SavePlayerData:Handle(ClientInfo, PlayerDataFile) (at C:\Users\jract\source\repos\amnesia\Amnesia\Handlers\SavePlayerData.cs:46)
-ModEvent`2:Invoke(ClientInfo, PlayerDataFile)
-GameManager:SavePlayerData(ClientInfo, PlayerDataFile)
-NetPackagePlayerData:ProcessPackage(World, GameManager)
-ConnectionManager:ProcessPackages(INetConnection, NetPackageDirection, ClientInfo)
-ConnectionManager:Update()
-
-         */
     }
 }

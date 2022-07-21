@@ -9,6 +9,7 @@ namespace Amnesia.Handlers {
         private static readonly ModLog log = new ModLog(typeof(SavePlayerData));
 
         public static void Handle(ClientInfo clientInfo, PlayerDataFile playerDataFile) {
+            if (!Config.Loaded) { return; }
             try {
                 log.Trace($"SavePlayerData called for player {clientInfo.entityId}");
 
@@ -56,7 +57,7 @@ namespace Amnesia.Handlers {
 
                     //ConnectionManager.Instance.DisconnectClient(clientInfo);
 
-                    GameUtils.KickPlayerForClientInfo(clientInfo, new GameUtils.KickPlayerData(GameUtils.EKickReason.ManualKick, 0, default(DateTime), API.QuestResetKickReason));
+                    GameUtils.KickPlayerForClientInfo(clientInfo, new GameUtils.KickPlayerData(GameUtils.EKickReason.ManualKick, 0, default(DateTime), Config.QuestResetKickReason));
                     ThreadManager.StartCoroutine(saveLater(2.0f, clientInfo, player));
                     return;
                 }
