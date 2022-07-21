@@ -10,6 +10,8 @@ namespace Amnesia.Data {
         private static readonly ModLog log = new ModLog(typeof(Config));
         private static readonly string filename = Path.Combine(GameIO.GetSaveGameDir(), "amnesia.xml");
 
+        public static string QuestResetKickReason { get; private set; } = "This server is configured to erase some settings from your player file when you die for the final time. Please reconnect whenever you're ready.";
+
         public static bool Loaded { get; private set; } = false;
 
         public static string MaxLivesName { get; private set; } = "MaxLives";

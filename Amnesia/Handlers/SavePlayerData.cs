@@ -57,7 +57,7 @@ namespace Amnesia.Handlers {
 
                     //ConnectionManager.Instance.DisconnectClient(clientInfo);
 
-                    GameUtils.KickPlayerForClientInfo(clientInfo, new GameUtils.KickPlayerData(GameUtils.EKickReason.ManualKick, 0, default(DateTime), API.QuestResetKickReason));
+                    GameUtils.KickPlayerForClientInfo(clientInfo, new GameUtils.KickPlayerData(GameUtils.EKickReason.ManualKick, 0, default(DateTime), Config.QuestResetKickReason));
                     ThreadManager.StartCoroutine(saveLater(2.0f, clientInfo, player));
                     return;
                 }
