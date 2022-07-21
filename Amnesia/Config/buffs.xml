@@ -90,7 +90,7 @@
             <effect_group name="activeEffects">
                 <!-- TODO: consider setting to @amnesiaPositiveOutlookXpBoost value instead and base this value off of... the level the player was able to achieve last? -->
                 <!-- 4x multiplier -->
-                <passive_effect name="PlayerExpGain" operation="perc_add" value="3" />
+                <passive_effect name="PlayerExpGain" operation="perc_add" value="1" />
             </effect_group>
             <effect_group name="update">
                 <triggered_effect trigger="onSelfBuffUpdate" action="ModifyCVar" cvar="$positiveOutlookTime" operation="subtract" value="1" />
