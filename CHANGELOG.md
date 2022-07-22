@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.0] - 2022-07-22
+
+- add test command for admins to confirm settings
+- add options for resetting books
+- add options for resetting schematics
+- add options for resetting kdr
+- fix missing config options exception
+
 ## [0.4.1] - 2022-07-21
 
 - fix initial load in brand new map

@@ -10,7 +10,15 @@ What "their progress" refers to is largely up to the admin. Several options are 
 
 > :warning: NOTE: This mod is in progress; plans for many more options are being worked on
 
-### Admin Controls
+## Compatibility
+
+Type | Compatible | Details
+:---: | :---: | ---
+Local | No | This is a server-side mod not meant for local play
+P2P | No | Locally hosting a multiplayer game is not supported
+Dedicated | Yes | This mod is designed for dedicated server games. You can install 7 Days to Die server locally and configure a server on your own game box to run both the server and your 7DTD client, you'd just need to connect from your client. I might support P2P and Local games in the future, but they would require EAC to be disabled and I'm more focused on EAC-Enabled server-side mods.
+
+## Admin Controls
 
 - view/adjust remaining lives per player
 - adjust configs as follows:
