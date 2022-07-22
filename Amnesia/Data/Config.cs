@@ -18,6 +18,10 @@ namespace Amnesia.Data {
         public static string WarnAtLifeName { get; private set; } = "WarnAtLife";
         public static string EnablePositiveOutlookName { get; private set; } = "EnablePositiveOutlook";
         public static string ForgetLevelsAndSkillsName { get; private set; } = "ForgetLevelsAndSkills";
+        public static string ForgetBooksName { get; private set; } = "ForgetBooks";
+        public static string ForgetSchematicsName { get; private set; } = "ForgetSchematics";
+        public static string ForgetKDRName { get; private set; } = "ForgetKDR";
+
         public static string ForgetActiveQuestsName { get; private set; } = "ForgetActiveQuests";
         public static string ForgetInactiveQuestsName { get; private set; } = "ForgetInactiveQuests";
         public static string ForgetIntroQuestsName { get; private set; } = "ForgetIntroQuests";
@@ -28,7 +32,11 @@ namespace Amnesia.Data {
             { MaxLivesName, "how many lives players start with\n        - reducing this number will reduce remaining lives for all players only if remaining lives are below the new max\n        - increasing this number will also increase remaining lives for all players by the difference between the old max lives and new max lives"},
             { WarnAtLifeName, "number of lives remaining when system should start warning players about amnesia" },
             { EnablePositiveOutlookName, $"whether to grant temporary buff that boosts xp growth at initial server join and on memory loss" },
-            { ForgetLevelsAndSkillsName, "whether to player levels and skills should be forgotten on memory loss" },
+            { ForgetLevelsAndSkillsName, "whether to forget levels, skills, and skill points on memory loss" },
+            { ForgetBooksName, "whether books should be forgotten on memory loss" },
+            { ForgetSchematicsName, "whether schematics should be forgotten on memory loss" },
+            { ForgetKDRName, "whether players/zombies killed and times died should be forgotten on memory loss" },
+
             { ForgetActiveQuestsName, $"whether ongoing quests should be forgotten on memory loss{disconnectionWarning}{experimentalWarning}" },
             { ForgetInactiveQuestsName, $"whether completed quests (AND TRADER TIER LEVELS) should be forgotten on memory loss{disconnectionWarning}{experimentalWarning}" },
             { ForgetIntroQuestsName, $"whether the intro quests should be forgotten/reset on memory loss{disconnectionWarning}{experimentalWarning}" }
@@ -40,6 +48,9 @@ namespace Amnesia.Data {
         public static int WarnAtLife { get; private set; } = 1;
         public static bool EnablePositiveOutlook { get; private set; } = true;
         public static bool ForgetLevelsAndSkills { get; private set; } = true;
+        public static bool ForgetBooks { get; private set; } = false;
+        public static bool ForgetSchematics { get; private set; } = false;
+        public static bool ForgetKDR { get; private set; } = false;
 
         public static bool ForgetActiveQuests { get; private set; } = false;
         public static bool ForgetInactiveQuests { get; private set; } = false;
@@ -51,6 +62,11 @@ namespace Amnesia.Data {
 {WarnAtLifeName}: {WarnAtLife}
 {EnablePositiveOutlookName}: {EnablePositiveOutlook}
 {ForgetLevelsAndSkillsName}: {ForgetLevelsAndSkills}
+{ForgetBooksName}: {ForgetBooks}
+{ForgetSchematicsName}: {ForgetSchematics}
+{ForgetKDRName}: {ForgetKDR}
+
+== Experimental Features (require player disconnection on final death) ==
 {ForgetActiveQuestsName}: {ForgetActiveQuests}
 {ForgetInactiveQuestsName}: {ForgetInactiveQuests}
 {ForgetIntroQuestsName}: {ForgetIntroQuests}";
@@ -62,18 +78,18 @@ namespace Amnesia.Data {
             var remainingLivesSnapshot = player.GetCVar(Values.RemainingLivesCVar);
 
             // update max lives if necessary
-            if (maxLivesSnapshot != Config.MaxLives) {
+            if (maxLivesSnapshot != MaxLives) {
                 // increase so player has same count fewer than max before and after
-                if (maxLivesSnapshot < Config.MaxLives) {
-                    var increase = Config.MaxLives - maxLivesSnapshot;
+                if (maxLivesSnapshot < MaxLives) {
+                    var increase = MaxLives - maxLivesSnapshot;
                     player.SetCVar(Values.RemainingLivesCVar, remainingLivesSnapshot + increase);
                 }
-                player.SetCVar(Values.MaxLivesCVar, Config.MaxLives);
+                player.SetCVar(Values.MaxLivesCVar, MaxLives);
             }
 
             // cap remaining lives to max lives if necessary
-            if (remainingLivesSnapshot > Config.MaxLives) {
-                player.SetCVar(Values.RemainingLivesCVar, Config.MaxLives);
+            if (remainingLivesSnapshot > MaxLives) {
+                player.SetCVar(Values.RemainingLivesCVar, MaxLives);
             }
         }
 
@@ -129,10 +145,10 @@ namespace Amnesia.Data {
         }
 
         /**
-         * <summary>Enable or disable ResetLevels on memory loss.</summary>
+         * <summary>Enable or disable ForgetLevelsAndSkills on memory loss.</summary>
          * <param name="value">New value to use.</param>
          */
-        public static void SetResetLevels(bool value) {
+        public static void SetForgetLevelsAndSkills(bool value) {
             if (ForgetLevelsAndSkills != value) {
                 ForgetLevelsAndSkills = value;
                 Save();
@@ -140,10 +156,43 @@ namespace Amnesia.Data {
         }
 
         /**
-         * <summary>Enable or disable ResetQuests on memory loss.</summary>
+         * <summary>Enable or disable ForgetBooks on memory loss.</summary>
          * <param name="value">New value to use.</param>
          */
-        public static void SetResetQuests(bool value) {
+        public static void SetForgetBooks(bool value) {
+            if (ForgetBooks != value) {
+                ForgetBooks = value;
+                Save();
+            }
+        }
+
+        /**
+         * <summary>Enable or disable ForgetSchematics on memory loss.</summary>
+         * <param name="value">New value to use.</param>
+         */
+        public static void SetForgetSchematics(bool value) {
+            if (ForgetSchematics != value) {
+                ForgetSchematics = value;
+                Save();
+            }
+        }
+
+        /**
+         * <summary>Enable or disable ForgetKDR on memory loss.</summary>
+         * <param name="value">New value to use.</param>
+         */
+        public static void SetForgetKDR(bool value) {
+            if (ForgetKDR != value) {
+                ForgetKDR = value;
+                Save();
+            }
+        }
+
+        /**
+         * <summary>Enable or disable ForgetActiveQuests on memory loss.</summary>
+         * <param name="value">New value to use.</param>
+         */
+        public static void SetForgetActiveQuests(bool value) {
             if (ForgetActiveQuests != value) {
                 ForgetActiveQuests = value;
                 Save();
@@ -151,10 +200,10 @@ namespace Amnesia.Data {
         }
 
         /**
-         * <summary>Enable or disable ClearIntroQuests on memory loss.</summary>
+         * <summary>Enable or disable ForgetIntroQuests on memory loss.</summary>
          * <param name="value">New value to use.</param>
          */
-        public static void SetClearIntroQuests(bool value) {
+        public static void SetForgetIntroQuests(bool value) {
             if (ForgetIntroQuests != value) {
                 ForgetIntroQuests = value;
                 Save();
@@ -162,10 +211,10 @@ namespace Amnesia.Data {
         }
 
         /**
-         * <summary>Enable or disable the process to erase trader relationships on final death.</summary>
+         * <summary>Enable or disable ForgetInactiveQuests on memory loss.</summary>
          * <param name="value">New value to use.</param>
          */
-        public static void SetResetFactionPoints(bool value) {
+        public static void SetForgetInactiveQuests(bool value) {
             if (ForgetInactiveQuests != value) {
                 ForgetInactiveQuests = value;
                 Save();
@@ -179,12 +228,15 @@ namespace Amnesia.Data {
                     new XElement(WarnAtLifeName, WarnAtLife),
                     new XElement(EnablePositiveOutlookName, EnablePositiveOutlook),
                     new XElement(ForgetLevelsAndSkillsName, ForgetLevelsAndSkills),
+                    new XElement(ForgetBooksName, ForgetBooks),
+                    new XElement(ForgetSchematicsName, ForgetSchematics),
+                    new XElement(ForgetKDRName, ForgetKDR),
+
                     new XElement(ForgetActiveQuestsName, ForgetActiveQuests),
-                    new XElement(ForgetIntroQuestsName, ForgetIntroQuests),
-                    new XElement(ForgetInactiveQuestsName, ForgetInactiveQuests)
+                    new XElement(ForgetInactiveQuestsName, ForgetInactiveQuests),
+                    new XElement(ForgetIntroQuestsName, ForgetIntroQuests)
                 ).Save(filename);
                 log.Info($"Successfully saved {filename}");
-                Loaded = true;
                 return true;
             } catch (Exception e) {
                 log.Error($"Failed to save {filename}", e);
@@ -195,13 +247,17 @@ namespace Amnesia.Data {
         public static void Load() {
             try {
                 XElement config = XElement.Load(filename);
-                MaxLives = ParseInt(config, MaxLivesName);
-                WarnAtLife = ParseInt(config, WarnAtLifeName);
-                EnablePositiveOutlook = ParseBool(config, EnablePositiveOutlookName);
-                ForgetLevelsAndSkills = ParseBool(config, ForgetLevelsAndSkillsName);
-                ForgetActiveQuests = ParseBool(config, ForgetActiveQuestsName);
-                ForgetIntroQuests = ParseBool(config, ForgetIntroQuestsName);
-                ForgetInactiveQuests = ParseBool(config, ForgetInactiveQuestsName);
+                MaxLives = ParseInt(config, MaxLivesName, MaxLives);
+                WarnAtLife = ParseInt(config, WarnAtLifeName, WarnAtLife);
+                EnablePositiveOutlook = ParseBool(config, EnablePositiveOutlookName, EnablePositiveOutlook);
+                ForgetLevelsAndSkills = ParseBool(config, ForgetLevelsAndSkillsName, ForgetLevelsAndSkills);
+                ForgetBooks = ParseBool(config, ForgetBooksName, ForgetBooks);
+                ForgetSchematics = ParseBool(config, ForgetSchematicsName, ForgetSchematics);
+                ForgetKDR = ParseBool(config, ForgetKDRName, ForgetKDR);
+
+                ForgetActiveQuests = ParseBool(config, ForgetActiveQuestsName, ForgetActiveQuests);
+                ForgetInactiveQuests = ParseBool(config, ForgetInactiveQuestsName, ForgetInactiveQuests);
+                ForgetIntroQuests = ParseBool(config, ForgetIntroQuestsName, ForgetIntroQuests);
                 log.Info($"Successfully loaded {filename}");
                 Loaded = true;
             } catch (FileNotFoundException) {
@@ -213,18 +269,24 @@ namespace Amnesia.Data {
             }
         }
 
-        private static int ParseInt(XElement config, string name) {
-            if (!int.TryParse(config.Descendants(name).First().Value, out var value)) {
-                throw new Exception($"Unable to parse {name} element; expecting int");
-            }
-            return value;
+        private static int ParseInt(XElement config, string name, int fallback) {
+            try {
+                if (int.TryParse(config.Descendants(name).First().Value, out var value)) {
+                    return value;
+                }
+            } catch (Exception) { }
+            log.Warn($"Unable to parse {name} from {filename}.\nFalling back to a default value of {fallback}.\nTry updating any setting to write the default option to this file.");
+            return fallback;
         }
 
-        private static bool ParseBool(XElement config, string name) {
-            if (!bool.TryParse(config.Descendants(name).First().Value, out var value)) {
-                throw new Exception($"Unable to parse {name} element; expecting bool");
-            }
-            return value;
+        private static bool ParseBool(XElement config, string name, bool fallback) {
+            try {
+                if (bool.TryParse(config.Descendants(name).First().Value, out var value)) {
+                    return value;
+                }
+            } catch (Exception) { }
+            log.Warn($"Unable to parse {name} from {filename}.\nFalling back to a default value of {fallback}.\nTry updating any setting to write the default option to this file.");
+            return fallback;
         }
     }
 }
