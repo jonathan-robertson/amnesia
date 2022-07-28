@@ -1,6 +1,6 @@
 ﻿<config>
     <append xpath="/buffs/buff[@name='buffStatusCheck02']">
-        <effect_group>
+        <effect_group name="amnesiaBuffs">
             <triggered_effect trigger="onSelfBuffUpdate" action="AddBuff" buff="buffAmnesiaMentallyUnhinged">
                 <requirement name="CVarCompare" cvar="amnesiaRemainingLives" operation="Equals" value="0" />
             </triggered_effect>
@@ -12,6 +12,9 @@
                 <requirement name="CVarCompare" cvar="amnesiaRemainingLives" operation="GT" value="0" />
                 <requirement name="CVarCompare" cvar="amnesiaRemainingLives" operation="GT" value="@amnesiaWarnAtLife" />
             </triggered_effect>
+        </effect_group>
+        <effect_group name="amnesiaJournalEntries">
+            <triggered_effect trigger="onSelfEnteredGame" action="AddJournalEntry" journal="amnesiaJournalTip" />
         </effect_group>
     </append>
 
