@@ -1,4 +1,4 @@
-# Amnesia [![Tested with A20.5 b2](https://img.shields.io/badge/A20.5%20b2-tested-blue.svg)](https://7daystodie.com/) [![Automated Release](https://github.com/jonathan-robertson/amnesia/actions/workflows/main.yml/badge.svg)](https://github.com/jonathan-robertson/amnesia/actions/workflows/main.yml)
+# Amnesia [![🧪 Tested with A20.5 b2](https://img.shields.io/badge/🧪%20A20.5%20b2-tested-blue.svg)](https://7daystodie.com/) [![📦 Automated Release](https://github.com/jonathan-robertson/amnesia/actions/workflows/release.yml/badge.svg)](https://github.com/jonathan-robertson/amnesia/actions/workflows/release.yml) [![🚀 Automated Deployment](https://github.com/jonathan-robertson/amnesia/actions/workflows/deploy.yml/badge.svg)](https://github.com/jonathan-robertson/amnesia/actions/workflows/deploy.yml)
 
 ![amnesia social image](https://github.com/jonathan-robertson/amnesia/raw/media/amnesia-logo-social.jpg)
 
