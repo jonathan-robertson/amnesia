@@ -1,4 +1,4 @@
-name: Automated Release
+name: 📦 Automated Release
 
 on:
   pull_request:
@@ -13,8 +13,9 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v2
-      - name: prepare data
+      - name: 🚚 Get latest code
+        uses: actions/checkout@v2
+      - name: 📦 Package data
         run: |
           # Edit this line if you want to include additional files
           # q stands for quiet, r stands for recursive (to include all files and sub-folders in Config)
@@ -37,12 +38,13 @@ jobs:
           # echo "title: ${{ github.event.pull_request.title }}"
           # echo "version: $version"
           # echo "prerelease: $prerelease"
-      - uses: ncipollo/release-action@v1
+      - name: 📢 Post Release
+        uses: ncipollo/release-action@v1
         with:
           tag: ${{ env.version }}
           commit: main
           name: ${{ github.event.pull_request.title }}
-          body: "${{ github.event.pull_request.body }}"
+          body: ${{ github.event.pull_request.body }}
           generateReleaseNotes: true
           artifacts: "${{ github.event.repository.name }}.zip"
           prerelease: ${{ env.prerelease }}
