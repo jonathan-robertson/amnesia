@@ -14,13 +14,17 @@ namespace Amnesia.Handlers {
                         if (!GameManager.Instance.World.Players.dict.TryGetValue(clientInfo.entityId, out var player)) {
                             return true; // player not present; skip
                         }
-                        log.Debug($"EnumGameMessages.EntityWasKilled {clientInfo.entityId}");
+
+                        if (player.Buffs.HasBuff(Values.BloodmoonLifeProtectionBuff)) {
+                            log.Trace($"{clientInfo.InternalId.CombinedString} ({player.GetDebugName()}) died but had bloodmoon life protection.");
+                            return true; // player had protection
+                        }
 
                         // TODO: add admin option for this
                         if (mainName != secondaryName) {
                             var killerClient = ConnectionManager.Instance.Clients.GetForNameOrId(secondaryName);
                             if (killerClient != null) {
-                                log.Trace($"{mainName} was killed by {secondaryName}, so {mainName} will NOT lose a life.");
+                                log.Trace($"{clientInfo.InternalId.CombinedString} ({player.GetDebugName()}) was killed by {secondaryName} but this server has pvp deaths set to not remove lives.");
                                 return true; // being killed in pvp doesn't count against player
                             }
                         }

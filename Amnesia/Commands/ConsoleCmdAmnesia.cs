@@ -114,6 +114,13 @@ Description Overview
                 });
                 return;
             }
+            if (Config.ProtectMemoryDuringBloodmoonName.EqualsCaseInsensitive(_params[1])) {
+                ApplyBool(_params[2], v => {
+                    Config.SetProtectMemoryDuringBloodmoon(v);
+                    SdtdConsole.Instance.Output($"Successfully updated to {v}");
+                });
+                return;
+            }
             if (Config.ForgetLevelsAndSkillsName.EqualsCaseInsensitive(_params[1])) {
                 ApplyBool(_params[2], v => {
                     Config.SetForgetLevelsAndSkills(v);

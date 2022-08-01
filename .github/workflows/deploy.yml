@@ -1,0 +1,36 @@
+name: 🚀 Automated Deployment
+
+on:
+  pull_request:
+    branches:
+      - main
+    types: [closed]
+
+jobs:
+  deploy:
+    if: ${{ github.event.pull_request.merged }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: 🚚 Get latest code
+        uses: actions/checkout@v2
+      - name: 📦 Package data
+        run: |
+          mkdir upload
+          mkdir upload/${{ github.event.repository.name }}
+          cp -r Amnesia/Config upload/${{ github.event.repository.name }}/
+          cp -r LatestReleaseBuild/* upload/${{ github.event.repository.name }}/
+          cp ModInfo.xml upload/${{ github.event.repository.name }}/
+          cp README.md upload/${{ github.event.repository.name }}/
+          cp LICENSE upload/${{ github.event.repository.name }}/
+          cp CHANGELOG.md upload/${{ github.event.repository.name }}/
+      - name: ✈ Upload files
+        uses: SamKirkland/FTP-Deploy-Action@4.3.0
+        with:
+          server: ${{ secrets.ftp_server }}
+          port: ${{ secrets.ftp_port }}
+          username: ${{ secrets.ftp_username }}
+          password: ${{ secrets.ftp_password }}
+          local-dir: ./upload/
+          server-dir: ./sdtd/bin/Mods/

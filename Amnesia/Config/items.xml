@@ -10,7 +10,16 @@
             <property name="TintColor" value="17,17,17" />
             <property name="Stacknumber" value="1" />
             <property name="EconomicValue" value="20000" />
+            <property name="Weight" value="0" />
+            <property name="DegradationBreaksAfter" value="false" />
+            <property name="NoScrapping" value="true" />
             <property name="SellableToTrader" value="false" />
+
+            <!-- TODO: should we disable Candrop? Could be annoying -->
+            <property name="Candrop" value="false" />
+            <!-- TODO: prevent losing this in backpack/ -->
+
+            <!-- CanDrop=false, CanStack=false, KeepOnDeath=true, CanPlaceInContainer=false -->
 
             <property name="HoldType" value="16" />
             <property name="Meshfile" value="#Other/Items?Health/painkillersPrefab.prefab" />
@@ -28,6 +37,7 @@
                 <triggered_effect trigger="onSelfPrimaryActionEnd" action="PlaySound" sound="spawnInStinger" />
                 <triggered_effect trigger="onSelfPrimaryActionEnd" action="ModifyCVar" cvar="amnesiaRemainingLives" operation="add" value="1" />
                 <display_value name="lifeRestoreCount" value="1" />
+                <!--  -->
             </effect_group>
         </item>
     </append>
