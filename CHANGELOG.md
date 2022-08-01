@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.7.0] - 2022-07-31
 
 - add option to protect lives during bloodmoon
+- fix issue with warn-at-life not updating
 
 ## [0.6.0] - 2022-07-27
 
