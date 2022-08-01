@@ -62,9 +62,6 @@ namespace Amnesia.Handlers {
                     return;
                 }
 
-                // TODO: update cvar, but... is this sanity check really necessary since we *should* be doing this on login and admin change? (confirm this)
-                player.SetCVar(Values.WarnAtLifeCVar, Config.WarnAtLife);
-
                 // Reset Player
                 log.Trace($"lives have expired for {player.GetDebugName()}");
                 PlayerHelper.ResetPlayer(player);

@@ -8,11 +8,11 @@ buffAmnesiaMentallyStableDesc,buffs,Buffs,"Your mind and memory are healthy and 
 buffAmnesiaMentallyStableTooltip,buffs,Buffs,"Mentally Stable: Your mind and memory are healthy and you feel ready to take on the world!"
 
 buffAmnesiaMentallyUneasyName,buffs,Buffs,"Mentally Uneasy"
-buffAmnesiaMentallyUneasyDesc,buffs,Buffs,"Feeling a little overwhelmed, you realize surviving the apocalypse is tougher than you expected.\n\nYou can only handle significant trauma a few more times before losing your mind...\n\n[FF8000]Remaining Lives: {cvar(amnesiaRemainingLives)}/{cvar(amnesiaMaxLives)}"
+buffAmnesiaMentallyUneasyDesc,buffs,Buffs,"Feeling a little overwhelmed, you realize surviving the apocalypse is tougher than you expected.\n\nYou can only handle significant trauma a few more times before losing your mind...\n\n[FF8000]Remaining Lives: {cvar(amnesiaRemainingLives)}/{cvar(amnesiaMaxLives)}[ffffff]\n\nYou can sometimes find Smelling Salts for sale by Traders that you can use to recover 1 life with, but they are pretty expensive."
 buffAmnesiaMentallyUneasyTooltip,buffs,Buffs,"Mentally Uneasy: Significant Trauma has taken its toll on your mind and spirit"
 
 buffAmnesiaMentallyUnhingedName,buffs,Buffs,"Mentally Unhinged"
-buffAmnesiaMentallyUnhingedDesc,buffs,Buffs,"You feel your sensibility slipping away. Adrenaline is coursing through your veins, granting a heightened awareness while making tasks requiring focus more difficult.\n\n[FF0000]Experiencing significant trauma 1 more time will cause you to forget almost everything you're learned."
+buffAmnesiaMentallyUnhingedDesc,buffs,Buffs,"You feel your sensibility slipping away. Adrenaline is coursing through your veins, granting a heightened awareness while making tasks requiring focus more difficult.\n\n[FF0000]Experiencing significant trauma 1 more time will cause you to forget almost everything you're learned.[ffffff]\n\nYou can sometimes find Smelling Salts for sale by Traders that you can use to recover 1 life with, but they are pretty expensive."
 buffAmnesiaMentallyUnhingedTooltip,buffs,Buffs,"Mentally Unhinged: going down once more will cause a mental break - you will forget everything"
 
 buffAmnesiaMemoryLossName,buffs,Buffs,"Memory Loss"

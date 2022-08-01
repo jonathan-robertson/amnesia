@@ -29,6 +29,9 @@ namespace Amnesia.Handlers {
                             break; // buffs don't work when a player is dead
                         }
 
+                        // Refresh rule for when to warn
+                        player.SetCVar(Values.WarnAtLifeCVar, Config.WarnAtLife);
+
                         // Manage Positive Outlook if admin disabled it since player's last login
                         if (!Config.EnablePositiveOutlook) {
                             player.Buffs.RemoveBuff(Values.PositiveOutlookBuff);
@@ -49,6 +52,9 @@ namespace Amnesia.Handlers {
                         Config.AdjustToMaxOrRemainingLivesChange(player);
                         break;
                     case RespawnType.Died:
+
+                        // Refresh rule for when to warn
+                        player.SetCVar(Values.WarnAtLifeCVar, Config.WarnAtLife);
 
                         // Remove Positive Outlook if admin disabled it since player's last login
                         if (!Config.EnablePositiveOutlook) {
