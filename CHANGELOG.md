@@ -9,9 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - add journal entry
 - add option to protect lives during bloodmoon
-- fix issue with warn-at-life not updating
-- update readme action badges
 - add reference to memory protection config
+- fix issue with warn-at-life not updating
+- fix typos in readme and command help
+- update readme action badges
 
 ## [0.5.1] - 2022-07-23
 
