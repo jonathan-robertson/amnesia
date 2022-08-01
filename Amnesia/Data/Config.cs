@@ -17,6 +17,7 @@ namespace Amnesia.Data {
         public static string MaxLivesName { get; private set; } = "MaxLives";
         public static string WarnAtLifeName { get; private set; } = "WarnAtLife";
         public static string EnablePositiveOutlookName { get; private set; } = "EnablePositiveOutlook";
+        public static string ProtectMemoryDuringBloodmoonName { get; private set; } = "ProtectMemoryDuringBloodmoon";
         public static string ForgetLevelsAndSkillsName { get; private set; } = "ForgetLevelsAndSkills";
         public static string ForgetBooksName { get; private set; } = "ForgetBooks";
         public static string ForgetSchematicsName { get; private set; } = "ForgetSchematics";
@@ -32,6 +33,7 @@ namespace Amnesia.Data {
             { MaxLivesName, "how many lives players start with\n        - reducing this number will reduce remaining lives for all players only if remaining lives are below the new max\n        - increasing this number will also increase remaining lives for all players by the difference between the old max lives and new max lives"},
             { WarnAtLifeName, "number of lives remaining when system should start warning players about amnesia" },
             { EnablePositiveOutlookName, $"whether to grant temporary buff that boosts xp growth at initial server join and on memory loss" },
+            { ProtectMemoryDuringBloodmoonName, "whether deaths during bloodmoon will cost lives" },
             { ForgetLevelsAndSkillsName, "whether to forget levels, skills, and skill points on memory loss" },
             { ForgetBooksName, "whether books should be forgotten on memory loss" },
             { ForgetSchematicsName, "whether schematics should be forgotten on memory loss" },
@@ -47,6 +49,7 @@ namespace Amnesia.Data {
         public static int MaxLives { get; private set; } = 2;
         public static int WarnAtLife { get; private set; } = 1;
         public static bool EnablePositiveOutlook { get; private set; } = true;
+        public static bool ProtectMemoryDuringBloodmoon { get; private set; } = true;
         public static bool ForgetLevelsAndSkills { get; private set; } = true;
         public static bool ForgetBooks { get; private set; } = false;
         public static bool ForgetSchematics { get; private set; } = false;
@@ -61,6 +64,7 @@ namespace Amnesia.Data {
 {MaxLivesName}: {MaxLives}
 {WarnAtLifeName}: {WarnAtLife}
 {EnablePositiveOutlookName}: {EnablePositiveOutlook}
+{ProtectMemoryDuringBloodmoonName}: {ProtectMemoryDuringBloodmoon}
 {ForgetLevelsAndSkillsName}: {ForgetLevelsAndSkills}
 {ForgetBooksName}: {ForgetBooks}
 {ForgetSchematicsName}: {ForgetSchematics}
@@ -139,7 +143,23 @@ namespace Amnesia.Data {
                 EnablePositiveOutlook = value;
                 Save();
                 if (!EnablePositiveOutlook) {
-                    GameManager.Instance.World.Players.list.ForEach(p => p.Buffs.RemoveBuff("buffAmnesiaPositiveOutlook"));
+                    GameManager.Instance.World.Players.list.ForEach(p => p.Buffs.RemoveBuff(Values.PositiveOutlookBuff));
+                }
+            }
+        }
+
+        /**
+         * <summary>Enable or disable whether lives are lost during Blood Moon.</summary>
+         * <param name="value">New value to use.</param>
+         */
+        public static void SetProtectMemoryDuringBloodmoon(bool value) {
+            if (ProtectMemoryDuringBloodmoon != value) {
+                ProtectMemoryDuringBloodmoon = value;
+                Save();
+                if (ProtectMemoryDuringBloodmoon && GameManager.Instance.World.aiDirector.BloodMoonComponent.BloodMoonActive) {
+                    GameManager.Instance.World.Players.list.ForEach(p => p.Buffs.AddBuff(Values.BloodmoonLifeProtectionBuff));
+                } else {
+                    GameManager.Instance.World.Players.list.ForEach(p => p.Buffs.RemoveBuff(Values.BloodmoonLifeProtectionBuff));
                 }
             }
         }
@@ -227,6 +247,7 @@ namespace Amnesia.Data {
                     new XElement(MaxLivesName, MaxLives),
                     new XElement(WarnAtLifeName, WarnAtLife),
                     new XElement(EnablePositiveOutlookName, EnablePositiveOutlook),
+                    new XElement(ProtectMemoryDuringBloodmoonName, ProtectMemoryDuringBloodmoon),
                     new XElement(ForgetLevelsAndSkillsName, ForgetLevelsAndSkills),
                     new XElement(ForgetBooksName, ForgetBooks),
                     new XElement(ForgetSchematicsName, ForgetSchematics),
@@ -250,6 +271,7 @@ namespace Amnesia.Data {
                 MaxLives = ParseInt(config, MaxLivesName, MaxLives);
                 WarnAtLife = ParseInt(config, WarnAtLifeName, WarnAtLife);
                 EnablePositiveOutlook = ParseBool(config, EnablePositiveOutlookName, EnablePositiveOutlook);
+                ProtectMemoryDuringBloodmoon = ParseBool(config, ProtectMemoryDuringBloodmoonName, ProtectMemoryDuringBloodmoon);
                 ForgetLevelsAndSkills = ParseBool(config, ForgetLevelsAndSkillsName, ForgetLevelsAndSkills);
                 ForgetBooks = ParseBool(config, ForgetBooksName, ForgetBooks);
                 ForgetSchematics = ParseBool(config, ForgetSchematicsName, ForgetSchematics);
