@@ -25,20 +25,40 @@ namespace Amnesia.Handlers {
                 switch (respawnType) {
                     case RespawnType.EnterMultiplayer:
                     case RespawnType.JoinMultiplayer:
-
-                        // Remove Positive Outlook if admin disabled it since player's last login
-                        if (!Config.EnablePositiveOutlook) {
-                            player.Buffs.RemoveBuff("buffAmnesiaPositiveOutlook");
+                        if (!player.IsAlive()) {
+                            break; // buffs don't work when a player is dead
                         }
 
-                        // Grant xp boost on first login if enabled
+                        // Manage Positive Outlook if admin disabled it since player's last login
+                        if (!Config.EnablePositiveOutlook) {
+                            player.Buffs.RemoveBuff(Values.PositiveOutlookBuff);
+                        }
                         if (Config.EnablePositiveOutlook && respawnType == RespawnType.EnterMultiplayer) {
-                            // give first time login buff (for first life)
-                            player.Buffs.AddBuff("buffAmnesiaPositiveOutlook");
+                            player.Buffs.AddBuff(Values.PositiveOutlookBuff); // give first time login buff (for first life)
+                        }
+
+                        // Manage Bloodmoon Life Protection if admin disabled it since player's last login
+                        if (!Config.ProtectMemoryDuringBloodmoon || !GameManager.Instance.World.aiDirector.BloodMoonComponent.BloodMoonActive) {
+                            player.Buffs.RemoveBuff(Values.BloodmoonLifeProtectionBuff);
+                        }
+                        if (Config.ProtectMemoryDuringBloodmoon && GameManager.Instance.World.aiDirector.BloodMoonComponent.BloodMoonActive) {
+                            player.Buffs.AddBuff(Values.BloodmoonLifeProtectionBuff);
                         }
 
                         // Update player's max/remaining lives to fit new MaxLives changes if necessary
                         Config.AdjustToMaxOrRemainingLivesChange(player);
+                        break;
+                    case RespawnType.Died:
+
+                        // Remove Positive Outlook if admin disabled it since player's last login
+                        if (!Config.EnablePositiveOutlook) {
+                            player.Buffs.RemoveBuff(Values.PositiveOutlookBuff);
+                        }
+
+                        // Remove BloodmoonLifeProtectionBuff if BM has ended
+                        if (!Config.ProtectMemoryDuringBloodmoon || !GameManager.Instance.World.aiDirector.BloodMoonComponent.BloodMoonActive) {
+                            player.Buffs.RemoveBuff(Values.BloodmoonLifeProtectionBuff);
+                        }
                         break;
                 }
             } catch (Exception e) {
