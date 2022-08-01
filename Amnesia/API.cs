@@ -11,6 +11,7 @@ namespace Amnesia {
 
         public void InitMod(Mod _modInstance) {
             ModEvents.GameStartDone.RegisterHandler(Config.Load);
+            ModEvents.GameUpdate.RegisterHandler(GameUpdate.Handle);
             ModEvents.PlayerSpawnedInWorld.RegisterHandler(PlayerSpawnedInWorld.Handle);
             ModEvents.GameMessage.RegisterHandler(GameMessage.Handle);
             ModEvents.SavePlayerData.RegisterHandler(SavePlayerData.Handle);

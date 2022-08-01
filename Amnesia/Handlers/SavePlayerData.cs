@@ -58,7 +58,7 @@ namespace Amnesia.Handlers {
                     //ConnectionManager.Instance.DisconnectClient(clientInfo);
 
                     GameUtils.KickPlayerForClientInfo(clientInfo, new GameUtils.KickPlayerData(GameUtils.EKickReason.ManualKick, 0, default(DateTime), Config.QuestResetKickReason));
-                    ThreadManager.StartCoroutine(saveLater(2.0f, clientInfo, player));
+                    ThreadManager.StartCoroutine(SaveLater(2.0f, clientInfo, player));
                     return;
                 }
 
@@ -74,7 +74,7 @@ namespace Amnesia.Handlers {
                 player.Buffs.AddBuff("buffAmnesiaMemoryLoss");
                 if (Config.EnablePositiveOutlook) {
                     log.Trace($"triggered: apply positive outlook for {player.GetDebugName()}");
-                    player.Buffs.AddBuff("buffAmnesiaPositiveOutlook");
+                    player.Buffs.AddBuff(Values.PositiveOutlookBuff);
                 } else {
                     log.Trace($"skipped: apply positive outlook for {player.GetDebugName()}");
                 }
@@ -83,7 +83,7 @@ namespace Amnesia.Handlers {
             }
         }
 
-        protected static IEnumerator saveLater(float _delayInSec, ClientInfo clientInfo, EntityPlayer player) {
+        protected static IEnumerator SaveLater(float _delayInSec, ClientInfo clientInfo, EntityPlayer player) {
             yield return new WaitForSecondsRealtime(_delayInSec);
             WritePlayerData(clientInfo, player);
             yield break;

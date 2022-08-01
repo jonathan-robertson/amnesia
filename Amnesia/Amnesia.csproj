@@ -63,6 +63,7 @@
     <Compile Include="Data\Config.cs" />
     <Compile Include="Data\Values.cs" />
     <Compile Include="Handlers\GameMessage.cs" />
+    <Compile Include="Handlers\GameUpdate.cs" />
     <Compile Include="Handlers\PlayerSpawnedInWorld.cs" />
     <Compile Include="Handlers\SavePlayerData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
