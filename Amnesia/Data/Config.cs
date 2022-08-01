@@ -30,7 +30,7 @@ namespace Amnesia.Data {
         private static readonly string experimentalWarning = "\n        - [!] EXPERIMENTAL FEATURE - USE AT YOUR OWN RISK...";
         private static readonly string disconnectionWarning = "\n        - [!] SYSTEM WILL DISCONNECT PLAYER ON FINAL DEATH IF ENABLED!";
         private static readonly Dictionary<string, string> FieldNamesAndDescriptionsDict = new Dictionary<string, string> {
-            { MaxLivesName, "how many lives players start with\n        - reducing this number will reduce remaining lives for all players only if remaining lives are below the new max\n        - increasing this number will also increase remaining lives for all players by the difference between the old max lives and new max lives"},
+            { MaxLivesName, "how many lives players start with\n        - reducing this number will reduce remaining lives for those players whose remaining lives would exceed the new max\n        - increasing this number will also increase remaining lives for all players by the difference between the old max lives and new max lives"},
             { WarnAtLifeName, "number of lives remaining when system should start warning players about amnesia" },
             { EnablePositiveOutlookName, $"whether to grant temporary buff that boosts xp growth at initial server join and on memory loss" },
             { ProtectMemoryDuringBloodmoonName, "whether deaths during bloodmoon will cost lives" },
