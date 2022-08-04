@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.6.1] - 2022-08-03
 
+- fix deploy script
 - update smelling salts description
 
 ## [0.6.0] - 2022-08-01
