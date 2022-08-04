@@ -28,7 +28,7 @@ buffAmnesiaBloodmoonLifeProtectionDesc,buffs,Buffs,"You feel something in the ai
 buffAmnesiaBloodmoonLifeProtectionTooltip,buffs,Buffs,"You [00ff80]WILL NOT[ffffff] lose any lives during this event when/if you die"
 
 amnesiaSmellingSalts,items,Medical,"Smelling Salts"
-amnesiaSmellingSaltsDesc,items,Medical,"Use to recover 1 life in exchange for 1 skill point."
+amnesiaSmellingSaltsDesc,items,Medical,"Use to restore 1 life."
 
 statRemainingLives,ui_display,Item stat,"Lives Restored"
 buffAmnesiaRecoverLifeTooltip,buffs,Buffs,"You huff the smelling salts and wait for them to take effect"
