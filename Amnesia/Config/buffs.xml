@@ -109,6 +109,10 @@
             <display_value_key value="Memory Protected" />
             <display_value value="x" />
             <!-- TODO: add tooltip -->
+
+            <effect_group>
+                <targeted_effect trigger="onSelfBuffRemove" action="ShowToolbeltMessage" message_key="buffAmnesiaBloodmoonLifeProtectionEndTooltip" />
+            </effect_group>
         </buff>
     </append>
     <!-- TODO: explore how onCombatEntered works: perhaps a screen effect could be added when on last life onCombatEntered as a reminder -->
