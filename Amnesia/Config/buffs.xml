@@ -31,6 +31,8 @@
         <buff name="buffAmnesiaMentallyUneasy" name_key="buffAmnesiaMentallyUneasyName" description_key="buffAmnesiaMentallyUneasyDesc" tooltip_key="buffAmnesiaMentallyUneasyTooltip" icon="ui_game_symbol_intellect" icon_color="255,128,0" remove_on_death="false">
             <duration value="0" />
             <stack_type value="ignore" />
+            <display_value_key value="Extra Lives: {0:0}" />
+            <display_value value="amnesiaRemainingLives" />
 
             <effect_group>
                 <triggered_effect trigger="onSelfBuffStart" action="RemoveBuff" buff="buffAmnesiaMentallyStable" />
@@ -43,6 +45,8 @@
         <buff name="buffAmnesiaMentallyUnhinged" name_key="buffAmnesiaMentallyUnhingedName" description_key="buffAmnesiaMentallyUnhingedDesc" tooltip_key="buffAmnesiaMentallyUnhingedTooltip" icon="ui_game_symbol_intellect" icon_color="255,0,0" icon_blink="true" remove_on_death="false">
             <duration value="0" />
             <stack_type value="ignore" />
+            <display_value_key value="Extra Lives: 0" />
+            <display_value value="x" />
 
             <effect_group>
                 <triggered_effect trigger="onSelfBuffStart" action="RemoveBuff" buff="buffAmnesiaMentallyStable" />
