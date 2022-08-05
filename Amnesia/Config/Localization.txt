@@ -26,9 +26,10 @@ buffAmnesiaPositiveOutlookTooltip,buffs,Buffs,"Positive Outlook: [00FF00]XP Gain
 buffAmnesiaBloodmoonLifeProtectionName,buffs,Buffs,"Blood Moon Life Protection"
 buffAmnesiaBloodmoonLifeProtectionDesc,buffs,Buffs,"You feel something in the air that seems to provide you with a sense of peace and clarity of thought... perhaps this is the same 'something' causing the zombies to go wild.\n\n[00ff80]You WILL NOT lose any lives if you die during this event[ffffff].\n\n... but still, try to play it safe."
 buffAmnesiaBloodmoonLifeProtectionTooltip,buffs,Buffs,"You [00ff80]WILL NOT[ffffff] lose any lives during this event when/if you die"
+buffAmnesiaBloodmoonLifeProtectionEndTooltip,buffs,Buffs,"Blood Moon Protection [ff007f]HAS ENDED[ffffff] - dying will result in lives lost again"
 
 amnesiaSmellingSalts,items,Medical,"Smelling Salts"
-amnesiaSmellingSaltsDesc,items,Medical,"Use to recover 1 life in exchange for 1 skill point."
+amnesiaSmellingSaltsDesc,items,Medical,"Use to restore 1 life."
 
 statRemainingLives,ui_display,Item stat,"Lives Restored"
 buffAmnesiaRecoverLifeTooltip,buffs,Buffs,"You huff the smelling salts and wait for them to take effect"
