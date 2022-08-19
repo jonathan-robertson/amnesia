@@ -41,10 +41,12 @@ namespace Amnesia.Handlers {
                         }
 
                         // Manage Bloodmoon Life Protection if admin disabled it since player's last login
-                        if (!Config.ProtectMemoryDuringBloodmoon || !GameManager.Instance.World.aiDirector.BloodMoonComponent.BloodMoonActive) {
+                        player.Buffs.RemoveBuff(Values.PostBloodmoonLifeProtectionBuff);
+                        var isBloodmoon = GameManager.Instance.World.aiDirector.BloodMoonComponent.BloodMoonActive;
+                        if (!Config.ProtectMemoryDuringBloodmoon || !isBloodmoon) {
                             player.Buffs.RemoveBuff(Values.BloodmoonLifeProtectionBuff);
                         }
-                        if (Config.ProtectMemoryDuringBloodmoon && GameManager.Instance.World.aiDirector.BloodMoonComponent.BloodMoonActive) {
+                        if (Config.ProtectMemoryDuringBloodmoon && isBloodmoon) {
                             player.Buffs.AddBuff(Values.BloodmoonLifeProtectionBuff);
                         }
 
