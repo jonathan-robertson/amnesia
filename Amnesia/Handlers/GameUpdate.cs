@@ -14,8 +14,8 @@ namespace Amnesia.Handlers {
             try {
                 _counter++;
                 if (_counter > _ceiling) {
-                    HandleBloodMoon();
                     _counter = 0;
+                    HandleBloodMoon();
                 }
             } catch (Exception e) {
                 log.Error("Failed to handle GameUpdate event.", e);
@@ -32,7 +32,10 @@ namespace Amnesia.Handlers {
                 if (isBloodmoon) {
                     GameManager.Instance.World.Players.list.ForEach(p => p.Buffs.AddBuff(Values.BloodmoonLifeProtectionBuff));
                 } else {
-                    GameManager.Instance.World.Players.list.ForEach(p => p.Buffs.RemoveBuff(Values.BloodmoonLifeProtectionBuff));
+                    GameManager.Instance.World.Players.list.ForEach(p => {
+                        p.Buffs.RemoveBuff(Values.BloodmoonLifeProtectionBuff);
+                        p.Buffs.AddBuff(Values.PostBloodmoonLifeProtectionBuff);
+                    });
                 }
             } catch (Exception e) {
                 log.Error("Failed to handle bloodmoon.", e);

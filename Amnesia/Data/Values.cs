@@ -5,5 +5,6 @@
         public static string WarnAtLifeCVar { get; } = "amnesiaWarnAtLife";
         public static string PositiveOutlookBuff { get; } = "buffAmnesiaPositiveOutlook";
         public static string BloodmoonLifeProtectionBuff { get; } = "buffAmnesiaBloodmoonLifeProtection";
+        public static string PostBloodmoonLifeProtectionBuff { get; } = "buffAmnesiaPostBloodmoonLifeProtection";
     }
 }
