@@ -7,7 +7,7 @@ on:
     types: [closed]
 
 jobs:
-  build:
+  release:
     if: ${{ github.event.pull_request.merged }}
     runs-on: ubuntu-latest
     permissions:
