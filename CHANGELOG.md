@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.8.1] - 2022-09-03
 
+- refactor to address post-bloodmoon grace period
 - update so disabling pmdb also removes grace buff
 
 ## [0.8.0] - 2022-08-19
