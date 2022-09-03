@@ -122,22 +122,22 @@
         <buff name="buffAmnesiaPostBloodmoonLifeProtection" name_key="buffAmnesiaBloodmoonLifeProtectionName" description_key="buffAmnesiaBloodmoonLifeProtectionDesc" icon="server_cheat" icon_color="0,255,128" remove_on_death="false">
             <duration value="0" />
             <stack_type value="ignore" />
-            <display_value value=".postBloodmoonProtectionTime" />
+            <display_value value="$postBloodmoonProtectionTime" />
             <display_value_format value="time" />
             <effect_group name="setup">
                 <!-- 300s == 5m -->
-                <triggered_effect trigger="onSelfBuffStart" action="ModifyCVar" cvar=".postBloodmoonProtectionTime" operation="set" value="300" />
+                <triggered_effect trigger="onSelfBuffStart" action="ModifyCVar" cvar="$postBloodmoonProtectionTime" operation="set" value="300" />
             </effect_group>
             <effect_group name="timer">
-                <triggered_effect trigger="onSelfBuffUpdate" action="ModifyCVar" cvar=".postBloodmoonProtectionTime" operation="subtract" value="1">
-                    <requirement name="CVarCompare" cvar=".postBloodmoonProtectionTime" operation="GT" value="0" />
+                <triggered_effect trigger="onSelfBuffUpdate" action="ModifyCVar" cvar="$postBloodmoonProtectionTime" operation="subtract" value="1">
+                    <requirement name="CVarCompare" cvar="$postBloodmoonProtectionTime" operation="GT" value="0" />
                 </triggered_effect>
                 <triggered_effect trigger="onSelfBuffUpdate" action="RemoveBuff" buff="buffAmnesiaPostBloodmoonLifeProtection">
-                    <requirement name="CVarCompare" cvar=".postBloodmoonProtectionTime" operation="LTE" value="0" />
+                    <requirement name="CVarCompare" cvar="$postBloodmoonProtectionTime" operation="LTE" value="0" />
                 </triggered_effect>
             </effect_group>
             <effect_group name="cleanup">
-                <triggered_effect trigger="onSelfBuffRemove" action="ModifyCVar" cvar=".postBloodmoonProtectionTime" operation="set" value="0" />
+                <triggered_effect trigger="onSelfBuffRemove" action="ModifyCVar" cvar="$postBloodmoonProtectionTime" operation="set" value="0" />
                 <triggered_effect trigger="onSelfBuffRemove" action="ShowToolbeltMessage" message_key="buffAmnesiaBloodmoonLifeProtectionEndTooltip" />
             </effect_group>
         </buff>
