@@ -160,6 +160,7 @@ namespace Amnesia.Data {
                     GameManager.Instance.World.Players.list.ForEach(p => p.Buffs.AddBuff(Values.BloodmoonLifeProtectionBuff));
                 } else {
                     GameManager.Instance.World.Players.list.ForEach(p => p.Buffs.RemoveBuff(Values.BloodmoonLifeProtectionBuff));
+                    GameManager.Instance.World.Players.list.ForEach(p => p.Buffs.RemoveBuff(Values.PostBloodmoonLifeProtectionBuff));
                 }
             }
         }

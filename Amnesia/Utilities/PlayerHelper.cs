@@ -51,7 +51,6 @@ namespace Amnesia.Utilities {
                                 .Select(r => Convert.ToInt32((r as RewardSkillPoints).Value))
                                 .Sum())
                             .Sum();
-                        log.Debug($"Updating skill points to {player.Progression.SkillPoints}");
                     } catch (Exception e) {
                         log.Error("Failed to scan for completed skillpoints.", e);
                     }
