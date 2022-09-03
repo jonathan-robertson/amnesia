@@ -16,9 +16,6 @@ namespace Amnesia.Handlers {
         public static void Handle(ClientInfo clientInfo, RespawnType respawnType, Vector3i pos) {
             if (!Config.Loaded) { return; }
             try {
-                log.Trace($"PlayerSpawnedInWorld called for player {clientInfo.entityId}");
-
-                // Fetch player if possible
                 if (clientInfo == null || !GameManager.Instance.World.Players.dict.TryGetValue(clientInfo.entityId, out EntityPlayer player) || !player.IsAlive()) {
                     return; // exit early if player cannot be found in active world or is dead
                 }

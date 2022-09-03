@@ -11,10 +11,7 @@ namespace Amnesia.Handlers {
         public static void Handle(ClientInfo clientInfo, PlayerDataFile playerDataFile) {
             if (!Config.Loaded) { return; }
             try {
-                log.Trace($"SavePlayerData called for player {clientInfo.entityId}");
-
                 if (!API.Obituary.ContainsKey(clientInfo.entityId)) {
-                    log.Trace($"Player {clientInfo.entityId} not queued for reset; skipping");
                     return;
                 }
                 API.Obituary.Remove(clientInfo.entityId);
@@ -30,9 +27,9 @@ namespace Amnesia.Handlers {
                  */
 
                 var livesRemaining = player.GetCVar(Values.RemainingLivesCVar);
-                log.Debug($"{player.GetDebugName()} livesRemaining: {livesRemaining}");
+                log.Trace($"{clientInfo.InternalId.CombinedString} ({player.GetDebugName()}) died with {livesRemaining} lives remaining.");
 
-                // cap lives to maximum(sanity check)
+                // cap lives to maximum (sanity check)
                 if (livesRemaining > Config.MaxLives) {
                     // "shouldn't" have to do this since we auto-push changes as they're made and on login... but just in case:
                     player.SetCVar(Values.MaxLivesCVar, Config.MaxLives);
@@ -41,8 +38,8 @@ namespace Amnesia.Handlers {
 
                 // Calculate and apply remaining lives
                 if (livesRemaining > 0) {
-                    log.Trace($"more lives remaining for {player.GetDebugName()}");
                     player.SetCVar(Values.RemainingLivesCVar, livesRemaining - 1);
+                    log.Trace($"{clientInfo.InternalId.CombinedString} ({player.GetDebugName()}) lost a life: {livesRemaining}->{livesRemaining - 1}");
                     return;
                 }
 
@@ -63,17 +60,15 @@ namespace Amnesia.Handlers {
                 }
 
                 // Reset Player
-                log.Trace($"lives have expired for {player.GetDebugName()}");
+                log.Trace($"{clientInfo.InternalId.CombinedString} ({player.GetDebugName()}) has lost all lives");
                 PlayerHelper.ResetPlayer(player);
-                log.Trace($"returning lives to {Config.MaxLives} for {player.GetDebugName()}");
+                log.Trace($"{clientInfo.InternalId.CombinedString} ({player.GetDebugName()}) is being reborn with {Config.MaxLives} new remaining lives");
                 player.SetCVar(Values.RemainingLivesCVar, Config.MaxLives);
 
                 player.Buffs.AddBuff("buffAmnesiaMemoryLoss");
                 if (Config.EnablePositiveOutlook) {
-                    log.Trace($"triggered: apply positive outlook for {player.GetDebugName()}");
+                    log.Trace($"{clientInfo.InternalId.CombinedString} ({player.GetDebugName()}) receives the Positive Outlook buff");
                     player.Buffs.AddBuff(Values.PositiveOutlookBuff);
-                } else {
-                    log.Trace($"skipped: apply positive outlook for {player.GetDebugName()}");
                 }
             } catch (Exception e) {
                 log.Error("Failed to handle OnSavePlayerData", e);
