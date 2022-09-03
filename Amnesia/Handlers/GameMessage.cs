@@ -18,6 +18,8 @@ namespace Amnesia.Handlers {
                         if (player.Buffs.HasBuff(Values.BloodmoonLifeProtectionBuff) || player.Buffs.HasBuff(Values.PostBloodmoonLifeProtectionBuff)) {
                             log.Trace($"{clientInfo.InternalId.CombinedString} ({player.GetDebugName()}) died but had bloodmoon life protection.");
                             return true; // player had protection
+                        } else {
+                            log.Trace($"{clientInfo.InternalId.CombinedString} ({player.GetDebugName()}) died and did not have bloodmoon life protection.");
                         }
 
                         // TODO: add admin option for this
