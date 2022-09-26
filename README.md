@@ -39,7 +39,7 @@ ForgetBooks | false | Whether books should be forgotten on memory loss. It's rec
 ForgetSchematics | false | Whether schematics should be forgotten on memory loss. *It's recommended to keep this as `false` because A21 is expected to no longer grant crafting recipes when learning skills, so finding/using schematics will be the only way to learn how to craft things.* ***Note that `false` can cause some confusion in A20 because schematics will appear to have been read if the corresponding recipe was already unlocked in a Skill/Perk. The code for how this works is inside C# on the client's end, so changing it for a server-side mod does nto appear to be possible... but again, all the confusion will be gone in A21.***
 ForgetKDR | false | Whether players/zombies killed and times died should be forgotten on memory loss. *I'd strongly recommend setting this to `true`, but have left it as `false` by default only because these metrics can't be recovered once wiped and some admins might not want them to reset for that reason.*
 
-> :pencil: This mod is in progress, so plans for many more options are being worked on. As they're added and admins update their servers, the default values will be added for new options without negatively impacting the older options admins have already set.
+> 📝 This mod is in progress, so plans for many more options are being worked on. As they're added and admins update their servers, the default values will be added for new options without negatively impacting the older options admins have already set.
 
 ### Experimental/Volatile Options
 
@@ -69,7 +69,7 @@ I want for there to be a way to keep maps/players in a 'healthy' state of play f
 
 As an 7DTD admin and modder for a few years now, I've noticed some problematic patterns and this mod was created to take a stab at addressing some of them.
 
-> :bar_chart: Progression is a core piece of any RPG. Once the opportunity to progress has faded or become convoluted, player engagement/enjoyment evaporates with time.
+> 📊 Progression is a core piece of any RPG. Once the opportunity to progress has faded or become convoluted, player engagement/enjoyment evaporates with time.
 
 Observation | Problem | How Amnesia attempts to address it
 --- | --- | ---
