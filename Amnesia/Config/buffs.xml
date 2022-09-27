@@ -83,16 +83,50 @@
             </effect_group>
         </buff>
 
+        <!-- meant for admin testing only -->
+        <buff name="triggerAmnesiaPositiveOutlookLoss" hidden="true">
+            <duration value=".1" />
+            <effect_group>
+                <triggered_effect trigger="onSelfBuffStart" action="ModifyCVar" cvar="$positiveOutlookTime" operation="subtract" value="900" />
+            </effect_group>
+        </buff>
+
+        <!-- a reward given by admin... and/or for killing special zombies, perhaps -->
+        <buff name="triggerAmnesiaPositiveOutlookBoost" hidden="true">
+            <duration value="0" />
+            <effect_group>
+                <triggered_effect trigger="onSelfBuffStart" action="AddBuff" buff="buffAmnesiaPositiveOutlook" />
+            </effect_group>
+        </buff>
+
         <buff name="buffAmnesiaPositiveOutlook" name_key="buffAmnesiaPositiveOutlookName" description_key="buffAmnesiaPositiveOutlookDesc" icon="ui_game_symbol_xp" icon_color="0,255,128" remove_on_death="false">
             <duration value="0" />
             <display_value value="$positiveOutlookTime" />
             <display_value_format value="time" />
 
-            <effect_group name="startup">
-                <!-- TODO: consider setting to @amnesiaPositiveOutlookTime value instead and base this value off of... the level the player was able to achieve last? -->
+            <effect_group name="onStartup">
+                <requirement name="!HasBuff" buff="triggerAmnesiaPositiveOutlookBoost" />
                 <triggered_effect trigger="onSelfBuffStart" action="ModifyCVar" cvar="$positiveOutlookTime" operation="set" value="3600" />
+            </effect_group>
+            <effect_group name="onStack">
+                <requirement name="!HasBuff" buff="triggerAmnesiaPositiveOutlookBoost" />
                 <triggered_effect trigger="onSelfBuffStack" action="ModifyCVar" cvar="$positiveOutlookTime" operation="set" value="3600" />
             </effect_group>
+
+            <effect_group name="applyBoostOnStartup">
+                <requirement name="HasBuff" buff="triggerAmnesiaPositiveOutlookBoost" />
+                <triggered_effect trigger="onSelfBuffStart" action="ModifyCVar" cvar="$positiveOutlookTime" operation="set" value="900" />
+                <triggered_effect trigger="onSelfBuffStart" action="RemoveBuff" buff="triggerAmnesiaPositiveOutlookBoost" />
+            </effect_group>
+            <effect_group name="applyBoostOnStack">
+                <requirement name="HasBuff" buff="triggerAmnesiaPositiveOutlookBoost" />
+                <triggered_effect trigger="onSelfBuffStack" action="ModifyCVar" cvar="$positiveOutlookTime" operation="add" value="900" />
+                <triggered_effect trigger="onSelfBuffStack" action="ModifyCVar" cvar="$positiveOutlookTime" operation="set" value="3600">
+                    <requirement name="CVarCompare" cvar="$positiveOutlookTime" operation="GT" value="3600" />
+                </triggered_effect>
+                <triggered_effect trigger="onSelfBuffStack" action="RemoveBuff" buff="triggerAmnesiaPositiveOutlookBoost" />
+            </effect_group>
+
             <effect_group name="activeEffects">
                 <!-- TODO: consider setting to @amnesiaPositiveOutlookXpBoost value instead and base this value off of... the level the player was able to achieve last? -->
                 <!-- 4x multiplier -->
