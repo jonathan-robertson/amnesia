@@ -7,7 +7,7 @@ namespace Amnesia.Handlers {
 
         internal static void Handle(Entity killedEntity, Entity killerEntity) {
             try {
-                if (killerEntity.entityType != EntityType.Player) { return; }
+                if (killerEntity == null || killerEntity.entityType != EntityType.Player) { return; }
                 switch (killedEntity.GetDebugName()) {
                     case "ZombieJuggernaut":
                         TriggerKillAnnouncementAndBonus(killerEntity.GetDebugName(), "[ff8000]Juggernaut");
