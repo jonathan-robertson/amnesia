@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.9.0] - 2022-09-26
 
 - add new positive outlook trigger buffs for admins
+- add special surprise when defeating a tough zombie
 
 ## [0.8.1] - 2022-09-03
 
