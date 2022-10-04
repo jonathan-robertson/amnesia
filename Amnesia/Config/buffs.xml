@@ -92,7 +92,19 @@
         </buff>
 
         <!-- a reward given by admin... and/or for killing special zombies, perhaps -->
-        <buff name="triggerAmnesiaPositiveOutlookBoost" hidden="true">
+        <buff name="triggerAmnesiaPositiveOutlookBoost15" hidden="true">
+            <duration value="0" />
+            <effect_group>
+                <triggered_effect trigger="onSelfBuffStart" action="AddBuff" buff="buffAmnesiaPositiveOutlook" />
+            </effect_group>
+        </buff>
+        <buff name="triggerAmnesiaPositiveOutlookBoost5" hidden="true">
+            <duration value="0" />
+            <effect_group>
+                <triggered_effect trigger="onSelfBuffStart" action="AddBuff" buff="buffAmnesiaPositiveOutlook" />
+            </effect_group>
+        </buff>
+        <buff name="triggerAmnesiaPositiveOutlookBoost1" hidden="true">
             <duration value="0" />
             <effect_group>
                 <triggered_effect trigger="onSelfBuffStart" action="AddBuff" buff="buffAmnesiaPositiveOutlook" />
@@ -105,26 +117,60 @@
             <display_value_format value="time" />
 
             <effect_group name="onStartup">
-                <requirement name="!HasBuff" buff="triggerAmnesiaPositiveOutlookBoost" />
+                <requirements>
+                    <requirement name="!HasBuff" buff="triggerAmnesiaPositiveOutlookBoost15" />
+                    <requirement name="!HasBuff" buff="triggerAmnesiaPositiveOutlookBoost5" />
+                    <requirement name="!HasBuff" buff="triggerAmnesiaPositiveOutlookBoost1" />
+                </requirements>
                 <triggered_effect trigger="onSelfBuffStart" action="ModifyCVar" cvar="$positiveOutlookTime" operation="set" value="3600" />
             </effect_group>
             <effect_group name="onStack">
-                <requirement name="!HasBuff" buff="triggerAmnesiaPositiveOutlookBoost" />
+                <requirements>
+                    <requirement name="!HasBuff" buff="triggerAmnesiaPositiveOutlookBoost15" />
+                    <requirement name="!HasBuff" buff="triggerAmnesiaPositiveOutlookBoost5" />
+                    <requirement name="!HasBuff" buff="triggerAmnesiaPositiveOutlookBoost1" />
+                </requirements>
                 <triggered_effect trigger="onSelfBuffStack" action="ModifyCVar" cvar="$positiveOutlookTime" operation="set" value="3600" />
             </effect_group>
 
-            <effect_group name="applyBoostOnStartup">
-                <requirement name="HasBuff" buff="triggerAmnesiaPositiveOutlookBoost" />
+            <effect_group name="applyBoostOnStartup15">
+                <requirement name="HasBuff" buff="triggerAmnesiaPositiveOutlookBoost15" />
                 <triggered_effect trigger="onSelfBuffStart" action="ModifyCVar" cvar="$positiveOutlookTime" operation="set" value="900" />
-                <triggered_effect trigger="onSelfBuffStart" action="RemoveBuff" buff="triggerAmnesiaPositiveOutlookBoost" />
+                <triggered_effect trigger="onSelfBuffStart" action="RemoveBuff" buff="triggerAmnesiaPositiveOutlookBoost15" />
             </effect_group>
-            <effect_group name="applyBoostOnStack">
-                <requirement name="HasBuff" buff="triggerAmnesiaPositiveOutlookBoost" />
+            <effect_group name="applyBoostOnStartup5">
+                <requirement name="HasBuff" buff="triggerAmnesiaPositiveOutlookBoost5" />
+                <triggered_effect trigger="onSelfBuffStart" action="ModifyCVar" cvar="$positiveOutlookTime" operation="set" value="300" />
+                <triggered_effect trigger="onSelfBuffStart" action="RemoveBuff" buff="triggerAmnesiaPositiveOutlookBoost5" />
+            </effect_group>
+            <effect_group name="applyBoostOnStartup1">
+                <requirement name="HasBuff" buff="triggerAmnesiaPositiveOutlookBoost1" />
+                <triggered_effect trigger="onSelfBuffStart" action="ModifyCVar" cvar="$positiveOutlookTime" operation="set" value="60" />
+                <triggered_effect trigger="onSelfBuffStart" action="RemoveBuff" buff="triggerAmnesiaPositiveOutlookBoost1" />
+            </effect_group>
+            <effect_group name="applyBoostOnStack15">
+                <requirement name="HasBuff" buff="triggerAmnesiaPositiveOutlookBoost15" />
                 <triggered_effect trigger="onSelfBuffStack" action="ModifyCVar" cvar="$positiveOutlookTime" operation="add" value="900" />
                 <triggered_effect trigger="onSelfBuffStack" action="ModifyCVar" cvar="$positiveOutlookTime" operation="set" value="3600">
                     <requirement name="CVarCompare" cvar="$positiveOutlookTime" operation="GT" value="3600" />
                 </triggered_effect>
-                <triggered_effect trigger="onSelfBuffStack" action="RemoveBuff" buff="triggerAmnesiaPositiveOutlookBoost" />
+                <triggered_effect trigger="onSelfBuffStack" action="RemoveBuff" buff="triggerAmnesiaPositiveOutlookBoost15" />
+            </effect_group>
+            <effect_group name="applyBoostOnStack5">
+                <requirement name="HasBuff" buff="triggerAmnesiaPositiveOutlookBoost5" />
+                <triggered_effect trigger="onSelfBuffStack" action="ModifyCVar" cvar="$positiveOutlookTime" operation="add" value="300" />
+                <triggered_effect trigger="onSelfBuffStack" action="ModifyCVar" cvar="$positiveOutlookTime" operation="set" value="3600">
+                    <requirement name="CVarCompare" cvar="$positiveOutlookTime" operation="GT" value="3600" />
+                </triggered_effect>
+                <triggered_effect trigger="onSelfBuffStack" action="RemoveBuff" buff="triggerAmnesiaPositiveOutlookBoost5" />
+            </effect_group>
+            <effect_group name="applyBoostOnStack1">
+                <requirement name="HasBuff" buff="triggerAmnesiaPositiveOutlookBoost1" />
+                <triggered_effect trigger="onSelfBuffStack" action="ModifyCVar" cvar="$positiveOutlookTime" operation="add" value="60" />
+                <triggered_effect trigger="onSelfBuffStack" action="ModifyCVar" cvar="$positiveOutlookTime" operation="set" value="3600">
+                    <requirement name="CVarCompare" cvar="$positiveOutlookTime" operation="GT" value="3600" />
+                </triggered_effect>
+                <triggered_effect trigger="onSelfBuffStack" action="RemoveBuff" buff="triggerAmnesiaPositiveOutlookBoost1" />
             </effect_group>
 
             <effect_group name="activeEffects">
