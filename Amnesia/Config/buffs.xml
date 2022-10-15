@@ -15,6 +15,7 @@
         </effect_group>
         <effect_group name="amnesiaJournalEntries">
             <triggered_effect trigger="onSelfEnteredGame" action="AddJournalEntry" journal="amnesiaJournalTip" />
+            <triggered_effect trigger="onSelfEnteredGame" action="AddJournalEntry" journal="amnesiaJournalTip2" />
         </effect_group>
     </append>
 
