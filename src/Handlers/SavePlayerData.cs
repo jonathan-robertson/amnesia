@@ -11,10 +11,10 @@ namespace Amnesia.Handlers {
         public static void Handle(ClientInfo clientInfo, PlayerDataFile playerDataFile) {
             if (!Config.Loaded) { return; }
             try {
-                if (!API.Obituary.ContainsKey(clientInfo.entityId)) {
+                if (!ModApi.Obituary.ContainsKey(clientInfo.entityId)) {
                     return;
                 }
-                API.Obituary.Remove(clientInfo.entityId);
+                ModApi.Obituary.Remove(clientInfo.entityId);
 
                 if (clientInfo == null || !GameManager.Instance.World.Players.dict.TryGetValue(clientInfo.entityId, out var player)) {
                     log.Warn("EntityWasKilled event sent from a non-player client... may want to investigate");

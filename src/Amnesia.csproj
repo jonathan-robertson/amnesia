@@ -58,7 +58,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="API.cs" />
+    <Compile Include="ModApi.cs" />
     <Compile Include="Commands\ConsoleCmdAmnesia.cs" />
     <Compile Include="Data\Config.cs" />
     <Compile Include="Data\Values.cs" />

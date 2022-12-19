@@ -31,8 +31,8 @@ namespace Amnesia.Handlers {
                             }
                         }
 
-                        if (!API.Obituary.ContainsKey(clientInfo.entityId)) {
-                            API.Obituary.Add(clientInfo.entityId, true);
+                        if (!ModApi.Obituary.ContainsKey(clientInfo.entityId)) {
+                            ModApi.Obituary.Add(clientInfo.entityId, true);
                         }
                         break;
                 }
