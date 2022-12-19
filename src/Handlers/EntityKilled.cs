@@ -12,9 +12,6 @@ namespace Amnesia.Handlers {
                     case "ZombieJuggernaut":
                         TriggerKillAnnouncementAndBonus(killerEntity.GetDebugName(), "[ff4500]Juggernaut", 15);
                         break;
-                    case "ZombieJuggernautGolden":
-                        TriggerKillAnnouncementAndBonus(killerEntity.GetDebugName(), "[ffff00]Golden Juggernaut", 15);
-                        break;
                     case "zombieScorcher":
                         TriggerKillAnnouncementAndBonus(killerEntity.GetDebugName(), "[e32636]Scorcher", 5);
                         break;

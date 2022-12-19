@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.10.0] - 2022-12-19
 
 - refactor loops to enhance performance
+- remove xp bonus for golden juggernaut
 
 ## [0.9.4] - 2022-11-16
 
