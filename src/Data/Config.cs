@@ -59,8 +59,7 @@ namespace Amnesia.Data {
         public static bool ForgetInactiveQuests { get; private set; } = false;
         public static bool ForgetIntroQuests { get; private set; } = false;
 
-        public static string AsString() {
-            return $@"=== Amnesia Configuration ===
+        public static string AsString() => $@"=== Amnesia Configuration ===
 {MaxLivesName}: {MaxLives}
 {WarnAtLifeName}: {WarnAtLife}
 {EnablePositiveOutlookName}: {EnablePositiveOutlook}
@@ -74,7 +73,6 @@ namespace Amnesia.Data {
 {ForgetActiveQuestsName}: {ForgetActiveQuests}
 {ForgetInactiveQuestsName}: {ForgetInactiveQuests}
 {ForgetIntroQuestsName}: {ForgetIntroQuests}";
-        }
 
         public static void AdjustToMaxOrRemainingLivesChange(EntityPlayer player) {
             // Initialize player and/or adjust max lives
@@ -117,9 +115,9 @@ namespace Amnesia.Data {
         public static void SetMaxLives(int value) {
             if (MaxLives != value) {
                 MaxLives = value;
-                Save();
+                _ = Save();
                 var players = GameManager.Instance.World.Players.list;
-                for (int i = 0; i < players.Count; i++) {
+                for (var i = 0; i < players.Count; i++) {
                     AdjustToMaxOrRemainingLivesChange(players[i]);
                 }
             }
@@ -132,9 +130,9 @@ namespace Amnesia.Data {
         public static void SetWarnAtLife(int value) {
             if (WarnAtLife != value) {
                 WarnAtLife = value;
-                Save();
+                _ = Save();
                 var players = GameManager.Instance.World.Players.list;
-                for (int i = 0 ; i < players.Count; i++) {
+                for (var i = 0; i < players.Count; i++) {
                     players[i].SetCVar(Values.WarnAtLifeCVar, WarnAtLife);
                 }
             }
@@ -147,10 +145,10 @@ namespace Amnesia.Data {
         public static void SetEnablePositiveOutlook(bool value) {
             if (EnablePositiveOutlook != value) {
                 EnablePositiveOutlook = value;
-                Save();
+                _ = Save();
                 if (!EnablePositiveOutlook) {
                     var players = GameManager.Instance.World.Players.list;
-                    for (int i = 0; i < players.Count; i++) {
+                    for (var i = 0; i < players.Count; i++) {
                         players[i].Buffs.RemoveBuff(Values.PositiveOutlookBuff);
                     }
                 }
@@ -164,14 +162,14 @@ namespace Amnesia.Data {
         public static void SetProtectMemoryDuringBloodmoon(bool value) {
             if (ProtectMemoryDuringBloodmoon != value) {
                 ProtectMemoryDuringBloodmoon = value;
-                Save();
+                _ = Save();
                 var players = GameManager.Instance.World.Players.list;
                 if (ProtectMemoryDuringBloodmoon && GameManager.Instance.World.aiDirector.BloodMoonComponent.BloodMoonActive) {
-                    for (int i = 0; i < players.Count; i++) {
-                        players[i].Buffs.AddBuff(Values.BloodmoonLifeProtectionBuff);
+                    for (var i = 0; i < players.Count; i++) {
+                        _ = players[i].Buffs.AddBuff(Values.BloodmoonLifeProtectionBuff);
                     }
                 } else {
-                    for (int i = 0; i < players.Count; i++) {
+                    for (var i = 0; i < players.Count; i++) {
                         players[i].Buffs.RemoveBuff(Values.BloodmoonLifeProtectionBuff);
                         players[i].Buffs.RemoveBuff(Values.PostBloodmoonLifeProtectionBuff);
                     }
@@ -186,7 +184,7 @@ namespace Amnesia.Data {
         public static void SetForgetLevelsAndSkills(bool value) {
             if (ForgetLevelsAndSkills != value) {
                 ForgetLevelsAndSkills = value;
-                Save();
+                _ = Save();
             }
         }
 
@@ -197,7 +195,7 @@ namespace Amnesia.Data {
         public static void SetForgetBooks(bool value) {
             if (ForgetBooks != value) {
                 ForgetBooks = value;
-                Save();
+                _ = Save();
             }
         }
 
@@ -208,7 +206,7 @@ namespace Amnesia.Data {
         public static void SetForgetSchematics(bool value) {
             if (ForgetSchematics != value) {
                 ForgetSchematics = value;
-                Save();
+                _ = Save();
             }
         }
 
@@ -219,7 +217,7 @@ namespace Amnesia.Data {
         public static void SetForgetKDR(bool value) {
             if (ForgetKDR != value) {
                 ForgetKDR = value;
-                Save();
+                _ = Save();
             }
         }
 
@@ -230,7 +228,7 @@ namespace Amnesia.Data {
         public static void SetForgetActiveQuests(bool value) {
             if (ForgetActiveQuests != value) {
                 ForgetActiveQuests = value;
-                Save();
+                _ = Save();
             }
         }
 
@@ -241,7 +239,7 @@ namespace Amnesia.Data {
         public static void SetForgetIntroQuests(bool value) {
             if (ForgetIntroQuests != value) {
                 ForgetIntroQuests = value;
-                Save();
+                _ = Save();
             }
         }
 
@@ -252,7 +250,7 @@ namespace Amnesia.Data {
         public static void SetForgetInactiveQuests(bool value) {
             if (ForgetInactiveQuests != value) {
                 ForgetInactiveQuests = value;
-                Save();
+                _ = Save();
             }
         }
 
@@ -282,7 +280,7 @@ namespace Amnesia.Data {
 
         public static void Load() {
             try {
-                XElement config = XElement.Load(filename);
+                var config = XElement.Load(filename);
                 MaxLives = ParseInt(config, MaxLivesName, MaxLives);
                 WarnAtLife = ParseInt(config, WarnAtLifeName, WarnAtLife);
                 EnablePositiveOutlook = ParseBool(config, EnablePositiveOutlookName, EnablePositiveOutlook);

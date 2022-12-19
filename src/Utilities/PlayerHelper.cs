@@ -1,6 +1,5 @@
 ﻿using Amnesia.Data;
 using System;
-using System.Linq;
 
 namespace Amnesia.Utilities {
     internal class PlayerHelper {
@@ -16,11 +15,11 @@ namespace Amnesia.Utilities {
 
             log.Info($"resetting {player.GetDebugName()}");
 
-            bool needsSave = false;
+            var needsSave = false;
 
             if (Config.ForgetSchematics) {
                 var recipes = CraftingManager.GetRecipes();
-                for (int i = 0; i < recipes.Count; i++) {
+                for (var i = 0; i < recipes.Count; i++) {
                     if (recipes[i].IsLearnable) {
                         player.SetCVar(recipes[i].GetName(), 0);
                     }
@@ -45,11 +44,11 @@ namespace Amnesia.Utilities {
                 // Return all skill points rewarded from completed quest; should cover vanilla quest_BasicSurvival8, for example
                 if (!Config.ForgetIntroQuests) {
                     try {
-                        int newSkillPoints = 0;
-                        for (int i = 0; i < player.QuestJournal.quests.Count; i++) {
+                        var newSkillPoints = 0;
+                        for (var i = 0; i < player.QuestJournal.quests.Count; i++) {
                             if (player.QuestJournal.quests[i].CurrentState == Quest.QuestState.Completed) {
                                 var rewards = player.QuestJournal.quests[i].Rewards;
-                                for (int j = 0; j < rewards.Count; j++) {
+                                for (var j = 0; j < rewards.Count; j++) {
                                     if (rewards[j] is RewardSkillPoints) {
                                         newSkillPoints += Convert.ToInt32((rewards[j] as RewardSkillPoints).Value);
                                     }

@@ -16,13 +16,13 @@ namespace Amnesia.Handlers {
         public static void Handle(ClientInfo clientInfo, RespawnType respawnType, Vector3i pos) {
             if (!Config.Loaded) { return; }
             try {
-                if (clientInfo == null || !GameManager.Instance.World.Players.dict.TryGetValue(clientInfo.entityId, out EntityPlayer player) || !player.IsAlive()) {
+                if (clientInfo == null || !GameManager.Instance.World.Players.dict.TryGetValue(clientInfo.entityId, out var player) || !player.IsAlive()) {
                     return; // exit early if player cannot be found in active world or is dead
                 }
                 switch (respawnType) {
                     case RespawnType.EnterMultiplayer: // first-time login for new player
                         if (Config.EnablePositiveOutlook && respawnType == RespawnType.EnterMultiplayer) {
-                            player.Buffs.AddBuff(Values.PositiveOutlookBuff);
+                            _ = player.Buffs.AddBuff(Values.PositiveOutlookBuff);
                         }
                         HandleStandardRespawnSteps(player);
                         break;
@@ -60,7 +60,7 @@ namespace Amnesia.Handlers {
             if (Config.ProtectMemoryDuringBloodmoon) {
                 // add or remove protection based on whether BM is active
                 if (GameManager.Instance.World.aiDirector.BloodMoonComponent.BloodMoonActive) {
-                    player.Buffs.AddBuff(Values.BloodmoonLifeProtectionBuff);
+                    _ = player.Buffs.AddBuff(Values.BloodmoonLifeProtectionBuff);
                 } else {
                     player.Buffs.RemoveBuff(Values.BloodmoonLifeProtectionBuff);
                 }

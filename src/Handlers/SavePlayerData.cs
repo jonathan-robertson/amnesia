@@ -14,7 +14,7 @@ namespace Amnesia.Handlers {
                 if (!ModApi.Obituary.ContainsKey(clientInfo.entityId)) {
                     return;
                 }
-                ModApi.Obituary.Remove(clientInfo.entityId);
+                _ = ModApi.Obituary.Remove(clientInfo.entityId);
 
                 if (clientInfo == null || !GameManager.Instance.World.Players.dict.TryGetValue(clientInfo.entityId, out var player)) {
                     log.Warn("EntityWasKilled event sent from a non-player client... may want to investigate");
@@ -47,15 +47,14 @@ namespace Amnesia.Handlers {
                     // TODO: fix NRE that client experiences after getting kicked
                     // TODO: delay for a bit?
 
-
                     // Safe disconnection that allows the client to affirm the disconnection? - still experiences NRE on disconnection :P
                     //clientInfo.SendPackage(NetPackageManager.GetPackage<NetPackagePlayerDenied>()
                     //    .Setup(new GameUtils.KickPlayerData(GameUtils.EKickReason.ManualKick, 0, default(DateTime), API.QuestResetKickReason)));
 
                     //ConnectionManager.Instance.DisconnectClient(clientInfo);
 
-                    GameUtils.KickPlayerForClientInfo(clientInfo, new GameUtils.KickPlayerData(GameUtils.EKickReason.ManualKick, 0, default(DateTime), Config.QuestResetKickReason));
-                    ThreadManager.StartCoroutine(SaveLater(2.0f, clientInfo, player));
+                    GameUtils.KickPlayerForClientInfo(clientInfo, new GameUtils.KickPlayerData(GameUtils.EKickReason.ManualKick, 0, default, Config.QuestResetKickReason));
+                    _ = ThreadManager.StartCoroutine(SaveLater(2.0f, clientInfo, player));
                     return;
                 }
 
@@ -65,10 +64,10 @@ namespace Amnesia.Handlers {
                 log.Trace($"{clientInfo.InternalId.CombinedString} ({player.GetDebugName()}) is being reborn with {Config.MaxLives} new remaining lives");
                 player.SetCVar(Values.RemainingLivesCVar, Config.MaxLives);
 
-                player.Buffs.AddBuff("buffAmnesiaMemoryLoss");
+                _ = player.Buffs.AddBuff("buffAmnesiaMemoryLoss");
                 if (Config.EnablePositiveOutlook) {
                     log.Trace($"{clientInfo.InternalId.CombinedString} ({player.GetDebugName()}) receives the Positive Outlook buff");
-                    player.Buffs.AddBuff(Values.PositiveOutlookBuff);
+                    _ = player.Buffs.AddBuff(Values.PositiveOutlookBuff);
                 }
             } catch (Exception e) {
                 log.Error("Failed to handle OnSavePlayerData", e);
@@ -92,7 +91,7 @@ namespace Amnesia.Handlers {
             //clientInfo.latestPlayerData.Save(GameIO.GetPlayerDataDir(), clientInfo.InternalId.CombinedString);
 
             if (saveMap && player.ChunkObserver.mapDatabase != null) {
-                ThreadManager.AddSingleTask(
+                _ = ThreadManager.AddSingleTask(
                     new ThreadManager.TaskFunctionDelegate(player.ChunkObserver.mapDatabase.SaveAsync),
                     new MapChunkDatabase.DirectoryPlayerId(GameIO.GetPlayerDataDir(),
                     clientInfo.InternalId.CombinedString),

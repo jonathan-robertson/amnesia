@@ -31,8 +31,8 @@ namespace Amnesia.Handlers {
             MessagingSystem.Broadcast($"[007fff]{playerName} just killed a {zombieName}[007fff]!");
             MessagingSystem.Broadcast($"[007fff]Relief washes over each survivor as a newfound confidence takes hold: [00ff80]all online players receive Double XP for {minutes} Minutes!");
             var players = GameManager.Instance.World.Players.list;
-            for (int i = 0; i < players.Count; i++) {
-                players[i].Buffs.AddBuff($"triggerAmnesiaPositiveOutlookBoost{minutes}");
+            for (var i = 0; i < players.Count; i++) {
+                _ = players[i].Buffs.AddBuff($"triggerAmnesiaPositiveOutlookBoost{minutes}");
             }
         }
     }

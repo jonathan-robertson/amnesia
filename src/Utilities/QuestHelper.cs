@@ -1,8 +1,6 @@
 ﻿using Amnesia.Data;
 using System;
 using System.Globalization;
-using System.Linq;
-using System.Security.AccessControl;
 using static Quest;
 
 namespace Amnesia.Utilities {
@@ -17,7 +15,7 @@ namespace Amnesia.Utilities {
         public static bool ResetQuests(EntityPlayer player) {
             try {
                 var changed = false;
-                for (int i = 0; i < player.QuestJournal.quests.Count; i++) {
+                for (var i = 0; i < player.QuestJournal.quests.Count; i++) {
                     changed = changed || RemoveQuest(player, player.QuestJournal.quests[i]);
                 }
                 log.Trace($"Quests Changed after RemoveQuests? {changed}");
@@ -35,21 +33,13 @@ namespace Amnesia.Utilities {
 
             var questIsActive = quest.Active; // cache calculated value
 
-            if (IsIntroQuest(quest)) {
-                if (!Config.ForgetIntroQuests) {
-                    return false;
-                }
-
-                if (quest.ID.EqualsCaseInsensitive("quest_BasicSurvival1") && questIsActive) {
-                    return false;
-                }
-
-                return questIsActive
+            return IsIntroQuest(quest)
+                ? Config.ForgetIntroQuests
+&& (!quest.ID.EqualsCaseInsensitive("quest_BasicSurvival1") || !questIsActive)
+&& (questIsActive
                         ? RemoveActiveQuest(player, quest)
-                        : RemoveInactiveQuest(player, quest);
-            }
-
-            return questIsActive
+                        : RemoveInactiveQuest(player, quest))
+                : questIsActive
                 ? Config.ForgetActiveQuests && RemoveActiveQuest(player, quest)
                 : Config.ForgetInactiveQuests && RemoveInactiveQuest(player, quest);
         }
@@ -100,7 +90,7 @@ namespace Amnesia.Utilities {
 
         private static void PreProcessTrickyQuestObjectives(EntityPlayer player, Quest quest) {
 
-            for (int i = 0; i < quest.Objectives.Count; i++) { 
+            for (var i = 0; i < quest.Objectives.Count; i++) {
                 if (quest.Objectives[i] is ObjectiveFetch ||
                     quest.Objectives[i] is ObjectiveClearSleepers ||
                     quest.Objectives[i] is ObjectiveFetchAnyContainer ||
@@ -141,7 +131,7 @@ namespace Amnesia.Utilities {
                         // Process for quest.UnhookQuest();
                         //quest.RemoveMapObject();
                         QuestEventManager.Current.RemoveObjectiveToBeUpdated(quest.Objectives[i]);
-                        quest.Objectives.Remove(quest.Objectives[i]);
+                        _ = quest.Objectives.Remove(quest.Objectives[i]);
                     } catch (Exception e) {
                         log.Error($@"Failed to process tricky quest objectives:
 ID: {quest.Objectives[i].ID}
@@ -157,13 +147,13 @@ Objective Type: {quest.Objectives[i].GetType().Name}", e);
             var expectedItemClass = ItemClass.GetItemClass(questItemClassID, false);
             var expectedItem = new ItemValue(expectedItemClass.Id, false);
             if (expectedItemClass is ItemClassQuest) {
-                ushort num = StringParsers.ParseUInt16(objective.ID, 0, -1, NumberStyles.Integer);
+                var num = StringParsers.ParseUInt16(objective.ID, 0, -1, NumberStyles.Integer);
                 //expectedItemClass = ItemClassQuest.GetItemQuestById(num);
                 expectedItem.Seed = num;
             }
             expectedItem.Meta = quest.QuestCode;
 
-            player.bag.DecItem(expectedItem, 1, false);
+            _ = player.bag.DecItem(expectedItem, 1, false);
         }
 
         /**
@@ -177,9 +167,7 @@ Objective Type: {quest.Objectives[i].GetType().Name}", e);
             }
         }
 
-        private static bool RemoveInactiveQuest(EntityPlayer player, Quest quest) {
-            return player.QuestJournal.quests.Remove(quest);
-        }
+        private static bool RemoveInactiveQuest(EntityPlayer player, Quest quest) => player.QuestJournal.quests.Remove(quest);
 
         private static bool GiveStarterQuestIfMissing(EntityPlayer player) { // TODO: TEST THIS
             // TODO: does not fire... perhaps issue this on each player's login?
@@ -187,7 +175,7 @@ Objective Type: {quest.Objectives[i].GetType().Name}", e);
 
             // TODO: perhaps.. just create the quest and put it in the quests list? Using QuestJournal.Add might not be necessary at all
 
-            for (int i = 0; i < player.QuestJournal.quests.Count; i++) {
+            for (var i = 0; i < player.QuestJournal.quests.Count; i++) {
                 if (player.QuestJournal.quests[i].ID.EqualsCaseInsensitive("quest_BasicSurvival1")) {
                     log.Trace("quest_BasicSurvival1 was present");
                     return false;

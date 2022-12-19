@@ -4,21 +4,13 @@ namespace Amnesia.Utilities {
     internal class ModLog {
         private readonly string className;
 
-        public ModLog(Type classType) {
-            className = classType.FullName;
-        }
+        public ModLog(Type classType) => className = classType.FullName;
 
-        public void Trace(string message) {
-            Log.Out($"[{className}] TRACE: {message}");
-        }
+        public void Trace(string message) => Log.Out($"[{className}] TRACE: {message}");
 
-        public void Debug(string message) {
-            Log.Out($"[{className}] DEBUG: {message}");
-        }
+        public void Debug(string message) => Log.Out($"[{className}] DEBUG: {message}");
 
-        public void Info(string message) {
-            Log.Out($"[{className}] {message}");
-        }
+        public void Info(string message) => Log.Out($"[{className}] {message}");
 
         public void Warn(string message, Exception e = null) {
             Log.Warning($"[{className}] {message}");

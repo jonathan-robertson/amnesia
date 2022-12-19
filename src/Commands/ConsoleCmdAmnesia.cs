@@ -10,17 +10,13 @@ namespace Amnesia.Commands {
             "amn"
         };
 
-        public override string[] GetCommands() {
-            return Commands;
-        }
+        public override string[] GetCommands() => Commands;
 
-        public override string GetDescription() {
-            return "Configure or adjust settings for the Amnesia mod.";
-        }
+        public override string GetDescription() => "Configure or adjust settings for the Amnesia mod.";
 
         public override string GetHelp() {
-            int i = 1;
-            int j = 1;
+            var i = 1;
+            var j = 1;
             return $@"Usage:
   {i++}. {GetCommands()[0]}
   {i++}. {GetCommands()[0]} list
@@ -67,7 +63,7 @@ Description Overview
                             return;
                         }
                         var players = GameManager.Instance.World.Players.list;
-                        for (int i = 0; i < players.Count; i++) {
+                        for (var i = 0; i < players.Count; i++) {
                             SdtdConsole.Instance.Output($"{players[i].GetCVar(Values.RemainingLivesCVar)}/{players[i].GetCVar(Values.MaxLivesCVar)} remaining for {players[i].GetDebugName()} ({players[i].entityId})");
                         }
                         return;
@@ -95,77 +91,77 @@ Description Overview
 
         private void HandleConfig(List<string> _params) {
             if (Config.MaxLivesName.EqualsCaseInsensitive(_params[1])) {
-                ApplyInt(_params[2], v => {
+                _ = ApplyInt(_params[2], v => {
                     Config.SetMaxLives(v);
                     SdtdConsole.Instance.Output($"Successfully updated to {v}");
                 });
                 return;
             }
             if (Config.WarnAtLifeName.EqualsCaseInsensitive(_params[1])) {
-                ApplyInt(_params[2], v => {
+                _ = ApplyInt(_params[2], v => {
                     Config.SetWarnAtLife(v);
                     SdtdConsole.Instance.Output($"Successfully updated to {v}");
                 });
                 return;
             }
             if (Config.EnablePositiveOutlookName.EqualsCaseInsensitive(_params[1])) {
-                ApplyBool(_params[2], v => {
+                _ = ApplyBool(_params[2], v => {
                     Config.SetEnablePositiveOutlook(v);
                     SdtdConsole.Instance.Output($"Successfully updated to {v}");
                 });
                 return;
             }
             if (Config.ProtectMemoryDuringBloodmoonName.EqualsCaseInsensitive(_params[1])) {
-                ApplyBool(_params[2], v => {
+                _ = ApplyBool(_params[2], v => {
                     Config.SetProtectMemoryDuringBloodmoon(v);
                     SdtdConsole.Instance.Output($"Successfully updated to {v}");
                 });
                 return;
             }
             if (Config.ForgetLevelsAndSkillsName.EqualsCaseInsensitive(_params[1])) {
-                ApplyBool(_params[2], v => {
+                _ = ApplyBool(_params[2], v => {
                     Config.SetForgetLevelsAndSkills(v);
                     SdtdConsole.Instance.Output($"Successfully updated to {v}");
                 });
                 return;
             }
             if (Config.ForgetBooksName.EqualsCaseInsensitive(_params[1])) {
-                ApplyBool(_params[2], v => {
+                _ = ApplyBool(_params[2], v => {
                     Config.SetForgetBooks(v);
                     SdtdConsole.Instance.Output($"Successfully updated to {v}");
                 });
                 return;
             }
             if (Config.ForgetSchematicsName.EqualsCaseInsensitive(_params[1])) {
-                ApplyBool(_params[2], v => {
+                _ = ApplyBool(_params[2], v => {
                     Config.SetForgetSchematics(v);
                     SdtdConsole.Instance.Output($"Successfully updated to {v}");
                 });
                 return;
             }
             if (Config.ForgetKDRName.EqualsCaseInsensitive(_params[1])) {
-                ApplyBool(_params[2], v => {
+                _ = ApplyBool(_params[2], v => {
                     Config.SetForgetKDR(v);
                     SdtdConsole.Instance.Output($"Successfully updated to {v}");
                 });
                 return;
             }
             if (Config.ForgetActiveQuestsName.EqualsCaseInsensitive(_params[1])) {
-                ApplyBool(_params[2], v => {
+                _ = ApplyBool(_params[2], v => {
                     Config.SetForgetActiveQuests(v);
                     SdtdConsole.Instance.Output($"Successfully updated to {v}");
                 });
                 return;
             }
             if (Config.ForgetIntroQuestsName.EqualsCaseInsensitive(_params[1])) {
-                ApplyBool(_params[2], v => {
+                _ = ApplyBool(_params[2], v => {
                     Config.SetForgetIntroQuests(v);
                     SdtdConsole.Instance.Output($"Successfully updated to {v}");
                 });
                 return;
             }
             if (Config.ForgetInactiveQuestsName.EqualsCaseInsensitive(_params[1])) {
-                ApplyBool(_params[2], v => {
+                _ = ApplyBool(_params[2], v => {
                     Config.SetForgetInactiveQuests(v);
                     SdtdConsole.Instance.Output($"Successfully updated to {v}");
                 });
@@ -176,11 +172,11 @@ Description Overview
         }
 
         private void HandleUpdate(List<string> _params) {
-            if (!int.TryParse(_params[2], out int remainingLives)) {
+            if (!int.TryParse(_params[2], out var remainingLives)) {
                 SdtdConsole.Instance.Output("Unable to parse value: must be of type int");
                 return;
             }
-            ClientInfo clientInfo = ConsoleHelper.ParseParamIdOrName(_params[1], true, false);
+            var clientInfo = ConsoleHelper.ParseParamIdOrName(_params[1], true, false);
             if (clientInfo == null || !GameManager.Instance.World.Players.dict.TryGetValue(clientInfo.entityId, out var player)) {
                 SdtdConsole.Instance.Output("Unable to find this player; note: player must be online");
                 return;
