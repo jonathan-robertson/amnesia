@@ -19,11 +19,12 @@ namespace Amnesia.Utilities {
             bool needsSave = false;
 
             if (Config.ForgetSchematics) {
-                CraftingManager.GetRecipes().ForEach(recipe => {
-                    if (recipe.IsLearnable) {
-                        player.SetCVar(recipe.GetName(), 0);
+                var recipes = CraftingManager.GetRecipes();
+                for (int i = 0; i < recipes.Count; i++) {
+                    if (recipes[i].IsLearnable) {
+                        player.SetCVar(recipes[i].GetName(), 0);
                     }
-                });
+                }
             }
 
             // Zero out Player KD Stats
@@ -44,13 +45,18 @@ namespace Amnesia.Utilities {
                 // Return all skill points rewarded from completed quest; should cover vanilla quest_BasicSurvival8, for example
                 if (!Config.ForgetIntroQuests) {
                     try {
-                        player.Progression.SkillPoints = player.QuestJournal.quests
-                            .Where(q => q.CurrentState == Quest.QuestState.Completed)
-                            .Select(q => q.Rewards
-                                .Where(r => r is RewardSkillPoints)
-                                .Select(r => Convert.ToInt32((r as RewardSkillPoints).Value))
-                                .Sum())
-                            .Sum();
+                        int newSkillPoints = 0;
+                        for (int i = 0; i < player.QuestJournal.quests.Count; i++) {
+                            if (player.QuestJournal.quests[i].CurrentState == Quest.QuestState.Completed) {
+                                var rewards = player.QuestJournal.quests[i].Rewards;
+                                for (int j = 0; j < rewards.Count; j++) {
+                                    if (rewards[j] is RewardSkillPoints) {
+                                        newSkillPoints += Convert.ToInt32((rewards[j] as RewardSkillPoints).Value);
+                                    }
+                                }
+                            }
+                        }
+                        player.Progression.SkillPoints = newSkillPoints;
                     } catch (Exception e) {
                         log.Error("Failed to scan for completed skillpoints.", e);
                     }

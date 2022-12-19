@@ -118,7 +118,10 @@ namespace Amnesia.Data {
             if (MaxLives != value) {
                 MaxLives = value;
                 Save();
-                GameManager.Instance.World.Players.list.ForEach(p => AdjustToMaxOrRemainingLivesChange(p));
+                var players = GameManager.Instance.World.Players.list;
+                for (int i = 0; i < players.Count; i++) {
+                    AdjustToMaxOrRemainingLivesChange(players[i]);
+                }
             }
         }
 
@@ -130,7 +133,10 @@ namespace Amnesia.Data {
             if (WarnAtLife != value) {
                 WarnAtLife = value;
                 Save();
-                GameManager.Instance.World.Players.list.ForEach(p => p.SetCVar(Values.WarnAtLifeCVar, WarnAtLife));
+                var players = GameManager.Instance.World.Players.list;
+                for (int i = 0 ; i < players.Count; i++) {
+                    players[i].SetCVar(Values.WarnAtLifeCVar, WarnAtLife);
+                }
             }
         }
 
@@ -143,7 +149,10 @@ namespace Amnesia.Data {
                 EnablePositiveOutlook = value;
                 Save();
                 if (!EnablePositiveOutlook) {
-                    GameManager.Instance.World.Players.list.ForEach(p => p.Buffs.RemoveBuff(Values.PositiveOutlookBuff));
+                    var players = GameManager.Instance.World.Players.list;
+                    for (int i = 0; i < players.Count; i++) {
+                        players[i].Buffs.RemoveBuff(Values.PositiveOutlookBuff);
+                    }
                 }
             }
         }
@@ -156,11 +165,16 @@ namespace Amnesia.Data {
             if (ProtectMemoryDuringBloodmoon != value) {
                 ProtectMemoryDuringBloodmoon = value;
                 Save();
+                var players = GameManager.Instance.World.Players.list;
                 if (ProtectMemoryDuringBloodmoon && GameManager.Instance.World.aiDirector.BloodMoonComponent.BloodMoonActive) {
-                    GameManager.Instance.World.Players.list.ForEach(p => p.Buffs.AddBuff(Values.BloodmoonLifeProtectionBuff));
+                    for (int i = 0; i < players.Count; i++) {
+                        players[i].Buffs.AddBuff(Values.BloodmoonLifeProtectionBuff);
+                    }
                 } else {
-                    GameManager.Instance.World.Players.list.ForEach(p => p.Buffs.RemoveBuff(Values.BloodmoonLifeProtectionBuff));
-                    GameManager.Instance.World.Players.list.ForEach(p => p.Buffs.RemoveBuff(Values.PostBloodmoonLifeProtectionBuff));
+                    for (int i = 0; i < players.Count; i++) {
+                        players[i].Buffs.RemoveBuff(Values.BloodmoonLifeProtectionBuff);
+                        players[i].Buffs.RemoveBuff(Values.PostBloodmoonLifeProtectionBuff);
+                    }
                 }
             }
         }

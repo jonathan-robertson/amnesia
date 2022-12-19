@@ -66,9 +66,10 @@ Description Overview
                             SdtdConsole.Instance.Output("There are no players currently online");
                             return;
                         }
-                        GameManager.Instance.World.Players.list.ForEach(p => {
-                            SdtdConsole.Instance.Output($"{p.GetCVar(Values.RemainingLivesCVar)}/{p.GetCVar(Values.MaxLivesCVar)} remaining for {p.GetDebugName()} ({p.entityId})");
-                        });
+                        var players = GameManager.Instance.World.Players.list;
+                        for (int i = 0; i < players.Count; i++) {
+                            SdtdConsole.Instance.Output($"{players[i].GetCVar(Values.RemainingLivesCVar)}/{players[i].GetCVar(Values.MaxLivesCVar)} remaining for {players[i].GetDebugName()} ({players[i].entityId})");
+                        }
                         return;
                     case "config":
                         if (_params.Count != 3) {

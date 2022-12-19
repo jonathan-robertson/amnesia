@@ -29,13 +29,16 @@ namespace Amnesia.Handlers {
                 }
                 isBloodmoon = !isBloodmoon;
 
+                var players = GameManager.Instance.World.Players.list;
                 if (isBloodmoon) {
-                    GameManager.Instance.World.Players.list.ForEach(p => p.Buffs.AddBuff(Values.BloodmoonLifeProtectionBuff));
+                    for (int i = 0; i < players.Count; i++) {
+                        players[i].Buffs.AddBuff(Values.BloodmoonLifeProtectionBuff);
+                    }
                 } else {
-                    GameManager.Instance.World.Players.list.ForEach(p => {
-                        p.Buffs.AddBuff(Values.PostBloodmoonLifeProtectionBuff);
-                        p.Buffs.RemoveBuff(Values.BloodmoonLifeProtectionBuff);
-                    });
+                    for (int i = 0; i < players.Count; i++) {
+                        players[i].Buffs.AddBuff(Values.PostBloodmoonLifeProtectionBuff);
+                        players[i].Buffs.RemoveBuff(Values.BloodmoonLifeProtectionBuff);
+                    }
                 }
             } catch (Exception e) {
                 log.Error("Failed to handle bloodmoon.", e);

@@ -28,7 +28,12 @@ namespace Amnesia.Utilities {
          * <param name="message">The message to send.</param>
          */
         public static void Broadcast(string message) {
-            Send(EChatType.Global, message, GameManager.Instance.World.Players.list.Select(p => p.entityId).ToList());
+            var players = GameManager.Instance.World.Players.list;
+            var entityIds = new List<int>();
+            for (int i = 0; i < players.Count; i++) {
+                entityIds.Add(players[i].entityId);
+            }
+            Send(EChatType.Global, message, entityIds);
         }
 
         /**
@@ -37,10 +42,14 @@ namespace Amnesia.Utilities {
          * <param name="condition">The condition determining whether the player will receive the given message.</param>
          */
         public static void Broadcast(string message, Func<EntityPlayer, bool> condition) {
-            Send(EChatType.Global, message, GameManager.Instance.World.Players.list
-                .Where(condition)
-                .Select(p => p.entityId)
-                .ToList());
+            var players = GameManager.Instance.World.Players.list;
+            var entityIds = new List<int>();
+            for (int i = 0; i < players.Count; i++) {
+                if (condition.Invoke(players[i])) {
+                    entityIds.Add(players[i].entityId);
+                }
+            }
+            Send(EChatType.Global, message, entityIds);
         }
 
         private static void Send(EChatType chatType, string message, List<int> recipients) {

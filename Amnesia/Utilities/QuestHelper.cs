@@ -2,6 +2,7 @@
 using System;
 using System.Globalization;
 using System.Linq;
+using System.Security.AccessControl;
 using static Quest;
 
 namespace Amnesia.Utilities {
@@ -16,7 +17,9 @@ namespace Amnesia.Utilities {
         public static bool ResetQuests(EntityPlayer player) {
             try {
                 var changed = false;
-                player.QuestJournal.quests.ToList().ForEach(q => changed = changed || RemoveQuest(player, q));
+                for (int i = 0; i < player.QuestJournal.quests.Count; i++) {
+                    changed = changed || RemoveQuest(player, player.QuestJournal.quests[i]);
+                }
                 log.Trace($"Quests Changed after RemoveQuests? {changed}");
                 changed = changed || GiveStarterQuestIfMissing(player);
                 log.Trace($"Quests Changed after GiveStarterQuestIfMissing? {changed}");
@@ -96,56 +99,56 @@ namespace Amnesia.Utilities {
         }
 
         private static void PreProcessTrickyQuestObjectives(EntityPlayer player, Quest quest) {
-            foreach (var objective in quest.Objectives.Where(objective =>
-                   objective is ObjectiveFetch
-                || objective is ObjectiveClearSleepers
-                || objective is ObjectiveFetchAnyContainer
-                || objective is ObjectiveFetchFromTreasure
-                || objective is ObjectiveFetchFromContainer
-                || objective is ObjectiveBaseFetchContainer
-            ).ToList()) {
 
-                try {
-                    // Process for objective.HandleFailed() and objective.RemoveHooks
-                    switch (objective) {
-                        case ObjectiveFetchFromContainer o:
-                            RemoveFetchItems(player, quest, o, o.questItemClassID);
-                            quest.RemovePositionData((o.FetchMode == ObjectiveFetchFromContainer.FetchModeTypes.Standard) ? PositionDataTypes.FetchContainer : PositionDataTypes.HiddenCache);
-                            break;
-                        case ObjectiveFetchFromTreasure o:
-                            RemoveFetchItems(player, quest, o, ObjectiveFetchFromTreasure.questItemClassID);
-                            break;
-                        case ObjectiveFetchAnyContainer o:
-                            RemoveFetchItems(player, quest, o, o.questItemClassID);
-                            break;
-                        case ObjectiveBaseFetchContainer o:
-                            RemoveFetchItems(player, quest, o, o.questItemClassID);
-                            break;
-                        case ObjectiveFetch o:
-                            // don't trigger HandleFailed or HandleRemoveHooks
-                            break;
-                        default:
-                            objective.HandleFailed();
-                            objective.HandleRemoveHooks();
-                            break;
+            for (int i = 0; i < quest.Objectives.Count; i++) { 
+                if (quest.Objectives[i] is ObjectiveFetch ||
+                    quest.Objectives[i] is ObjectiveClearSleepers ||
+                    quest.Objectives[i] is ObjectiveFetchAnyContainer ||
+                    quest.Objectives[i] is ObjectiveFetchFromTreasure ||
+                    quest.Objectives[i] is ObjectiveFetchFromContainer ||
+                    quest.Objectives[i] is ObjectiveBaseFetchContainer) {
+                    try {
+                        // Process for objective.HandleFailed() and objective.RemoveHooks
+                        switch (quest.Objectives[i]) {
+                            case ObjectiveFetchFromContainer o:
+                                RemoveFetchItems(player, quest, o, o.questItemClassID);
+                                quest.RemovePositionData((o.FetchMode == ObjectiveFetchFromContainer.FetchModeTypes.Standard) ? PositionDataTypes.FetchContainer : PositionDataTypes.HiddenCache);
+                                break;
+                            case ObjectiveFetchFromTreasure o:
+                                RemoveFetchItems(player, quest, o, ObjectiveFetchFromTreasure.questItemClassID);
+                                break;
+                            case ObjectiveFetchAnyContainer o:
+                                RemoveFetchItems(player, quest, o, o.questItemClassID);
+                                break;
+                            case ObjectiveBaseFetchContainer o:
+                                RemoveFetchItems(player, quest, o, o.questItemClassID);
+                                break;
+                            case ObjectiveFetch o:
+                                // don't trigger HandleFailed or HandleRemoveHooks
+                                break;
+                            default:
+                                quest.Objectives[i].HandleFailed();
+                                quest.Objectives[i].HandleRemoveHooks();
+                                break;
+                        }
+                        quest.Objectives[i].RemoveNavObject();
+
+                        // Process for objective.RemoveObjectives()
+                        if (!(quest.Objectives[i] is ObjectiveFetch)) { // if not ObjectiveFetch...
+                            quest.Objectives[i].RemoveObjectives();
+                        }
+
+                        // Process for quest.UnhookQuest();
+                        //quest.RemoveMapObject();
+                        QuestEventManager.Current.RemoveObjectiveToBeUpdated(quest.Objectives[i]);
+                        quest.Objectives.Remove(quest.Objectives[i]);
+                    } catch (Exception e) {
+                        log.Error($@"Failed to process tricky quest objectives:
+ID: {quest.Objectives[i].ID}
+Owner Class: {quest.Objectives[i].OwnerQuestClass}
+Objective Type: {quest.Objectives[i].GetType().Name}", e);
+                        throw e;
                     }
-                    objective.RemoveNavObject();
-
-                    // Process for objective.RemoveObjectives()
-                    if (!(objective is ObjectiveFetch)) { // if not ObjectiveFetch...
-                        objective.RemoveObjectives();
-                    }
-
-                    // Process for quest.UnhookQuest();
-                    //quest.RemoveMapObject();
-                    QuestEventManager.Current.RemoveObjectiveToBeUpdated(objective);
-                    quest.Objectives.Remove(objective);
-                } catch (Exception e) {
-                    log.Error($@"Failed to process tricky quest objectives:
-ID: {objective.ID}
-Owner Class: {objective.OwnerQuestClass}
-Objective Type: {objective.GetType().Name}", e);
-                    throw e;
                 }
             }
         }
@@ -168,7 +171,9 @@ Objective Type: {objective.GetType().Name}", e);
          */
         private static void HandlePartyRemoveQuest(EntityPlayer player, Quest quest) {
             if (player.IsInParty() && quest.SharedOwnerID == -1) {
-                player.Party.MemberList.ForEach(member => ConnectionManager.Instance.SendPackage(NetPackageManager.GetPackage<NetPackageSharedQuest>().Setup(quest.QuestCode, player.entityId), false, member.entityId, -1, -1, -1));
+                for (var i = 0; i < player.Party.MemberList.Count; i++) {
+                    ConnectionManager.Instance.SendPackage(NetPackageManager.GetPackage<NetPackageSharedQuest>().Setup(quest.QuestCode, player.entityId), false, player.Party.MemberList[i].entityId, -1, -1, -1);
+                }
             }
         }
 
@@ -182,9 +187,11 @@ Objective Type: {objective.GetType().Name}", e);
 
             // TODO: perhaps.. just create the quest and put it in the quests list? Using QuestJournal.Add might not be necessary at all
 
-            if (player.QuestJournal.quests.Where(q => q.ID.EqualsCaseInsensitive("quest_BasicSurvival1")).Any()) {
-                log.Trace("quest_BasicSurvival1 was present");
-                return false;
+            for (int i = 0; i < player.QuestJournal.quests.Count; i++) {
+                if (player.QuestJournal.quests[i].ID.EqualsCaseInsensitive("quest_BasicSurvival1")) {
+                    log.Trace("quest_BasicSurvival1 was present");
+                    return false;
+                }
             }
 
             log.Trace("quest_BasicSurvival1 is missing; trying to add");

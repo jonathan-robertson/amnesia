@@ -30,7 +30,10 @@ namespace Amnesia.Handlers {
         internal static void TriggerKillAnnouncementAndBonus(string playerName, string zombieName, int minutes) {
             MessagingSystem.Broadcast($"[007fff]{playerName} just killed a {zombieName}[007fff]!");
             MessagingSystem.Broadcast($"[007fff]Relief washes over each survivor as a newfound confidence takes hold: [00ff80]all online players receive Double XP for {minutes} Minutes!");
-            GameManager.Instance.World.Players.list.ForEach(player => player.Buffs.AddBuff($"triggerAmnesiaPositiveOutlookBoost{minutes}"));
+            var players = GameManager.Instance.World.Players.list;
+            for (int i = 0; i < players.Count; i++) {
+                players[i].Buffs.AddBuff($"triggerAmnesiaPositiveOutlookBoost{minutes}");
+            }
         }
     }
 }
