@@ -5,8 +5,6 @@ using System.Collections.Generic;
 
 namespace Amnesia {
     internal class ModApi : IModApi {
-        private static readonly ModLog log = new ModLog(typeof(ModApi));
-
         public static Dictionary<int, bool> Obituary { get; private set; } = new Dictionary<int, bool>();
 
         public void InitMod(Mod _modInstance) {

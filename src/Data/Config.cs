@@ -8,7 +8,7 @@ using System.Xml.Linq;
 
 namespace Amnesia.Data {
     internal class Config {
-        private static readonly ModLog log = new ModLog(typeof(Config));
+        private static readonly ModLog<Config> log = new ModLog<Config>();
         private static readonly string filename = Path.Combine(GameIO.GetSaveGameDir(), "amnesia.xml");
 
         public static string QuestResetKickReason { get; private set; } = "This server is configured to erase some settings from your player file when you die for the final time. Please reconnect whenever you're ready.";

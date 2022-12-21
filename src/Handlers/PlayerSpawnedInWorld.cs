@@ -4,7 +4,7 @@ using System;
 
 namespace Amnesia.Handlers {
     internal class PlayerSpawnedInWorld {
-        private static readonly ModLog log = new ModLog(typeof(PlayerSpawnedInWorld));
+        private static readonly ModLog<PlayerSpawnedInWorld> log = new ModLog<PlayerSpawnedInWorld>();
 
         /**
          * <summary>Handle player spawning into world.</summary>

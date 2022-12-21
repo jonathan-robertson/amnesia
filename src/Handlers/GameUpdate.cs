@@ -4,7 +4,7 @@ using System;
 
 namespace Amnesia.Handlers {
     internal class GameUpdate {
-        private static readonly ModLog log = new ModLog(typeof(GameUpdate));
+        private static readonly ModLog<GameUpdate> log = new ModLog<GameUpdate>();
         private static readonly uint _ceiling = 100;
         private static uint _counter = 0;
         private static bool isBloodmoon = false;

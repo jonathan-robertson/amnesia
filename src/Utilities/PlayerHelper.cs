@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Amnesia.Utilities {
     internal class PlayerHelper {
-        private static readonly ModLog log = new ModLog(typeof(PlayerHelper));
+        private static readonly ModLog<PlayerHelper> log = new ModLog<PlayerHelper>();
 
         /// <remarks>Most of the following core logic was lifted from ActionResetPlayerData.PerformTargetAction</remarks>
         public static void ResetPlayer(EntityPlayer player) {

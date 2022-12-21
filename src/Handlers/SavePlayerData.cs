@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Amnesia.Handlers {
     internal class SavePlayerData {
-        private static readonly ModLog log = new ModLog(typeof(SavePlayerData));
+        private static readonly ModLog<SavePlayerData> log = new ModLog<SavePlayerData>();
 
         public static void Handle(ClientInfo clientInfo, PlayerDataFile playerDataFile) {
             if (!Config.Loaded) { return; }

@@ -4,7 +4,7 @@ using System;
 
 namespace Amnesia.Handlers {
     internal class GameMessage {
-        private static readonly ModLog log = new ModLog(typeof(GameMessage));
+        private static readonly ModLog<GameMessage> log = new ModLog<GameMessage>();
 
         public static bool Handle(ClientInfo clientInfo, EnumGameMessages messageType, string message, string mainName, bool localizeMain, string secondaryName, bool localizeSecondary) {
             if (!Config.Loaded) { return true; } // do not interrupt other mods from processing event

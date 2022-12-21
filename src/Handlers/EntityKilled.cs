@@ -4,7 +4,7 @@ using System;
 
 namespace Amnesia.Handlers {
     internal class EntityKilled {
-        private static readonly ModLog log = new ModLog(typeof(EntityKilled));
+        private static readonly ModLog<EntityKilled> log = new ModLog<EntityKilled>();
 
         internal static void Handle(Entity killedEntity, Entity killerEntity) {
             try {

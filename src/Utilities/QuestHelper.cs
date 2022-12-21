@@ -5,7 +5,7 @@ using static Quest;
 
 namespace Amnesia.Utilities {
     internal class QuestHelper {
-        private static readonly ModLog log = new ModLog(typeof(QuestHelper));
+        private static readonly ModLog<QuestHelper> log = new ModLog<QuestHelper>();
 
         /**
          * <summary>Remove all quests from the given player based on admin configuration.</summary>
