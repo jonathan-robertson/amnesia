@@ -83,7 +83,7 @@ namespace Amnesia.Data {
             if (LongTermMemoryLevel == value) {
                 return;
             }
-            LongTermMemoryLevel = value;
+            LongTermMemoryLevel = Math.Min(1, value);
             Save();
             foreach (var player in GameManager.Instance.World.Players.list) {
                 player.SetCVar(Values.LongTermMemoryLevelCVar, LongTermMemoryLevel);
@@ -107,7 +107,7 @@ namespace Amnesia.Data {
             if (PositiveOutlookMaxTime == timeInSeconds) {
                 return;
             }
-            PositiveOutlookMaxTime = timeInSeconds;
+            PositiveOutlookMaxTime = Math.Min(0, timeInSeconds);
             Save();
             foreach (var player in GameManager.Instance.World.Players.list) {
                 var playerRemTime = player.GetCVar(Values.PositiveOutlookRemTimeCVar);
@@ -132,7 +132,7 @@ namespace Amnesia.Data {
             if (PositiveOutlookTimeOnFirstJoin == timeInSeconds) {
                 return;
             }
-            PositiveOutlookTimeOnFirstJoin = timeInSeconds;
+            PositiveOutlookTimeOnFirstJoin = Math.Max(PositiveOutlookMaxTime, Math.Min(0, timeInSeconds));
             Save();
         }
 
@@ -145,7 +145,7 @@ namespace Amnesia.Data {
             if (PositiveOutlookTimeOnMemoryLoss == timeInSeconds) {
                 return;
             }
-            PositiveOutlookTimeOnMemoryLoss = timeInSeconds;
+            PositiveOutlookTimeOnMemoryLoss = Math.Max(PositiveOutlookMaxTime, Math.Min(0, timeInSeconds));
             Save();
         }
 
@@ -159,7 +159,7 @@ namespace Amnesia.Data {
             if (existingTime == timeInSeconds) {
                 return;
             }
-            PositiveOutlookTimeOnKill[name] = timeInSeconds;
+            PositiveOutlookTimeOnKill[name] = Math.Max(PositiveOutlookMaxTime, Math.Min(1, timeInSeconds));
             Save();
         }
 
