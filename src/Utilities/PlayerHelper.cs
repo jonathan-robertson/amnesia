@@ -8,11 +8,6 @@ namespace Amnesia.Utilities {
 
         /// <remarks>Most of the following core logic was lifted from ActionResetPlayerData.PerformTargetAction</remarks>
         public static void ResetPlayer(EntityPlayer player) {
-
-            // TODO: setting maxLives at 0 screws everything up; fix it?
-
-            log.Info($"resetting {player.GetDebugName()}");
-
             var needsSave = false;
 
             if (Config.ForgetSchematics) {
@@ -25,7 +20,7 @@ namespace Amnesia.Utilities {
             }
 
             // Zero out Player KD Stats
-            if (Config.ForgetKDR) { // TODO: wrap this reset in a config option
+            if (Config.ForgetKdr) {
                 player.Died = 0;
                 player.KilledPlayers = 0;
                 player.KilledZombies = 0;
@@ -81,6 +76,13 @@ namespace Amnesia.Utilities {
                 player.bPlayerStatsChanged = true;
                 ConnectionManager.Instance.SendPackage(NetPackageManager.GetPackage<NetPackagePlayerStats>().Setup(player), false, player.entityId);
             }
+
+            _ = player.Buffs.AddBuff(Values.MemoryLossNotificationBuff);
+            if (Config.PositiveOutlookTimeOnMemoryLoss > 0) {
+                log.Trace($"{player.GetDebugName()} will receive the Positive Outlook buff.");
+                player.SetCVar(Values.PositiveOutlookRemTimeCVar, Config.PositiveOutlookTimeOnMemoryLoss);
+                _ = player.Buffs.AddBuff(Values.PositiveOutlookBuff);
+            }
         }
 
         public static float AddPositiveOutlookTime(EntityPlayer player, int valueToAdd) {
@@ -122,5 +124,7 @@ namespace Amnesia.Utilities {
             clientInfo.SendPackage(NetPackageManager.GetPackage<NetPackageEntityCollect>().Setup(entityId, clientInfo.entityId));
             _ = GameManager.Instance.World.RemoveEntity(entityId, EnumRemoveEntityReason.Despawned);
         }
+
+        internal static void GiveItem(EntityPlayer player, object memoryBoosterItemName) => throw new NotImplementedException();
     }
 }

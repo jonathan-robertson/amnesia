@@ -45,7 +45,7 @@ namespace Amnesia.Data {
         /// <summary>Whether schematics should be forgotten on memory loss.</summary>
         public static bool ForgetSchematics { get; private set; } = false;
         /// <summary>Whether players/zombies killed and times died should be forgotten on memory loss.</summary>
-        public static bool ForgetKDR { get; private set; } = false;
+        public static bool ForgetKdr { get; private set; } = false;
 
         /// <summary>Whether ongoing quests should be forgotten on memory loss.</summary>
         public static bool ForgetActiveQuests { get; private set; } = false;
@@ -68,7 +68,7 @@ namespace Amnesia.Data {
 {Values.ForgetLevelsAndSkillsName}: {ForgetLevelsAndSkills}
 {Values.ForgetBooksName}: {ForgetBooks}
 {Values.ForgetSchematicsName}: {ForgetSchematics}
-{Values.ForgetKdrName}: {ForgetKDR}
+{Values.ForgetKdrName}: {ForgetKdr}
 
 == Experimental Features (require player disconnection on final death) ==
 {Values.ForgetActiveQuestsName}: {ForgetActiveQuests}
@@ -88,12 +88,12 @@ namespace Amnesia.Data {
             foreach (var player in GameManager.Instance.World.Players.list) {
                 player.SetCVar(Values.LongTermMemoryLevelCVar, LongTermMemoryLevel);
                 if (player.Progression.Level <= LongTermMemoryLevel) {
-                    if (!player.Buffs.HasBuff("buffNewbieCoat")) {
-                        player.Buffs.AddBuff("buffNewbieCoat");
+                    if (!player.Buffs.HasBuff(Values.NewbieCoatBuff)) {
+                        player.Buffs.AddBuff(Values.NewbieCoatBuff);
                     }
-                    if (player.Buffs.HasBuff("buffAmnesiaHardenedMemory")) {
-                        player.Buffs.RemoveBuff("buffAmnesiaHardenedMemory");
-                        PlayerHelper.GiveItem(player, "drugAmnesiaMemoryBooster");
+                    if (player.Buffs.HasBuff(Values.HardenedMemoryBuff)) {
+                        player.Buffs.RemoveBuff(Values.HardenedMemoryBuff);
+                        PlayerHelper.GiveItem(player, Values.MemoryBoosterItemName);
                     }
                 }
             }
@@ -257,14 +257,14 @@ namespace Amnesia.Data {
         }
         
         /// <summary>
-        /// Enable or disable ForgetKDR on memory loss.
+        /// Enable or disable ForgetKdr on memory loss.
         /// </summary>
         /// <param name="value">New value to use.</param>
         public static void SetForgetKdr(bool value) {
-            if (ForgetKDR == value) {
+            if (ForgetKdr == value) {
                 return;
             }
-            ForgetKDR = value;
+            ForgetKdr = value;
             _ = Save();
         }
 
@@ -325,7 +325,7 @@ namespace Amnesia.Data {
                     new XElement(Values.ForgetLevelsAndSkillsName, ForgetLevelsAndSkills),
                     new XElement(Values.ForgetBooksName, ForgetBooks),
                     new XElement(Values.ForgetSchematicsName, ForgetSchematics),
-                    new XElement(Values.ForgetKdrName, ForgetKDR),
+                    new XElement(Values.ForgetKdrName, ForgetKdr),
 
                     new XElement(Values.ForgetActiveQuestsName, ForgetActiveQuests),
                     new XElement(Values.ForgetInactiveQuestsName, ForgetInactiveQuests),
@@ -363,7 +363,7 @@ namespace Amnesia.Data {
                 ForgetLevelsAndSkills = ParseBool(config, Values.ForgetLevelsAndSkillsName, ForgetLevelsAndSkills);
                 ForgetBooks = ParseBool(config, Values.ForgetBooksName, ForgetBooks);
                 ForgetSchematics = ParseBool(config, Values.ForgetSchematicsName, ForgetSchematics);
-                ForgetKDR = ParseBool(config, Values.ForgetKdrName, ForgetKDR);
+                ForgetKdr = ParseBool(config, Values.ForgetKdrName, ForgetKdr);
 
                 ForgetActiveQuests = ParseBool(config, Values.ForgetActiveQuestsName, ForgetActiveQuests);
                 ForgetInactiveQuests = ParseBool(config, Values.ForgetInactiveQuestsName, ForgetInactiveQuests);

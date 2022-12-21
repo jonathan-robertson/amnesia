@@ -21,29 +21,16 @@ namespace Amnesia.Handlers {
                     return; // exit early, do not interrupt other mods from processing event
                 }
 
-                /*
-                 * TODO: add mechanic to handle final death differently for kill by zombie (or natural death) vs kill by player
-                 * Perhaps "Total Bag/Equipment Deletion if not killed by player or Total Bag/Equipment drop if killed by player"
-                 */
-
-                var livesRemaining = player.GetCVar(Values.RemainingLivesCVar);
-                log.Trace($"{clientInfo.InternalId.CombinedString} ({player.GetDebugName()}) died with {livesRemaining} lives remaining.");
-
-                // cap lives to maximum (sanity check)
-                if (livesRemaining > Config.MaxLives) {
-                    // "shouldn't" have to do this since we auto-push changes as they're made and on login... but just in case:
-                    player.SetCVar(Values.MaxLivesCVar, Config.MaxLives);
-                    livesRemaining = Config.MaxLives;
-                }
-
-                // Calculate and apply remaining lives
-                if (livesRemaining > 0) {
-                    player.SetCVar(Values.RemainingLivesCVar, livesRemaining - 1);
-                    log.Trace($"{clientInfo.InternalId.CombinedString} ({player.GetDebugName()}) lost a life: {livesRemaining}->{livesRemaining - 1}");
+                if (player.Buffs.HasBuff(Values.HardenedMemoryBuff)) {
+                    player.Buffs.RemoveBuff(Values.HardenedMemoryBuff);
+                    log.Info($"{clientInfo.InternalId.CombinedString} ({player.GetDebugName()}) died but will not be reset, thanks to Hardened Memory (which has now expired).");
                     return;
                 }
 
                 if ((Config.ForgetActiveQuests || Config.ForgetInactiveQuests) && QuestHelper.ResetQuests(player)) {
+                    // TODO: actually just redesign quest resets to issue remote admin call for client to run locally (an amazing feature!)
+                    // =================================================
+
                     // TODO: fix NRE that client experiences after getting kicked
                     // TODO: delay for a bit?
 
@@ -59,16 +46,8 @@ namespace Amnesia.Handlers {
                 }
 
                 // Reset Player
-                log.Trace($"{clientInfo.InternalId.CombinedString} ({player.GetDebugName()}) has lost all lives");
+                log.Info($"{clientInfo.InternalId.CombinedString} ({player.GetDebugName()}) died and has suffered memory loss.");
                 PlayerHelper.ResetPlayer(player);
-                log.Trace($"{clientInfo.InternalId.CombinedString} ({player.GetDebugName()}) is being reborn with {Config.MaxLives} new remaining lives");
-                player.SetCVar(Values.RemainingLivesCVar, Config.MaxLives);
-
-                _ = player.Buffs.AddBuff("buffAmnesiaMemoryLoss");
-                if (Config.EnablePositiveOutlookOnMemoryLoss) {
-                    log.Trace($"{clientInfo.InternalId.CombinedString} ({player.GetDebugName()}) receives the Positive Outlook buff");
-                    _ = player.Buffs.AddBuff(Values.PositiveOutlookBuff);
-                }
             } catch (Exception e) {
                 log.Error("Failed to handle OnSavePlayerData", e);
             }

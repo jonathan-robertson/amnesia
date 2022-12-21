@@ -73,7 +73,7 @@ namespace Amnesia.Commands {
                 SdtdConsole.Instance.Output("No players are currently online.");
             }
             foreach (var player in players) {
-                SdtdConsole.Instance.Output($"{player.entityId}. HardenedMemory: {player.Buffs.HasBuff("buffAmnesiaHardenedMemory")}, RemainingPositiveOutlookTime: {player.GetCVar(Values.PositiveOutlookRemTimeCVar)} ({player.GetDebugName()})");
+                SdtdConsole.Instance.Output($"{player.entityId}. {Values.HardenedMemoryBuff}: {player.Buffs.HasBuff(Values.HardenedMemoryBuff)}, {Values.PositiveOutlookRemTimeCVar}: {player.GetCVar(Values.PositiveOutlookRemTimeCVar)} ({player.GetDebugName()})");
             }
         }
 

@@ -10,6 +10,11 @@ namespace Amnesia.Data {
         public const string PositiveOutlookBuff = "buffAmnesiaPositiveOutlook";
         public const string BloodmoonLifeProtectionBuff = "buffAmnesiaBloodmoonLifeProtection";
         public const string PostBloodmoonLifeProtectionBuff = "buffAmnesiaPostBloodmoonLifeProtection";
+        public const string HardenedMemoryBuff = "buffAmnesiaHardenedMemory";
+        public const string NewbieCoatBuff = "buffNewbieCoat";
+        public const string MemoryLossNotificationBuff = "buffAmnesiaMemoryLoss";
+
+        public const string MemoryBoosterItemName = "drugAmnesiaMemoryBooster";
 
         public const string LongTermMemoryLevelName = "LongTermMemoryLevel";
         public const string PositiveOutlookMaxTimeName = "PositiveOutlookMaxTime";
