@@ -1,14 +1,12 @@
 ﻿using Amnesia.Data;
 using System;
+using UnityEngine;
 
 namespace Amnesia.Utilities {
     internal class PlayerHelper {
         private static readonly ModLog log = new ModLog(typeof(PlayerHelper));
 
-        /**
-         * <summary></summary>
-         * <remarks>Most of the following core logic was lifted from ActionResetPlayerData.PerformTargetAction</remarks>
-         */
+        /// <remarks>Most of the following core logic was lifted from ActionResetPlayerData.PerformTargetAction</remarks>
         public static void ResetPlayer(EntityPlayer player) {
 
             // TODO: setting maxLives at 0 screws everything up; fix it?
@@ -83,6 +81,43 @@ namespace Amnesia.Utilities {
                 player.bPlayerStatsChanged = true;
                 ConnectionManager.Instance.SendPackage(NetPackageManager.GetPackage<NetPackagePlayerStats>().Setup(player), false, player.entityId);
             }
+        }
+
+        public static float AddPositiveOutlookTime(EntityPlayer player, int valueToAdd) {
+            var playerRemTime = Math.Max(0, player.GetCVar(Values.PositiveOutlookRemTimeCVar));
+            var targetValue = Math.Min(playerRemTime + valueToAdd, Config.PositiveOutlookMaxTime);
+            player.SetCVar(Values.PositiveOutlookRemTimeCVar, targetValue);
+            if (!player.Buffs.HasBuff(Values.PositiveOutlookBuff)) {
+                player.Buffs.AddBuff(Values.PositiveOutlookBuff);
+            }
+            return targetValue;
+        }
+
+        /// <summary>
+        /// Give an item to the player, placing it in the player's inventory if possible.
+        /// </summary>
+        /// <param name="player">EntityPlayer to give item to.</param>
+        /// <param name="itemName">Name of the item to give the player.</param>
+        /// <param name="count">Number of items to give within a single stack (only works with stackable items).</param>
+        public static void GiveItem(EntityPlayer player, string itemName, int count = 1) {
+            var itemStack = new ItemStack(ItemClass.GetItem(itemName, true), count);
+            var clientInfo = ConnectionManager.Instance.Clients.ForEntityId(player.entityId);
+            GiveItemStack(clientInfo, player.GetBlockPosition(), itemStack);
+        }
+
+        internal static void GiveItemStack(ClientInfo clientInfo, Vector3i pos, ItemStack itemStack) {
+            var entityId = EntityFactory.nextEntityID++;
+            GameManager.Instance.World.SpawnEntityInWorld((EntityItem)EntityFactory.CreateEntity(new EntityCreationData {
+                entityClass = EntityClass.FromString("item"),
+                id = entityId,
+                itemStack = itemStack,
+                pos = pos,
+                rot = new Vector3(20f, 0f, 20f),
+                lifetime = 60f,
+                belongsPlayerId = clientInfo.entityId
+            }));
+            clientInfo.SendPackage(NetPackageManager.GetPackage<NetPackageEntityCollect>().Setup(entityId, clientInfo.entityId));
+            _ = GameManager.Instance.World.RemoveEntity(entityId, EnumRemoveEntityReason.Despawned);
         }
     }
 }

@@ -21,7 +21,7 @@ namespace Amnesia.Handlers {
                 }
                 switch (respawnType) {
                     case RespawnType.EnterMultiplayer: // first-time login for new player
-                        if (Config.EnablePositiveOutlook && respawnType == RespawnType.EnterMultiplayer) {
+                        if (Config.EnablePositiveOutlookOnMemoryLoss && respawnType == RespawnType.EnterMultiplayer) {
                             _ = player.Buffs.AddBuff(Values.PositiveOutlookBuff);
                         }
                         HandleStandardRespawnSteps(player);
@@ -52,7 +52,7 @@ namespace Amnesia.Handlers {
             player.SetCVar(Values.WarnAtLifeCVar, Config.WarnAtLife);
 
             // Remove Positive Outlook if admin disabled it since player's last login
-            if (!Config.EnablePositiveOutlook) {
+            if (!Config.EnablePositiveOutlookOnMemoryLoss) {
                 player.Buffs.RemoveBuff(Values.PositiveOutlookBuff);
             }
 

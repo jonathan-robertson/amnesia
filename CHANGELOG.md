@@ -5,10 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.10.0] - 2022-12-19
+## [1.0.0] - ?
 
 - refactor loops to enhance performance
 - remove xp bonus for golden juggernaut
+- remove second amnesia journal entry
+- remove hardcoded xp boosts for zombie kills
+- add admin configurable xp boosts for zombie kills
+- modify amnesia buffs
+- remove remaining lives mechanic
+- rename smelling salts -> memory booster
+- update newbie coat to continue until amnesia start
 
 ## [0.9.4] - 2022-11-16
 

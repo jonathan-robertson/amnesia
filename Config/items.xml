@@ -1,25 +1,18 @@
 ﻿<config>
     <append xpath="/items">
-        <item name="amnesiaSmellingSalts">
+        <item name="drugAmnesiaMemoryBooster">
             <property name="Tags" value="medical" />
 
-            <property name="DisplayType" value="amnesiaSmellingSalts" />
-            <property name="DescriptionKey" value="amnesiaSmellingSaltsDesc" />
-            <property name="CustomIcon" value="resourceTestosteroneExtract" />
-            <property name="CustomIconTint" value="17,17,17" />
-            <property name="TintColor" value="17,17,17" />
+            <property name="DescriptionKey" value="drugAmnesiaMemoryBoosterDesc" />
+            <property name="CustomIcon" value="drugPainkillers" />
+            <property name="CustomIconTint" value="0,127,255" />
+            <property name="TintColor" value="0,127,255" />
             <property name="Stacknumber" value="1" />
             <property name="EconomicValue" value="20000" />
             <property name="Weight" value="0" />
             <property name="DegradationBreaksAfter" value="false" />
             <property name="NoScrapping" value="true" />
             <property name="SellableToTrader" value="false" />
-
-            <!-- TODO: should we disable Candrop? Could be annoying -->
-            <property name="Candrop" value="false" />
-            <!-- TODO: prevent losing this in backpack/ -->
-
-            <!-- CanDrop=false, CanStack=false, KeepOnDeath=true, CanPlaceInContainer=false -->
 
             <property name="HoldType" value="16" />
             <property name="Meshfile" value="#Other/Items?Health/painkillersPrefab.prefab" />
@@ -30,14 +23,13 @@
                 <property name="Class" value="Eat" />
                 <property name="Delay" value="1.0" />
                 <property name="Use_time" value="..." />
-                <property name="Sound_start" value="player_blooddraw" />
-                <requirement name="CVarCompare" cvar="amnesiaRemainingLives" operation="LT" value="@amnesiaMaxLives" />
+                <property name="Sound_start" value="player_painkillers" />
+                <requirement name="!HasBuff" buff="buffAmnesiaHardenedMemory" />
+                <requirement name="PlayerLevel" operation="GT" value="50" />
             </property>
             <effect_group tiered="false">
                 <triggered_effect trigger="onSelfPrimaryActionEnd" action="PlaySound" sound="spawnInStinger" />
-                <triggered_effect trigger="onSelfPrimaryActionEnd" action="ModifyCVar" cvar="amnesiaRemainingLives" operation="add" value="1" />
-                <display_value name="lifeRestoreCount" value="1" />
-                <!--  -->
+                <triggered_effect trigger="onSelfPrimaryActionEnd" action="AddBuff" buff="buffAmnesiaHardenedMemory" />
             </effect_group>
         </item>
     </append>

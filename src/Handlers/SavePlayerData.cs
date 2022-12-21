@@ -65,7 +65,7 @@ namespace Amnesia.Handlers {
                 player.SetCVar(Values.RemainingLivesCVar, Config.MaxLives);
 
                 _ = player.Buffs.AddBuff("buffAmnesiaMemoryLoss");
-                if (Config.EnablePositiveOutlook) {
+                if (Config.EnablePositiveOutlookOnMemoryLoss) {
                     log.Trace($"{clientInfo.InternalId.CombinedString} ({player.GetDebugName()}) receives the Positive Outlook buff");
                     _ = player.Buffs.AddBuff(Values.PositiveOutlookBuff);
                 }
