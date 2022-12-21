@@ -21,9 +21,7 @@ namespace Amnesia.Handlers {
                 }
                 switch (respawnType) {
                     case RespawnType.EnterMultiplayer: // first-time login for new player
-                        if (Config.EnablePositiveOutlookOnMemoryLoss && respawnType == RespawnType.EnterMultiplayer) {
-                            _ = player.Buffs.AddBuff(Values.PositiveOutlookBuff);
-                        }
+                        PlayerHelper.AddPositiveOutlookTime(player, Config.PositiveOutlookTimeOnFirstJoin);
                         HandleStandardRespawnSteps(player);
                         break;
                     case RespawnType.JoinMultiplayer: // existing player rejoining
@@ -32,6 +30,7 @@ namespace Amnesia.Handlers {
                         HandleStandardRespawnSteps(player);
                         break;
                     case RespawnType.Died: // existing player returned from death
+                        PlayerHelper.AddPositiveOutlookTime(player, Config.PositiveOutlookTimeOnMemoryLoss);
                         HandleStandardRespawnSteps(player);
                         break;
                 }
@@ -48,11 +47,8 @@ namespace Amnesia.Handlers {
          */
         private static void HandleStandardRespawnSteps(EntityPlayer player) {
 
-            // Refresh rule for when to warn
-            player.SetCVar(Values.WarnAtLifeCVar, Config.WarnAtLife);
-
             // Remove Positive Outlook if admin disabled it since player's last login
-            if (!Config.EnablePositiveOutlookOnMemoryLoss) {
+            if (Config.PositiveOutlookTimeOnMemoryLoss == 0 && player.Buffs.HasBuff(Values.PositiveOutlookBuff)) {
                 player.Buffs.RemoveBuff(Values.PositiveOutlookBuff);
             }
 
@@ -69,9 +65,6 @@ namespace Amnesia.Handlers {
                 player.Buffs.RemoveBuff(Values.BloodmoonLifeProtectionBuff);
                 player.Buffs.RemoveBuff(Values.PostBloodmoonLifeProtectionBuff);
             }
-
-            // Update player's max/remaining lives to fit new MaxLives changes if changed since last login
-            Config.AdjustToMaxOrRemainingLivesChange(player);
         }
     }
 }
