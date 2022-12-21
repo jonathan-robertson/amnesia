@@ -1,4 +1,5 @@
-﻿using Amnesia.Utilities;
+﻿using Amnesia.Data;
+using Amnesia.Utilities;
 using System;
 
 namespace Amnesia.Handlers {
@@ -8,28 +9,18 @@ namespace Amnesia.Handlers {
         internal static void Handle(Entity killedEntity, Entity killerEntity) {
             try {
                 if (killerEntity == null || killerEntity.entityType != EntityType.Player) { return; }
-                switch (killedEntity.GetDebugName()) {
-                    case "ZombieJuggernaut":
-                        TriggerKillAnnouncementAndBonus(killerEntity.GetDebugName(), "[ff4500]Juggernaut", 15);
-                        break;
-                    case "zombieScorcher":
-                        TriggerKillAnnouncementAndBonus(killerEntity.GetDebugName(), "[e32636]Scorcher", 5);
-                        break;
-                    case "zombieDemolition":
-                        TriggerKillAnnouncementAndBonus(killerEntity.GetDebugName(), "[ffbf00]Demolition", 1);
-                        break;
+                if (!Config.PositiveOutlookTimeOnKill.TryGetValue(killedEntity.GetDebugName(), out var seconds)) {
+                    return;
+                }
+
+                var minutes = seconds / 60f;
+                MessagingSystem.Broadcast($"[007fff]{killerEntity.GetDebugName()} just killed a {killedEntity.GetDebugName()}!");
+                MessagingSystem.Broadcast($"[007fff]Relief washes over each survivor as a newfound confidence takes hold: [00ff80]all online players receive Double XP for {(minutes > 1 ? minutes + " Minutes!" : seconds + " Seconds!")}");
+                foreach (var player in GameManager.Instance.World.Players.list) {
+                    PlayerHelper.AddPositiveOutlookTime(player, seconds);
                 }
             } catch (Exception e) {
                 log.Error("HandleEntityKilled", e);
-            }
-        }
-
-        internal static void TriggerKillAnnouncementAndBonus(string playerName, string zombieName, int minutes) {
-            MessagingSystem.Broadcast($"[007fff]{playerName} just killed a {zombieName}[007fff]!");
-            MessagingSystem.Broadcast($"[007fff]Relief washes over each survivor as a newfound confidence takes hold: [00ff80]all online players receive Double XP for {minutes} Minutes!");
-            var players = GameManager.Instance.World.Players.list;
-            for (var i = 0; i < players.Count; i++) {
-                _ = players[i].Buffs.AddBuff($"triggerAmnesiaPositiveOutlookBoost{minutes}");
             }
         }
     }
