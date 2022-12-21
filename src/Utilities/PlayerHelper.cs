@@ -84,6 +84,9 @@ namespace Amnesia.Utilities {
         }
 
         public static float AddPositiveOutlookTime(EntityPlayer player, int valueToAdd) {
+            if (valueToAdd == 0) {
+                return 0;
+            }
             var playerRemTime = Math.Max(0, player.GetCVar(Values.PositiveOutlookRemTimeCVar));
             var targetValue = Math.Min(playerRemTime + valueToAdd, Config.PositiveOutlookMaxTime);
             player.SetCVar(Values.PositiveOutlookRemTimeCVar, targetValue);
