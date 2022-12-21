@@ -22,12 +22,13 @@ namespace Amnesia.Handlers {
                             log.Trace($"{clientInfo.InternalId.CombinedString} ({player.GetDebugName()}) died and did not have bloodmoon life protection.");
                         }
 
-                        // TODO: add admin option for this
                         if (mainName != secondaryName) {
                             var killerClient = ConnectionManager.Instance.Clients.GetForNameOrId(secondaryName);
                             if (killerClient != null) {
-                                log.Trace($"{clientInfo.InternalId.CombinedString} ({player.GetDebugName()}) was killed by {secondaryName} but this server has pvp deaths set to not remove lives.");
-                                return true; // being killed in pvp doesn't count against player
+                                if (Config.ProtectMemoryDuringPvp) {
+                                    log.Trace($"{clientInfo.InternalId.CombinedString} ({player.GetDebugName()}) was killed by {secondaryName} but this server has pvp deaths set to not remove lives.");
+                                    return true; // being killed in pvp doesn't count against player
+                                }
                             }
                         }
 
