@@ -7,11 +7,11 @@ namespace Amnesia.Utilities {
     internal class QuestHelper {
         private static readonly ModLog<QuestHelper> log = new ModLog<QuestHelper>();
 
-        /**
-         * <summary>Remove all quests from the given player based on admin configuration.</summary>
-         * <param name="player">The player to remove quests for.</param>
-         * <returns>Whether any quests were removed.</returns>
-         */
+        /// <summary>
+        /// Remove all quests from the given player based on admin configuration.
+        /// </summary>
+        /// <param name="player">The player to remove quests for.</param>
+        /// <returns>Whether any quests were removed.</returns>
         public static bool ResetQuests(EntityPlayer player) {
             try {
                 var changed = false;
@@ -76,10 +76,12 @@ namespace Amnesia.Utilities {
             }
             return true;
         }
-
-        /**
-         * <summary>Server-safe version of quest.HandleUnlockPOI</summary>
-         */
+        
+        /// <summary>
+        /// Server-safe version of quest.HandleUnlockPOI.
+        /// </summary>
+        /// <param name="playerEntityId">Entity Id to unlock POI with.</param>
+        /// <param name="quest">Quest object to unlock.</param>
         private static void HandleUnlockPOI(int playerEntityId, Quest quest) {
             if (quest.SharedOwnerID == -1) {
                 if (quest.GetPositionData(out var pos, PositionDataTypes.POIPosition)) {
@@ -89,7 +91,6 @@ namespace Amnesia.Utilities {
         }
 
         private static void PreProcessTrickyQuestObjectives(EntityPlayer player, Quest quest) {
-
             for (var i = 0; i < quest.Objectives.Count; i++) {
                 if (quest.Objectives[i] is ObjectiveFetch ||
                     quest.Objectives[i] is ObjectiveClearSleepers ||
@@ -155,10 +156,12 @@ Objective Type: {quest.Objectives[i].GetType().Name}", e);
 
             _ = player.bag.DecItem(expectedItem, 1, false);
         }
-
-        /**
-         * <summary>Server-safe version of QuestJournal.HandlePartyRemoveQuest</summary>
-         */
+        
+        /// <summary>
+        /// Server-safe version of QuestJournal.HandlePartyRemoveQuest.
+        /// </summary>
+        /// <param name="player">Player to remove quest for.</param>
+        /// <param name="quest">Quest to remove.</param>
         private static void HandlePartyRemoveQuest(EntityPlayer player, Quest quest) {
             if (player.IsInParty() && quest.SharedOwnerID == -1) {
                 for (var i = 0; i < player.Party.MemberList.Count; i++) {

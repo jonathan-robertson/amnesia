@@ -6,13 +6,13 @@ namespace Amnesia.Handlers {
     internal class PlayerSpawnedInWorld {
         private static readonly ModLog<PlayerSpawnedInWorld> log = new ModLog<PlayerSpawnedInWorld>();
 
-        /**
-         * <summary>Handle player spawning into world.</summary>
-         * <param name="clientInfo">The client currently spawning in.</param>
-         * <param name="respawnType">The type of respawn.</param>
-         * <param name="pos">The position this player is respawning to.</param>
-         * <remarks>This mod supports being dropped into an existing game, thanks to how we handle this process.</remarks>
-         */
+        /// <summary>
+        /// Handle player spawning into world.
+        /// </summary>
+        /// <param name="clientInfo">The client currently spawning in.</param>
+        /// <param name="respawnType">The type of respawn.</param>
+        /// <param name="pos">The position this player is respawning to.</param>
+        /// <remarks>This mod supports being dropped into an existing game, thanks to how we handle this process.</remarks>
         public static void Handle(ClientInfo clientInfo, RespawnType respawnType, Vector3i pos) {
             if (!Config.Loaded) { return; }
             try {
@@ -38,13 +38,12 @@ namespace Amnesia.Handlers {
                 log.Error("Failed to handle PlayerSpawnedInWorld event.", e);
             }
         }
-
-        /**
-         * <summary>Process steps common to enter/join/death.</summary>
-         * <param name="player">Player to process steps for.</param>
-         * <param name="respawnType">The type of respawn (enter/join/death)</param>
-         * <remarks>This method also handles cleanup when player was already dead on Enter/Join (happens if player logged out while dead).</remarks>
-         */
+        
+        /// <summary>
+        /// Process steps common to enter/join/death.
+        /// </summary>
+        /// <param name="player">Player to process steps for.</param>
+        /// <remarks>This method also handles cleanup when player was already dead on Enter/Join (happens if player logged out while dead).</remarks>
         private static void HandleStandardRespawnSteps(EntityPlayer player) {
 
             // Ensure joining/respawning players have their constants updated
