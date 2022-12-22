@@ -15,6 +15,11 @@ namespace Amnesia.Handlers {
                             return true; // player not present; skip
                         }
 
+                        if (player.Progression.Level <= Config.LongTermMemoryLevel) {
+                            log.Trace($"{clientInfo.InternalId.CombinedString} ({player.GetDebugName()}) died but did not exceed the configured LongTermMemoryLevel of {Config.LongTermMemoryLevel}");
+                            return true;
+                        }
+
                         if (player.Buffs.HasBuff(Values.BloodmoonLifeProtectionBuff) || player.Buffs.HasBuff(Values.PostBloodmoonLifeProtectionBuff)) {
                             log.Trace($"{clientInfo.InternalId.CombinedString} ({player.GetDebugName()}) died but had bloodmoon life protection.");
                             return true; // player had protection
