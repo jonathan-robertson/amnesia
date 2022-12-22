@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Security.Permissions;
 using System.Xml.Linq;
 
 namespace Amnesia.Data {
@@ -14,7 +13,6 @@ namespace Amnesia.Data {
         public static string QuestResetKickReason { get; private set; } = "This server is configured to erase some settings from your player file when you die for the final time. Please reconnect whenever you're ready.";
 
         public static bool Loaded { get; private set; } = false;
-        
 
         /// <summary>The level players will be reset to on memory loss and the level at which losing memory on death starts.</summary>
         public static int LongTermMemoryLevel { get; private set; } = 1;
@@ -79,12 +77,12 @@ namespace Amnesia.Data {
                 return;
             }
             LongTermMemoryLevel = Math.Min(1, value);
-            Save();
+            _ = Save();
             foreach (var player in GameManager.Instance.World.Players.list) {
                 player.SetCVar(Values.LongTermMemoryLevelCVar, LongTermMemoryLevel);
                 if (player.Progression.Level <= LongTermMemoryLevel) {
                     if (!player.Buffs.HasBuff(Values.NewbieCoatBuff)) {
-                        player.Buffs.AddBuff(Values.NewbieCoatBuff);
+                        _ = player.Buffs.AddBuff(Values.NewbieCoatBuff);
                     }
                     if (player.Buffs.HasBuff(Values.HardenedMemoryBuff)) {
                         player.Buffs.RemoveBuff(Values.HardenedMemoryBuff);
@@ -103,7 +101,7 @@ namespace Amnesia.Data {
                 return;
             }
             PositiveOutlookMaxTime = Math.Min(0, timeInSeconds);
-            Save();
+            _ = Save();
             foreach (var player in GameManager.Instance.World.Players.list) {
                 var playerRemTime = player.GetCVar(Values.PositiveOutlookRemTimeCVar);
                 if (playerRemTime > 0) {
@@ -128,7 +126,7 @@ namespace Amnesia.Data {
                 return;
             }
             PositiveOutlookTimeOnFirstJoin = Math.Max(PositiveOutlookMaxTime, Math.Min(0, timeInSeconds));
-            Save();
+            _ = Save();
         }
 
         /// <summary>
@@ -141,7 +139,7 @@ namespace Amnesia.Data {
                 return;
             }
             PositiveOutlookTimeOnMemoryLoss = Math.Max(PositiveOutlookMaxTime, Math.Min(0, timeInSeconds));
-            Save();
+            _ = Save();
         }
 
         /// <summary>
@@ -150,12 +148,12 @@ namespace Amnesia.Data {
         /// <param name="name">Name of the entity to trigger on.</param>
         /// <param name="timeInSeconds">Number of seconds to grant xp boost for.</param>
         public static void AddPositiveOutlookTimeOnKill(string name, int timeInSeconds) {
-            PositiveOutlookTimeOnKill.TryGetValue(name, out var existingTime);
+            _ = PositiveOutlookTimeOnKill.TryGetValue(name, out var existingTime);
             if (existingTime == timeInSeconds) {
                 return;
             }
             PositiveOutlookTimeOnKill[name] = Math.Max(PositiveOutlookMaxTime, Math.Min(1, timeInSeconds));
-            Save();
+            _ = Save();
         }
 
         /// <summary>
@@ -166,8 +164,8 @@ namespace Amnesia.Data {
             if (!PositiveOutlookTimeOnKill.ContainsKey(name)) {
                 return;
             }
-            PositiveOutlookTimeOnKill.Remove(name);
-            Save();
+            _ = PositiveOutlookTimeOnKill.Remove(name);
+            _ = Save();
         }
 
         /// <summary>
@@ -178,7 +176,7 @@ namespace Amnesia.Data {
                 return;
             }
             PositiveOutlookTimeOnKill.Clear();
-            Save();
+            _ = Save();
         }
 
         /// <summary>
@@ -212,7 +210,7 @@ namespace Amnesia.Data {
                 return;
             }
             ProtectMemoryDuringPvp = value;
-            Save();
+            _ = Save();
         }
 
         /// <summary>
@@ -250,7 +248,7 @@ namespace Amnesia.Data {
             ForgetSchematics = value;
             _ = Save();
         }
-        
+
         /// <summary>
         /// Enable or disable ForgetKdr on memory loss.
         /// </summary>

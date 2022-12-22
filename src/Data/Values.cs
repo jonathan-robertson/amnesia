@@ -31,7 +31,6 @@ namespace Amnesia.Data {
         public const string ForgetInactiveQuestsName = "ForgetInactiveQuests";
         public const string ForgetIntroQuestsName = "ForgetIntroQuests";
 
-
         public const string DisconnectionWarning = "\n  - [!] SYSTEM WILL DISCONNECT PLAYER ON FINAL DEATH IF ENABLED!";
         public const string ExperimentalWarning = "\n  - [!] EXPERIMENTAL FEATURE - USE AT YOUR OWN RISK...";
         public static readonly Dictionary<string, string> FieldNamesAndDescriptionsDict = new Dictionary<string, string> {

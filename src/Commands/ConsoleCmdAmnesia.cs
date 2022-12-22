@@ -3,7 +3,6 @@ using Amnesia.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using static WeatherManager;
 
 namespace Amnesia.Commands {
     internal class ConsoleCmdAmnesia : ConsoleCmdAbstract {
@@ -91,7 +90,7 @@ namespace Amnesia.Commands {
         }
 
         private void HandleGrant(List<string> @params) {
-            if (!int.TryParse(@params[2], out int valueToAdd)) {
+            if (!int.TryParse(@params[2], out var valueToAdd)) {
                 SdtdConsole.Instance.Output("Unable to parse valueToAdd: must be of type int");
                 return;
             }
@@ -172,7 +171,7 @@ namespace Amnesia.Commands {
             if (@params.Count == 2) {
                 SdtdConsole.Instance.Output($@"{Values.FieldNamesAndDescriptionsDict[Values.LongTermMemoryLevelName]}
 {Commands[0]} set {Values.LongTermMemoryLevelName} <level>");
-                return; 
+                return;
             }
             if (!int.TryParse(@params[2], out var value)) {
                 SdtdConsole.Instance.Output($"Unable to parse value; expecting bool");

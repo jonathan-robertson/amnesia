@@ -21,7 +21,7 @@ namespace Amnesia.Handlers {
                 }
                 switch (respawnType) {
                     case RespawnType.EnterMultiplayer: // first-time login for new player
-                        PlayerHelper.AddPositiveOutlookTime(player, Config.PositiveOutlookTimeOnFirstJoin);
+                        _ = PlayerHelper.AddPositiveOutlookTime(player, Config.PositiveOutlookTimeOnFirstJoin);
                         HandleStandardRespawnSteps(player);
                         break;
                     case RespawnType.JoinMultiplayer: // existing player rejoining
@@ -30,7 +30,7 @@ namespace Amnesia.Handlers {
                         HandleStandardRespawnSteps(player);
                         break;
                     case RespawnType.Died: // existing player returned from death
-                        PlayerHelper.AddPositiveOutlookTime(player, Config.PositiveOutlookTimeOnMemoryLoss);
+                        _ = PlayerHelper.AddPositiveOutlookTime(player, Config.PositiveOutlookTimeOnMemoryLoss);
                         HandleStandardRespawnSteps(player);
                         break;
                 }

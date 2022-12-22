@@ -92,7 +92,7 @@ namespace Amnesia.Utilities {
             var targetValue = Math.Min(playerRemTime + valueToAdd, Config.PositiveOutlookMaxTime);
             player.SetCVar(Values.PositiveOutlookRemTimeCVar, targetValue);
             if (!player.Buffs.HasBuff(Values.PositiveOutlookBuff)) {
-                player.Buffs.AddBuff(Values.PositiveOutlookBuff);
+                _ = player.Buffs.AddBuff(Values.PositiveOutlookBuff);
             }
             return targetValue;
         }
