@@ -3,10 +3,13 @@ using System.Linq;
 
 namespace Amnesia.Data {
     internal class Values {
+
+        // cvars
         public const string LongTermMemoryLevelCVar = "amnesiaLongTermMemoryLevel";
         public const string PositiveOutlookMaxTimeCVar = "amnesiaPositiveOutlookMaxTime";
         public const string PositiveOutlookRemTimeCVar = "amnesiaPositiveOutlookRemTime";
 
+        // buffs
         public const string PositiveOutlookBuff = "buffAmnesiaPositiveOutlook";
         public const string BloodmoonLifeProtectionBuff = "buffAmnesiaBloodmoonLifeProtection";
         public const string PostBloodmoonLifeProtectionBuff = "buffAmnesiaPostBloodmoonLifeProtection";
@@ -14,8 +17,10 @@ namespace Amnesia.Data {
         public const string NewbieCoatBuff = "buffNewbieCoat";
         public const string MemoryLossNotificationBuff = "buffAmnesiaMemoryLoss";
 
+        // items
         public const string MemoryBoosterItemName = "drugAmnesiaMemoryBooster";
 
+        // names
         public const string LongTermMemoryLevelName = "LongTermMemoryLevel";
         public const string PositiveOutlookMaxTimeName = "PositiveOutlookMaxTime";
         public const string PositiveOutlookTimeOnFirstJoinName = "PositiveOutlookTimeOnFirstJoin";
