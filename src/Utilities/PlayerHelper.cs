@@ -29,26 +29,27 @@ namespace Amnesia.Utilities {
 
             if (Config.ForgetLevelsAndSkills) {
                 player.Progression.ResetProgression(Config.ForgetBooks);
-                player.Progression.Level = 1;
+                player.Progression.Level = Config.LongTermMemoryLevel;
                 player.Progression.ExpToNextLevel = player.Progression.GetExpForNextLevel();
+                player.Progression.SkillPoints = Config.LongTermMemoryLevel - 1;
+
+                // Zero out xp debt; the reset has caused enough suffering ;)
                 player.Progression.ExpDeficit = 0;
-                player.Progression.SkillPoints = 0;
+                player.SetCVar("_expdeficit", 0);
 
                 // Return all skill points rewarded from completed quest; should cover vanilla quest_BasicSurvival8, for example
                 if (!Config.ForgetIntroQuests) {
                     try {
-                        var newSkillPoints = 0;
                         for (var i = 0; i < player.QuestJournal.quests.Count; i++) {
                             if (player.QuestJournal.quests[i].CurrentState == Quest.QuestState.Completed) {
                                 var rewards = player.QuestJournal.quests[i].Rewards;
                                 for (var j = 0; j < rewards.Count; j++) {
                                     if (rewards[j] is RewardSkillPoints) {
-                                        newSkillPoints += Convert.ToInt32((rewards[j] as RewardSkillPoints).Value);
+                                        player.Progression.SkillPoints += Convert.ToInt32((rewards[j] as RewardSkillPoints).Value);
                                     }
                                 }
                             }
                         }
-                        player.Progression.SkillPoints = newSkillPoints;
                     } catch (Exception e) {
                         log.Error("Failed to scan for completed skillpoints.", e);
                     }
@@ -58,14 +59,12 @@ namespace Amnesia.Utilities {
                 player.SetCVar("$LastPlayerLevel", player.Progression.Level);
 
                 // Flush xp tracking counters
-                player.SetCVar("_xpFromLoot", player.Progression.Level);
-                player.SetCVar("_xpFromHarvesting", player.Progression.Level);
-                player.SetCVar("_xpFromKill", player.Progression.Level);
-                player.SetCVar("$xpFromLootLast", player.Progression.Level);
-                player.SetCVar("$xpFromHarvestingLast", player.Progression.Level);
-                player.SetCVar("$xpFromKillLast", player.Progression.Level);
-
-                // TODO: zero out xp debt
+                player.SetCVar("_xpFromLoot", 0);
+                player.SetCVar("_xpFromHarvesting", 0);
+                player.SetCVar("_xpFromKill", 0);
+                player.SetCVar("$xpFromLootLast", 0);
+                player.SetCVar("$xpFromHarvestingLast", 0);
+                player.SetCVar("$xpFromKillLast", 0);
 
                 needsSave = true;
             }
