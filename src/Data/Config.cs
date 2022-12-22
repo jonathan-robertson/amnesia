@@ -24,7 +24,12 @@ namespace Amnesia.Data {
         /// <summary>Length of time for buff that boosts xp growth on memory loss.</summary>
         public static int PositiveOutlookTimeOnMemoryLoss { get; private set; } = 3600; // 1 hr
         /// <summary>Length of time for server-wide xp boost buff when killing specific zombies.</summary>
-        public static Dictionary<string, int> PositiveOutlookTimeOnKill { get; private set; } = new Dictionary<string, int>();
+        public static Dictionary<string, TimeOnKill> PositiveOutlookTimeOnKill { get; private set; } = new Dictionary<string, TimeOnKill>();
+        public struct TimeOnKill {
+            public string name;
+            public string caption;
+            public int value;
+        };
 
         /// <summary>Whether to prevent memory loss during blood moon.</summary>
         public static bool ProtectMemoryDuringBloodmoon { get; private set; } = true;
@@ -47,13 +52,13 @@ namespace Amnesia.Data {
         /// <summary>Whether the intro quests should be forgotten/reset on memory loss.</summary>
         public static bool ForgetIntroQuests { get; private set; } = false;
 
-        public static string AsString() => $@"=== Amnesia Configuration ===
+        public static string AsString() =>  $@"=== Amnesia Configuration ===
 {Values.LongTermMemoryLevelName}: {LongTermMemoryLevel}
 
 {Values.PositiveOutlookMaxTimeName}: {PositiveOutlookMaxTime}
 {Values.PositiveOutlookTimeOnFirstJoinName}: {PositiveOutlookTimeOnFirstJoin}
 {Values.PositiveOutlookTimeOnMemoryLossName}: {PositiveOutlookTimeOnMemoryLoss}
-{Values.PositiveOutlookTimeOnKillName}: {(PositiveOutlookTimeOnKill.Count == 0 ? "None" : "{ " + string.Join(",", PositiveOutlookTimeOnKill.Select(kv => kv.Key + ": " + kv.Value).ToArray()) + " }")}
+{Values.PositiveOutlookTimeOnKillName}: {(PositiveOutlookTimeOnKill.Count == 0 ? "None" : "{ " + string.Join(",", PositiveOutlookTimeOnKill.Select(kvp => kvp.Key + ": name=" + kvp.Value.name + ", timeInSeconds=" + kvp.Value.value).ToArray()) + " }")}
 
 {Values.ProtectMemoryDuringBloodmoonName}: {ProtectMemoryDuringBloodmoon}
 {Values.ProtectMemoryDuringPvpName}: {ProtectMemoryDuringPvp}
@@ -71,12 +76,12 @@ namespace Amnesia.Data {
         /// <summary>
         /// Update the long term memory level. This will determine when Amnesia activates and the level players will be reset to on death.
         /// </summary>
-        /// <param name="value">The new level to use for long term memory.</param>
+        /// <param key="value">The new level to use for long term memory.</param>
         public static void SetLongTermMemoryLevel(int value) {
             if (LongTermMemoryLevel == value) {
                 return;
             }
-            LongTermMemoryLevel = Math.Min(1, value);
+            LongTermMemoryLevel = Math.Max(1, value);
             _ = Save();
             foreach (var player in GameManager.Instance.World.Players.list) {
                 player.SetCVar(Values.LongTermMemoryLevelCVar, LongTermMemoryLevel);
@@ -95,12 +100,12 @@ namespace Amnesia.Data {
         /// <summary>
         /// Generously update max time for the positive outlook buff.
         /// </summary>
-        /// <param name="timeInSeconds">The new value to limit max time to (generally represented as timeInSeconds).</param>
+        /// <param key="timeInSeconds">The new value to limit max time to (generally represented as timeInSeconds).</param>
         public static void SetPositiveOutlookMaxTime(int timeInSeconds) {
             if (PositiveOutlookMaxTime == timeInSeconds) {
                 return;
             }
-            PositiveOutlookMaxTime = Math.Min(0, timeInSeconds);
+            PositiveOutlookMaxTime = Math.Max(0, timeInSeconds);
             _ = Save();
             foreach (var player in GameManager.Instance.World.Players.list) {
                 var playerRemTime = player.GetCVar(Values.PositiveOutlookRemTimeCVar);
@@ -119,47 +124,56 @@ namespace Amnesia.Data {
         /// <summary>
         /// Update the Positive Outlook time granted when a player first joins the server.
         /// </summary>
-        /// <param name="timeInSeconds">The number of seconds to grant.</param>
+        /// <param key="timeInSeconds">The number of seconds to grant.</param>
         /// <remarks>Set to <= zero to disable.</remarks>
         public static void SetPositiveOutlookTimeOnFirstJoin(int timeInSeconds) {
             if (PositiveOutlookTimeOnFirstJoin == timeInSeconds) {
                 return;
             }
-            PositiveOutlookTimeOnFirstJoin = Math.Max(PositiveOutlookMaxTime, Math.Min(0, timeInSeconds));
+            PositiveOutlookTimeOnFirstJoin = Math.Min(PositiveOutlookMaxTime, Math.Max(0, timeInSeconds));
             _ = Save();
         }
 
         /// <summary>
         /// Update the Positive Outlook time granted when a player loses memory.
         /// </summary>
-        /// <param name="timeInSeconds">The number of seconds to grant.</param>
+        /// <param key="timeInSeconds">The number of seconds to grant.</param>
         /// <remarks>Set to <= zero to disable.</remarks>
         public static void SetPositiveOutlookTimeOnMemoryLoss(int timeInSeconds) {
             if (PositiveOutlookTimeOnMemoryLoss == timeInSeconds) {
                 return;
             }
-            PositiveOutlookTimeOnMemoryLoss = Math.Max(PositiveOutlookMaxTime, Math.Min(0, timeInSeconds));
+            PositiveOutlookTimeOnMemoryLoss = Math.Min(PositiveOutlookMaxTime, Math.Max(0, timeInSeconds));
             _ = Save();
         }
 
         /// <summary>
-        /// Add a zombie or animal name; killing this entity will provide extra time for Positive Outlook to everyone on the server.
+        /// Add a zombie or animal key; killing this entity will provide extra time for Positive Outlook to everyone on the server.
         /// </summary>
-        /// <param name="name">Name of the entity to trigger on.</param>
-        /// <param name="timeInSeconds">Number of seconds to grant xp boost for.</param>
-        public static void AddPositiveOutlookTimeOnKill(string name, int timeInSeconds) {
-            _ = PositiveOutlookTimeOnKill.TryGetValue(name, out var existingTime);
-            if (existingTime == timeInSeconds) {
-                return;
+        /// <param key="key">Lookup key for the entry.</param>
+        /// <param key="name">Name of the entity to trigger on.</param>
+        /// <param key="timeInSeconds">Number of seconds to grant xp boost for.</param>
+        public static void AddPositiveOutlookTimeOnKill(string name, string caption, int timeInSeconds) {
+            if (PositiveOutlookTimeOnKill.TryGetValue(name, out var entry)) {
+                if (entry.caption == caption && entry.value == timeInSeconds) {
+                    return;
+                }
+                entry.name = name;
+                entry.caption = caption;
+                entry.value = Math.Min(PositiveOutlookMaxTime, Math.Max(1, timeInSeconds));
+            } else {
+                PositiveOutlookTimeOnKill[name] = new TimeOnKill {
+                    name = name,
+                    value = Math.Min(PositiveOutlookMaxTime, Math.Max(1, timeInSeconds))
+                };
             }
-            PositiveOutlookTimeOnKill[name] = Math.Max(PositiveOutlookMaxTime, Math.Min(1, timeInSeconds));
             _ = Save();
         }
 
         /// <summary>
-        /// Remove a zombie or animal by name from the Time On Kill list.
+        /// Remove a zombie or animal by key from the Time On Kill list.
         /// </summary>
-        /// <param name="name">Name of the entity to remove the trigger for.</param>
+        /// <param key="name">Name of the entity to remove the trigger for.</param>
         public static void RemPositiveOutlookTimeOnKill(string name) {
             if (!PositiveOutlookTimeOnKill.ContainsKey(name)) {
                 return;
@@ -182,7 +196,7 @@ namespace Amnesia.Data {
         /// <summary>
         /// Enable or disable whether memory can be lost during Blood Moon.
         /// </summary>
-        /// <param name="value">New value to use.</param>
+        /// <param key="value">New value to use.</param>
         public static void SetProtectMemoryDuringBloodmoon(bool value) {
             if (ProtectMemoryDuringBloodmoon == value) {
                 return;
@@ -204,7 +218,7 @@ namespace Amnesia.Data {
         /// <summary>
         /// Enable or disable whether memory can be lost to PVP.
         /// </summary>
-        /// <param name="value">New value to use.</param>
+        /// <param key="value">New value to use.</param>
         public static void SetProtectMemoryDuringPvp(bool value) {
             if (ProtectMemoryDuringPvp == value) {
                 return;
@@ -216,7 +230,7 @@ namespace Amnesia.Data {
         /// <summary>
         /// Enable or disable ForgetLevelsAndSkills on memory loss.
         /// </summary>
-        /// <param name="value">New value to use.</param>
+        /// <param key="value">New value to use.</param>
         public static void SetForgetLevelsAndSkills(bool value) {
             if (ForgetLevelsAndSkills == value) {
                 return;
@@ -228,7 +242,7 @@ namespace Amnesia.Data {
         /// <summary>
         /// Enable or disable ForgetBooks on memory loss.
         /// </summary>
-        /// <param name="value">New value to use.</param>
+        /// <param key="value">New value to use.</param>
         public static void SetForgetBooks(bool value) {
             if (ForgetBooks == value) {
                 return;
@@ -240,7 +254,7 @@ namespace Amnesia.Data {
         /// <summary>
         /// Enable or disable ForgetSchematics on memory loss.
         /// </summary>
-        /// <param name="value">New value to use.</param>
+        /// <param key="value">New value to use.</param>
         public static void SetForgetSchematics(bool value) {
             if (ForgetSchematics == value) {
                 return;
@@ -252,7 +266,7 @@ namespace Amnesia.Data {
         /// <summary>
         /// Enable or disable ForgetKdr on memory loss.
         /// </summary>
-        /// <param name="value">New value to use.</param>
+        /// <param key="value">New value to use.</param>
         public static void SetForgetKdr(bool value) {
             if (ForgetKdr == value) {
                 return;
@@ -264,7 +278,7 @@ namespace Amnesia.Data {
         /// <summary>
         /// Enable or disable ForgetActiveQuests on memory loss.
         /// </summary>
-        /// <param name="value">New value to use.</param>
+        /// <param key="value">New value to use.</param>
         public static void SetForgetActiveQuests(bool value) {
             if (ForgetActiveQuests == value) {
                 return;
@@ -276,7 +290,7 @@ namespace Amnesia.Data {
         /// <summary>
         /// Enable or disable ForgetIntroQuests on memory loss.
         /// </summary>
-        /// <param name="value">New value to use.</param>
+        /// <param key="value">New value to use.</param>
         public static void SetForgetIntroQuests(bool value) {
             if (ForgetIntroQuests == value) {
                 return;
@@ -288,7 +302,7 @@ namespace Amnesia.Data {
         /// <summary>
         /// Enable or disable ForgetInactiveQuests on memory loss.
         /// </summary>
-        /// <param name="value">New value to use.</param>
+        /// <param key="value">New value to use.</param>
         public static void SetForgetInactiveQuests(bool value) {
             if (ForgetInactiveQuests == value) {
                 return;
@@ -301,7 +315,11 @@ namespace Amnesia.Data {
             try {
                 var timeOnKillElement = new XElement(Values.PositiveOutlookTimeOnKillName);
                 foreach (var kvp in PositiveOutlookTimeOnKill) {
-                    timeOnKillElement.Add(new XElement(kvp.Key, kvp.Value));
+                    var element = new XElement(kvp.Key);
+                    element.SetAttributeValue("name", kvp.Value.name);
+                    element.SetAttributeValue("caption", kvp.Value.caption);
+                    element.SetAttributeValue("value", kvp.Value.value);
+                    timeOnKillElement.Add(element);
                 }
 
                 new XElement("config",
@@ -342,12 +360,16 @@ namespace Amnesia.Data {
                 PositiveOutlookTimeOnMemoryLoss = ParseInt(config, Values.PositiveOutlookTimeOnMemoryLossName, PositiveOutlookTimeOnMemoryLoss);
 
                 PositiveOutlookTimeOnKill.Clear();
-                foreach (var item in config.Descendants("config." + Values.PositiveOutlookTimeOnKillName)) {
-                    if (!int.TryParse(item.Value, out var value)) {
-                        log.Error($"Loading issue with {Values.PositiveOutlookTimeOnKillName}; unable to parse expected int value for {item.Name}");
-                        continue;
+                foreach (var entry in config.Descendants(Values.PositiveOutlookTimeOnKillName).First().Descendants("entry")) {
+                    if (!int.TryParse(entry.Attribute("value").Value, out var intValue)) {
+                        log.Error($"Unable to parse value; expecting int");
+                        return;
                     }
-                    PositiveOutlookTimeOnKill.Add(item.Name.LocalName, value);
+                    PositiveOutlookTimeOnKill.Add(entry.Attribute("name").Value, new TimeOnKill {
+                        name = entry.Attribute("name").Value,
+                        caption = entry.Attribute("caption").Value,
+                        value = intValue,
+                    });
                 }
 
                 ProtectMemoryDuringBloodmoon = ParseBool(config, Values.ProtectMemoryDuringBloodmoonName, ProtectMemoryDuringBloodmoon);
