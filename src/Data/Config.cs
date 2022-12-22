@@ -14,11 +14,6 @@ namespace Amnesia.Data {
         public static string QuestResetKickReason { get; private set; } = "This server is configured to erase some settings from your player file when you die for the final time. Please reconnect whenever you're ready.";
 
         public static bool Loaded { get; private set; } = false;
-
-
-        // TODO: delete after detecting and converting?
-        public static string MaxLivesName { get; private set; } = "MaxLives";
-
         
 
         /// <summary>The level players will be reset to on memory loss and the level at which losing memory on death starts.</summary>
