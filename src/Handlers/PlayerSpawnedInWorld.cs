@@ -47,6 +47,11 @@ namespace Amnesia.Handlers {
          */
         private static void HandleStandardRespawnSteps(EntityPlayer player) {
 
+            // Ensure joining/respawning players have their constants updated
+            if (player.GetCVar(Values.LongTermMemoryLevelCVar) != Config.LongTermMemoryLevel) {
+                player.SetCVar(Values.LongTermMemoryLevelCVar, Config.LongTermMemoryLevel);
+            }
+
             // Remove Positive Outlook if admin disabled it since player's last login
             if (Config.PositiveOutlookTimeOnMemoryLoss == 0 && player.Buffs.HasBuff(Values.PositiveOutlookBuff)) {
                 player.Buffs.RemoveBuff(Values.PositiveOutlookBuff);
