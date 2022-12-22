@@ -31,15 +31,14 @@ namespace Amnesia.Data {
         public const string ForgetInactiveQuestsName = "ForgetInactiveQuests";
         public const string ForgetIntroQuestsName = "ForgetIntroQuests";
 
-        public const string DisconnectionWarning = "\n  - [!] SYSTEM WILL DISCONNECT PLAYER ON FINAL DEATH IF ENABLED!";
-        public const string ExperimentalWarning = "\n  - [!] EXPERIMENTAL FEATURE - USE AT YOUR OWN RISK...";
-        public static readonly Dictionary<string, string> FieldNamesAndDescriptionsDict = new Dictionary<string, string> {
+        public const string DisconnectionWarning = "\n      - [!] SYSTEM WILL DISCONNECT PLAYER ON FINAL DEATH IF ENABLED!";
+        public const string ExperimentalWarning = "\n      - [!] EXPERIMENTAL FEATURE - USE AT YOUR OWN RISK...";
+        public static readonly Dictionary<string, string> SingleValueNamesAndDescriptionsDict = new Dictionary<string, string> {
             { LongTermMemoryLevelName, "the level players will be reset to on memory loss and the level at which losing memory on death starts" },
 
             { PositiveOutlookMaxTimeName, "maximum length of time allowed for buff that boost xp growth" },
             { PositiveOutlookTimeOnFirstJoinName, "length of time for buff that boosts xp growth at first-time server join" },
             { PositiveOutlookTimeOnMemoryLossName, "length of time for buff that boosts xp growth on memory loss" },
-            { PositiveOutlookTimeOnKillName, "length of time awarded to all online players when any player defeats an entity of the given type (name is case sensitive)" },
 
             { ProtectMemoryDuringBloodmoonName, "whether deaths during bloodmoon will cost lives" },
             { ProtectMemoryDuringPvpName, "whether to prevent memory when defeated in pvp" },
@@ -53,7 +52,12 @@ namespace Amnesia.Data {
             { ForgetInactiveQuestsName, $"whether completed quests (AND TRADER TIER LEVELS) should be forgotten on memory loss{DisconnectionWarning}{ExperimentalWarning}" },
             { ForgetIntroQuestsName, $"whether the intro quests should be forgotten/reset on memory loss{DisconnectionWarning}{ExperimentalWarning}" }
         };
-        public static List<string> FieldNames { get; private set; } = FieldNamesAndDescriptionsDict.Keys.ToList();
-        public static string FieldNamesAndDescriptions { get; private set; } = "    - " + string.Join("\n    - ", FieldNamesAndDescriptionsDict.Select(kvp => kvp.Key + ": " + kvp.Value));
+        public static List<string> SingleValueFieldNames { get; private set; } = SingleValueNamesAndDescriptionsDict.Keys.ToList();
+        public static string SingleValueFieldNamesAndDescriptions { get; private set; } = "    - " + string.Join("\n    - ", SingleValueNamesAndDescriptionsDict.Select(kvp => kvp.Key + ": " + kvp.Value));
+
+        public static readonly Dictionary<string, string> KeyValueNamesAndDescriptionsDict = new Dictionary<string, string> {
+            { PositiveOutlookTimeOnKillName, "length of time awarded to all online players when any player defeats an entity of the given type (name is case sensitive)" },
+        };
+        public static string KeyValueFieldNamesAndDescriptions { get; private set; } = "    - " + string.Join("\n    - ", KeyValueNamesAndDescriptionsDict.Select(kvp => kvp.Key + ": " + kvp.Value));
     }
 }
