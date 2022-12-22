@@ -22,4 +22,4 @@ buffAmnesiaBloodmoonLifeProtectionTooltip,buffs,Buffs,"You [00ff80]WILL NOT[-] l
 buffAmnesiaBloodmoonLifeProtectionEndTooltip,buffs,Buffs,"Blood Moon Protection [ff007f]HAS ENDED[-] - dying will result in lives lost again"
 
 drugAmnesiaMemoryBooster,items,Medical,"Trader Jen's Memory Booster"
-drugAmnesiaMemoryBoosterDesc,items,Medical,"Ingesting this special drug/vitamin cocktail will prevent the loss of memory typically caused by severe trauma.\n\n[ff8000]Don't Forget, Get BOOSTED![-]\n - Trader Jen's Experimental Pharmaceuticals"
+drugAmnesiaMemoryBoosterDesc,items,Medical,"Ingesting this special drug/vitamin cocktail will prevent the loss of memory typically caused by severe trauma.\n\nTo use this medicine:1. [007fff]you must exceed level {cvar(amnesiaLongTermMemoryLevel:0)}[-]\n2. [007fff]you must not already have the Hardened Memory buff[-]\n\n[ff8000]Don't Forget, Get BOOSTED![-]\n - Trader Jen's Experimental Pharmaceuticals"
