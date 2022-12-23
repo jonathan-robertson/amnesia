@@ -29,6 +29,10 @@ namespace Amnesia.Data {
             public string name;
             public string caption;
             public int value;
+
+            public override string ToString() {
+                return $"[name={name}, caption={caption}, value={value}]";
+            }
         };
 
         /// <summary>Whether to prevent memory loss during blood moon.</summary>
@@ -58,7 +62,7 @@ namespace Amnesia.Data {
 {Values.PositiveOutlookMaxTimeName}: {PositiveOutlookMaxTime}
 {Values.PositiveOutlookTimeOnFirstJoinName}: {PositiveOutlookTimeOnFirstJoin}
 {Values.PositiveOutlookTimeOnMemoryLossName}: {PositiveOutlookTimeOnMemoryLoss}
-{Values.PositiveOutlookTimeOnKillName}: {(PositiveOutlookTimeOnKill.Count == 0 ? "None" : "{ " + string.Join(",", PositiveOutlookTimeOnKill.Select(kvp => kvp.Key + ": name=" + kvp.Value.name + ", timeInSeconds=" + kvp.Value.value).ToArray()) + " }")}
+{Values.PositiveOutlookTimeOnKillName}: {(PositiveOutlookTimeOnKill.Count == 0 ? "None" : "{ " + string.Join(",", PositiveOutlookTimeOnKill.Select(kvp => kvp.Key + ": displayName=" + kvp.Value.caption + ", timeInSeconds=" + kvp.Value.value).ToArray()) + " }")}
 
 {Values.ProtectMemoryDuringBloodmoonName}: {ProtectMemoryDuringBloodmoon}
 {Values.ProtectMemoryDuringPvpName}: {ProtectMemoryDuringPvp}
