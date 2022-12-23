@@ -140,15 +140,27 @@ namespace Amnesia.Commands {
                         SdtdConsole.Instance.Output($"Unable to parse value; expecting int");
                         break;
                     }
-                    Config.AddPositiveOutlookTimeOnKill(@params[3], @params[4], intValue);
+                    if (Config.AddPositiveOutlookTimeOnKill(@params[3], @params[4], intValue)) {
+                        SdtdConsole.Instance.Output($"Successfully added {@params[3]} to the collection.");
+                    } else {
+                        SdtdConsole.Instance.Output($"Updating {@params[3]} was not necessary; it already exists in the collection just as entered.");
+                    }
                     return;
                 case "rem":
                     if (@params.Count != 4) { break; }
-                    Config.RemPositiveOutlookTimeOnKill(@params[3]);
+                    if (Config.RemPositiveOutlookTimeOnKill(@params[3])) {
+                        SdtdConsole.Instance.Output($"Successfully removed {@params[3]} from the collection.");
+                    } else {
+                        SdtdConsole.Instance.Output($"Removal of {@params[3]} was not necessary; due to either not being present or due to a typo.");
+                    }
                     return;
                 case "clear":
                     if (@params.Count != 3) { break; }
-                    Config.ClearPositiveOutlookTimeOnKill();
+                    if (Config.ClearPositiveOutlookTimeOnKill()) {
+                        SdtdConsole.Instance.Output($"Successfully cleared the collection.");
+                    } else {
+                        SdtdConsole.Instance.Output($"This collection was already clear.");
+                    }
                     return;
             }
             SdtdConsole.Instance.Output($"Invald request; run '{Commands[0]} set {Values.PositiveOutlookTimeOnKillName}' to see a list of options.");

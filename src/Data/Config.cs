@@ -60,7 +60,7 @@ namespace Amnesia.Data {
         /// <summary>Whether the intro quests should be forgotten/reset on memory loss.</summary>
         public static bool ForgetIntroQuests { get; private set; } = false;
 
-        public static string PrintPositiveOutlookTimeOnMemoryLoss() => PositiveOutlookTimeOnKill.Count == 0 ? "None" : "[\n    " + string.Join(",\n    ", PositiveOutlookTimeOnKill.Select(kvp => kvp.Value.ToString(null, "displayName", "timeInSeconds", true)).ToArray()) + "\n]";
+        public static string PrintPositiveOutlookTimeOnMemoryLoss() => PositiveOutlookTimeOnKill.Count == 0 ? "None" : "[\n    " + string.Join(",\n    ", PositiveOutlookTimeOnKill.Select(kvp => kvp.Value.ToString("entityName", "displayName", "bonusTimeInSeconds")).ToArray()) + "\n]";
         public static string AsString() =>  $@"=== Amnesia Configuration ===
 {Values.LongTermMemoryLevelName}: {LongTermMemoryLevel}
 
@@ -162,10 +162,10 @@ namespace Amnesia.Data {
         /// <param key="name">Lookup key and name id of the entity.</param>
         /// <param key="caption">The display name of the entity to trigger on.</param>
         /// <param key="timeInSeconds">Number of seconds to grant xp boost for.</param>
-        public static void AddPositiveOutlookTimeOnKill(string name, string caption, int timeInSeconds) {
+        public static bool AddPositiveOutlookTimeOnKill(string name, string caption, int timeInSeconds) {
             if (PositiveOutlookTimeOnKill.TryGetValue(name, out var entry)) {
                 if (entry.name == name && entry.caption == caption && entry.value == timeInSeconds) {
-                    return;
+                    return false;
                 }
                 entry.name = name;
                 entry.caption = caption;
@@ -178,29 +178,32 @@ namespace Amnesia.Data {
                 });
             }
             _ = Save();
+            return true;
         }
 
         /// <summary>
         /// Remove a zombie or animal by key from the Time On Kill list.
         /// </summary>
         /// <param key="name">Name of the entity to remove the trigger for.</param>
-        public static void RemPositiveOutlookTimeOnKill(string name) {
+        public static bool RemPositiveOutlookTimeOnKill(string name) {
             if (!PositiveOutlookTimeOnKill.ContainsKey(name)) {
-                return;
+                return false;
             }
             _ = PositiveOutlookTimeOnKill.Remove(name);
             _ = Save();
+            return true;
         }
 
         /// <summary>
         /// Clear all zombies or animals from the Time On Kill list.
         /// </summary>
-        public static void ClearPositiveOutlookTimeOnKill() {
+        public static bool ClearPositiveOutlookTimeOnKill() {
             if (PositiveOutlookTimeOnKill.Count == 0) {
-                return;
+                return false;
             }
             PositiveOutlookTimeOnKill.Clear();
             _ = Save();
+            return true;
         }
 
         /// <summary>
