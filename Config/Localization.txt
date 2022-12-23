@@ -5,9 +5,9 @@ amnesiaJournalTip_title,Journal Tip,,"Amnesia [ff8000][MOD]"
 
 amnesiaRespawnMessage,UI,Respawn Window,"This server runs the Amnesia mod.\nAfter reaching a certain level, [ff8000]dying will cause memory loss[-]!\nUse [007fff]Trader Jen's Memory Booster[-] to harden your memory against traumatic situations like this.\nTo learn more about Amnesia, [ff8000]take a look at your Journal[-]."
 
-buffAmnesiaHardenedMemoryName,buffs,Buffs,"Boosted Memory"
+buffAmnesiaHardenedMemoryName,buffs,Buffs,"Hardened Memory"
 buffAmnesiaHardenedMemoryDesc,buffs,Buffs,"Your Memory is currently reinforced and able to withstand 1 episode of extreme trauma."
-buffAmnesiaHardenedMemoryTooltipAdd,buffs,Buffs,"Memory Boosted: You will withstand your next episode of extreme trauma!"
+buffAmnesiaHardenedMemoryTooltipAdd,buffs,Buffs,"Memory Hardened: You will withstand your next episode of extreme trauma!"
 buffAmnesiaHardenedMemoryTooltipRemove,buffs,Buffs,"Memory Loss Prevented! Boost again to protect against future trauma."
 
 buffAmnesiaMemoryLossName,buffs,Buffs,"Memory Loss"
