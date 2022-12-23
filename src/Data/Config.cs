@@ -166,10 +166,11 @@ namespace Amnesia.Data {
                 entry.caption = caption;
                 entry.value = Math.Min(PositiveOutlookMaxTime, Math.Max(1, timeInSeconds));
             } else {
-                PositiveOutlookTimeOnKill[name] = new TimeOnKill {
+                PositiveOutlookTimeOnKill.Add(name, new TimeOnKill {
                     name = name,
+                    caption = caption,
                     value = Math.Min(PositiveOutlookMaxTime, Math.Max(1, timeInSeconds))
-                };
+                });
             }
             _ = Save();
         }
