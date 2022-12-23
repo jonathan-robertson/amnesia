@@ -31,7 +31,11 @@ namespace Amnesia.Data {
             public int value;
 
             public override string ToString() {
-                return $"[name={name}, caption={caption}, value={value}]";
+                return ToString("name", "caption", "value");
+            }
+
+            public string ToString(string nameDisplay, string captionDisplay, string valueDisplay, bool hideName = false) {
+                return $"{{ {(hideName ? "" : nameDisplay + ": " + name + ", ")}{captionDisplay}: {caption}, {valueDisplay}: {value} }}";
             }
         };
 
@@ -56,13 +60,14 @@ namespace Amnesia.Data {
         /// <summary>Whether the intro quests should be forgotten/reset on memory loss.</summary>
         public static bool ForgetIntroQuests { get; private set; } = false;
 
+        public static string PrintPositiveOutlookTimeOnMemoryLoss() => PositiveOutlookTimeOnKill.Count == 0 ? "None" : "[\n    " + string.Join(",\n    ", PositiveOutlookTimeOnKill.Select(kvp => kvp.Value.ToString(null, "displayName", "timeInSeconds", true)).ToArray()) + "\n]";
         public static string AsString() =>  $@"=== Amnesia Configuration ===
 {Values.LongTermMemoryLevelName}: {LongTermMemoryLevel}
 
 {Values.PositiveOutlookMaxTimeName}: {PositiveOutlookMaxTime}
 {Values.PositiveOutlookTimeOnFirstJoinName}: {PositiveOutlookTimeOnFirstJoin}
 {Values.PositiveOutlookTimeOnMemoryLossName}: {PositiveOutlookTimeOnMemoryLoss}
-{Values.PositiveOutlookTimeOnKillName}: {(PositiveOutlookTimeOnKill.Count == 0 ? "None" : "{ " + string.Join(",", PositiveOutlookTimeOnKill.Select(kvp => kvp.Key + ": displayName=" + kvp.Value.caption + ", timeInSeconds=" + kvp.Value.value).ToArray()) + " }")}
+{Values.PositiveOutlookTimeOnKillName}: {PrintPositiveOutlookTimeOnMemoryLoss()}
 
 {Values.ProtectMemoryDuringBloodmoonName}: {ProtectMemoryDuringBloodmoon}
 {Values.ProtectMemoryDuringPvpName}: {ProtectMemoryDuringPvp}
@@ -154,12 +159,12 @@ namespace Amnesia.Data {
         /// <summary>
         /// Add a zombie or animal key; killing this entity will provide extra time for Positive Outlook to everyone on the server.
         /// </summary>
-        /// <param key="key">Lookup key for the entry.</param>
-        /// <param key="name">Name of the entity to trigger on.</param>
+        /// <param key="name">Lookup key and name id of the entity.</param>
+        /// <param key="caption">The display name of the entity to trigger on.</param>
         /// <param key="timeInSeconds">Number of seconds to grant xp boost for.</param>
         public static void AddPositiveOutlookTimeOnKill(string name, string caption, int timeInSeconds) {
             if (PositiveOutlookTimeOnKill.TryGetValue(name, out var entry)) {
-                if (entry.caption == caption && entry.value == timeInSeconds) {
+                if (entry.name == name && entry.caption == caption && entry.value == timeInSeconds) {
                     return;
                 }
                 entry.name = name;
@@ -320,11 +325,10 @@ namespace Amnesia.Data {
             try {
                 var timeOnKillElement = new XElement(Values.PositiveOutlookTimeOnKillName);
                 foreach (var kvp in PositiveOutlookTimeOnKill) {
-                    var element = new XElement(kvp.Key);
-                    element.SetAttributeValue("name", kvp.Value.name);
-                    element.SetAttributeValue("caption", kvp.Value.caption);
-                    element.SetAttributeValue("value", kvp.Value.value);
-                    timeOnKillElement.Add(element);
+                    timeOnKillElement.Add(new XElement("entry",
+                        new XAttribute("name", kvp.Value.name),
+                        new XAttribute("caption", kvp.Value.caption),
+                        new XAttribute("value", kvp.Value.value)));
                 }
 
                 new XElement("config",

@@ -130,7 +130,7 @@ namespace Amnesia.Commands {
 
         private void UpdatePositiveOutlookOnKill(List<string> @params) {
             if (@params.Count == 2) {
-                SdtdConsole.Instance.Output(Config.PositiveOutlookTimeOnKill.Count == 0 ? "None set" : "{ " + string.Join(",", Config.PositiveOutlookTimeOnKill.Select(kvp => kvp.Key + ": displayName=" + kvp.Value.caption + ", timeInSeconds=" + kvp.Value.value).ToArray()) + " }");
+                SdtdConsole.Instance.Output(Config.PrintPositiveOutlookTimeOnMemoryLoss());
                 return;
             }
             switch (@params[2]) {
