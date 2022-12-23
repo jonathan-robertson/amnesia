@@ -5,11 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.0.0] - 2022-12-22
+## [1.0.0] - 2022-12-23
 
 - add admin configurable xp boosts for zombie kills
-- add reminder to respawn screen
+- add amnesia mod reminder to respawn screen
+- add configurable enable/reset level floor
 - modify amnesia buffs
+- overhaul core mechanics
 - refactor loops to enhance performance
 - remove hardcoded xp boosts for zombie kills
 - remove remaining lives mechanic
