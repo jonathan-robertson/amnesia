@@ -164,12 +164,14 @@ namespace Amnesia.Data {
         /// <param key="timeInSeconds">Number of seconds to grant xp boost for.</param>
         public static bool AddPositiveOutlookTimeOnKill(string name, string caption, int timeInSeconds) {
             if (PositiveOutlookTimeOnKill.TryGetValue(name, out var entry)) {
-                if (entry.name == name && entry.caption == caption && entry.value == timeInSeconds) {
+                if (entry.name.Equals(name) && entry.caption.Equals(caption) && entry.value == timeInSeconds) {
                     return false;
                 }
-                entry.name = name;
-                entry.caption = caption;
-                entry.value = Math.Min(PositiveOutlookMaxTime, Math.Max(1, timeInSeconds));
+                PositiveOutlookTimeOnKill[name] = new TimeOnKill {
+                    name = name,
+                    caption = caption,
+                    value = Math.Min(PositiveOutlookMaxTime, Math.Max(1, timeInSeconds))
+                };
             } else {
                 PositiveOutlookTimeOnKill.Add(name, new TimeOnKill {
                     name = name,
