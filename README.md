@@ -8,6 +8,7 @@
   - [Summary](#summary)
   - [Admin Configuration](#admin-configuration)
     - [Experimental/Volatile Options](#experimentalvolatile-options)
+    - [File Example](#file-example)
   - [Compatibility](#compatibility)
   - [Philosophy](#philosophy)
   - [Attribution](#attribution)
@@ -59,6 +60,33 @@ Option Name | Default | Description
 ForgetActiveQuests | false | Whether ongoing quests should be forgotten on memory loss.
 ForgetInactiveQuests | false | Whether completed quests (AND TRADER TIER LEVELS) should be forgotten on memory loss.
 ForgetIntroQuests | false | Whether the intro quests should be forgotten/reset on memory loss.
+
+### File Example
+
+Here's an example of what I'm trying out on my server. All of these options can be set individually via the admin console / telnet, or you could simply create an `amnesia.xml` file within your map's instance directory (the same folder you'll find your server's `players.xml` file in).
+
+```xml
+<config>
+  <LongTermMemoryLevel>50</LongTermMemoryLevel>
+  <PositiveOutlookMaxTime>3600</PositiveOutlookMaxTime>
+  <PositiveOutlookTimeOnFirstJoin>0</PositiveOutlookTimeOnFirstJoin>
+  <PositiveOutlookTimeOnMemoryLoss>0</PositiveOutlookTimeOnMemoryLoss>
+  <PositiveOutlookTimeOnKill>
+    <entry name="ZombieJuggernaut" caption="[FF8000]Juggernaut[-]" value="900" />
+    <entry name="zombieScorcher" caption="[FF007F]Scorcher[-]" value="300" />
+    <entry name="zombieDemolition" caption="[8000FF]Demolition Zombie[-]" value="60" />
+  </PositiveOutlookTimeOnKill>
+  <ProtectMemoryDuringBloodmoon>true</ProtectMemoryDuringBloodmoon>
+  <ProtectMemoryDuringPvp>true</ProtectMemoryDuringPvp>
+  <ForgetLevelsAndSkills>true</ForgetLevelsAndSkills>
+  <ForgetBooks>false</ForgetBooks>
+  <ForgetSchematics>false</ForgetSchematics>
+  <ForgetKdr>false</ForgetKdr>
+  <ForgetActiveQuests>false</ForgetActiveQuests>
+  <ForgetInactiveQuests>false</ForgetInactiveQuests>
+  <ForgetIntroQuests>false</ForgetIntroQuests>
+</config>
+```
 
 ## Compatibility
 
