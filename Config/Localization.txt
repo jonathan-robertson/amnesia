@@ -1,0 +1,27 @@
+﻿Key,File,Type,english
+
+amnesiaJournalTip,Journal Tip,,"Survivors are reporting strange occurrences of Amnesia when experiencing severe trauma...\n\n[ff8000]Becoming incapacitated after level[-] [007fff]{cvar(amnesiaLongTermMemoryLevel)}[-] will result in [ff8000]Memory Loss[-], causing you to forget certain experiences on this server.\n\n[007fff]What Can Cause Memory Loss?[-]\nDying will trigger memory loss, but there are a few exceptions. You will [00ff80]NOT[-] lose memory if:\n- [00ff80]another player kills you[-]\n- [00ff80]you die during Blood Moon for any reason[-]\n\n[ff007f]What Will I Forget?[-]\nYou will forget your level, learned skills, and unspent skill points (you'll be reset back to level [007fff]{cvar(amnesiaLongTermMemoryLevel)}[-] and can reallocate all skillpoints).\n\n[00ff80]What Will I Remember?[-]\nYou will not forget schematics, books, items/equipment (backpack is dropped on ground, but not deleted), vehicles, map, waypoints, land claims, bedroll location, quests, trader relationships.\n\n[007fff]How Can I Protect My Memory?[-]\nAll traders sell a new item called [007fff]Trader Jen's Memory Booster[-] in limited quantities, which you can use to protect your memory against the next time you experience severe trauma. This item is quite expensive, so you probably won't be able to afford it right away.\n\n[007fff]Anything Else?[-]\nYes; defeating certain powerful zombies will lift your spirits, providing a timed boost of double xp for you and everyone else on the server! Try to take these challenging enemies down for the benefit and relief of the entire community."
+amnesiaJournalTip_title,Journal Tip,,"Amnesia [ff8000][MOD]"
+
+amnesiaRespawnMessage,UI,Respawn Window,"This server runs the Amnesia mod.\nAfter reaching a certain level, [ff8000]dying will cause memory loss[-]!\nUse [007fff]Trader Jen's Memory Booster[-] to harden your memory against traumatic situations like this.\nTo learn more about Amnesia, [ff8000]take a look at your Journal[-]."
+
+buffAmnesiaHardenedMemoryName,buffs,Buffs,"Hardened Memory"
+buffAmnesiaHardenedMemoryDesc,buffs,Buffs,"Your Memory is currently reinforced and able to withstand 1 episode of extreme trauma."
+buffAmnesiaHardenedMemoryTooltipAdd,buffs,Buffs,"Memory Hardened: You will withstand your next episode of extreme trauma!"
+buffAmnesiaHardenedMemoryTooltipRemove,buffs,Buffs,"Memory Loss Prevented! Boost again to protect against future trauma."
+
+buffAmnesiaMemoryLossName,buffs,Buffs,"Memory Loss"
+buffAmnesiaMemoryLossDesc,buffs,Buffs,"You feel a sense that mistakes were made, but perhaps can find a more effective method of survival this time around."
+buffAmnesiaMemoryLossTooltip,buffs,Buffs,"Memory Loss: Extreme Trauma has caused memory loss. You barely recall who you once were..."
+
+buffAmnesiaPositiveOutlookName,buffs,Buffs,"Positive Outlook"
+buffAmnesiaPositiveOutlookDesc,buffs,Buffs,"You're feeling especially positive about your situation and the future.\n\nSure, the world has gone to hell, but that doesn't mean your attitude needs to!\n\n[00FF00]XP Gain is Doubled!"
+buffAmnesiaPositiveOutlookTooltip,buffs,Buffs,"Positive Outlook: [00FF00]XP Gain Doubled!"
+
+buffAmnesiaBloodmoonLifeProtectionName,buffs,Buffs,"Blood Moon Life Protection"
+buffAmnesiaBloodmoonLifeProtectionDesc,buffs,Buffs,"You feel something in the air that seems to provide you with a sense of peace and clarity of thought... perhaps this is the same 'something' causing the zombies to go wild.\n\n[00ff80]You WILL NOT lose any lives if you die during this event[-].\n\n... but still, try to play it safe."
+buffAmnesiaBloodmoonLifeProtectionTooltip,buffs,Buffs,"You [00ff80]WILL NOT[-] lose any lives during this event when/if you die"
+buffAmnesiaBloodmoonLifeProtectionEndTooltip,buffs,Buffs,"Blood Moon Protection [ff007f]HAS ENDED[-] - dying will result in lives lost again"
+
+drugAmnesiaMemoryBooster,items,Medical,"Trader Jen's Memory Booster"
+drugAmnesiaMemoryBoosterDesc,items,Medical,"Ingesting this special drug/vitamin cocktail will prevent the loss of memory typically caused by severe trauma.\n\nTo use this medicine:\n1. [007fff]you must exceed level {cvar(amnesiaLongTermMemoryLevel:0)}[-]\n2. [007fff]you must not already have a Hardened Memory[-]\n\n[ff8000]Don't Forget, Get BOOSTED![-]\n - Trader Jen's Experimental Pharmaceuticals"

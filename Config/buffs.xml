@@ -1,0 +1,88 @@
+﻿<config>
+    <append xpath="/buffs/buff[@name='buffStatusCheck02']">
+        <effect_group name="amnesiaJournalEntries">
+            <triggered_effect trigger="onSelfEnteredGame" action="AddJournalEntry" journal="amnesiaJournalTip" />
+        </effect_group>
+    </append>
+
+    <set xpath="/buffs/buff[@name='buffNewbieCoat']/effect_group/requirement[@name='PlayerLevel']/@value">@amnesiaLongTermMemoryLevel</set>
+    <set xpath="/buffs/buff[@name='buffNewbieCoat']/effect_group/triggered_effect/requirement[@name='PlayerLevel']/@value">@amnesiaLongTermMemoryLevel</set>
+
+    <append xpath="/buffs">
+        <buff name="buffAmnesiaHardenedMemory" name_key="buffAmnesiaHardenedMemoryName" description_key="buffAmnesiaHardenedMemoryDesc" icon="ui_game_symbol_intellect" icon_color="0,127,255" remove_on_death="false">
+            <duration value="0" />
+            <stack_type value="ignore" />
+
+            <effect_group>
+                <triggered_effect trigger="onSelfBuffStart" action="ShowToolbeltMessage" message_key="buffAmnesiaHardenedMemoryTooltipAdd" />
+                <!-- TODO: add sound to notification (a good sound! your memory was kept!) -->
+                <triggered_effect trigger="onSelfBuffRemove" action="ShowToolbeltMessage" message_key="buffAmnesiaHardenedMemoryTooltipRemove" />
+            </effect_group>
+        </buff>
+
+        <buff name="buffAmnesiaMemoryLoss" name_key="buffAmnesiaMemoryLossName" description_key="buffAmnesiaMemoryLossDesc" icon="ui_game_symbol_skull_crusher" icon_color="255,0,127" remove_on_death="false">
+            <duration value="30" />
+            <stack_type value="ignore" />
+            <display_value_key value="Memory Loss" />
+            <display_value value="x" />
+            <effect_group>
+                <!-- TODO: add bad/sad sound (you lost your memory :[ ) -->
+                <triggered_effect trigger="onSelfBuffStart" action="ShowToolbeltMessage" message_key="buffAmnesiaMemoryLossTooltip" />
+            </effect_group>
+        </buff>
+
+        <buff name="buffAmnesiaPositiveOutlook" name_key="buffAmnesiaPositiveOutlookName" description_key="buffAmnesiaPositiveOutlookDesc" icon="ui_game_symbol_xp" icon_color="0,255,128" remove_on_death="false">
+            <duration value="0" />
+            <display_value value="amnesiaPositiveOutlookRemTime" />
+            <display_value_format value="time" />
+
+            <effect_group name="activeEffects">
+                <!-- TODO: consider setting to @amnesiaPositiveOutlookXpBoostPerc instead so admins can adjust as necessary -->
+                <passive_effect name="PlayerExpGain" operation="perc_add" value="1" />
+            </effect_group>
+            <effect_group name="update">
+                <triggered_effect trigger="onSelfBuffUpdate" action="ModifyCVar" cvar="amnesiaPositiveOutlookRemTime" operation="subtract" value="1" />
+                <triggered_effect trigger="onSelfBuffUpdate" action="RemoveBuff" buff="buffAmnesiaPositiveOutlook">
+                    <requirement name="CVarCompare" cvar="amnesiaPositiveOutlookRemTime" operation="LTE" value="0" />
+                </triggered_effect>
+            </effect_group>
+            <effect_group name="cleanup">
+                <triggered_effect trigger="onSelfBuffRemove" action="ModifyCVar" cvar="amnesiaPositiveOutlookRemTime" operation="set" value="0" />
+            </effect_group>
+        </buff>
+
+        <buff name="buffAmnesiaBloodmoonLifeProtection" name_key="buffAmnesiaBloodmoonLifeProtectionName" description_key="buffAmnesiaBloodmoonLifeProtectionDesc" icon="ui_game_symbol_intellect" icon_color="0,255,128" remove_on_death="false">
+            <duration value="0" />
+            <stack_type value="ignore" />
+            <display_value_key value="Mem Safe" />
+            <display_value value="x" />
+            <effect_group>
+                <triggered_effect trigger="onSelfBuffStart" action="ShowToolbeltMessage" message_key="buffAmnesiaBloodmoonLifeProtectionTooltip" />
+            </effect_group>
+        </buff>
+
+        <buff name="buffAmnesiaPostBloodmoonLifeProtection" name_key="buffAmnesiaBloodmoonLifeProtectionName" description_key="buffAmnesiaBloodmoonLifeProtectionDesc" icon="ui_game_symbol_intellect" icon_color="0,255,128" remove_on_death="false">
+            <duration value="0" />
+            <stack_type value="ignore" />
+            <display_value value="$postBloodmoonProtectionTime" />
+            <display_value_format value="time" />
+            <effect_group name="setup">
+                <!-- 300s == 5m -->
+                <triggered_effect trigger="onSelfBuffStart" action="ModifyCVar" cvar="$postBloodmoonProtectionTime" operation="set" value="300" />
+            </effect_group>
+            <effect_group name="timer">
+                <triggered_effect trigger="onSelfBuffUpdate" action="ModifyCVar" cvar="$postBloodmoonProtectionTime" operation="subtract" value="1">
+                    <requirement name="CVarCompare" cvar="$postBloodmoonProtectionTime" operation="GT" value="0" />
+                </triggered_effect>
+                <triggered_effect trigger="onSelfBuffUpdate" action="RemoveBuff" buff="buffAmnesiaPostBloodmoonLifeProtection">
+                    <requirement name="CVarCompare" cvar="$postBloodmoonProtectionTime" operation="LTE" value="0" />
+                </triggered_effect>
+            </effect_group>
+            <effect_group name="cleanup">
+                <triggered_effect trigger="onSelfBuffRemove" action="ModifyCVar" cvar="$postBloodmoonProtectionTime" operation="set" value="0" />
+                <triggered_effect trigger="onSelfBuffRemove" action="ShowToolbeltMessage" message_key="buffAmnesiaBloodmoonLifeProtectionEndTooltip" />
+            </effect_group>
+        </buff>
+    </append>
+    <!-- TODO: explore how onCombatEntered works: perhaps a screen effect could be added when on last life onCombatEntered as a reminder -->
+</config>

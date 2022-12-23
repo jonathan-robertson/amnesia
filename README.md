@@ -1,59 +1,90 @@
 # Amnesia
 
-## [![🧪 Tested On](https://img.shields.io/badge/🧪%20Tested%20On-A20.6%20b9-blue.svg)](https://7daystodie.com/) [![📦 Automated Release](https://github.com/jonathan-robertson/amnesia/actions/workflows/release.yml/badge.svg)](https://github.com/jonathan-robertson/amnesia/actions/workflows/release.yml)
+[![🧪 Tested On](https://img.shields.io/badge/🧪%20Tested%20On-A20.6%20b9-blue.svg)](https://7daystodie.com/) [![📦 Automated Release](https://github.com/jonathan-robertson/amnesia/actions/workflows/release.yml/badge.svg)](https://github.com/jonathan-robertson/amnesia/actions/workflows/release.yml)
 
 ![amnesia social image](https://github.com/jonathan-robertson/amnesia/raw/media/amnesia-logo-social.jpg)
 
-## TOC
-
-- [Summary](#summary)
-- [Admin Configuration](#admin-configuration)
-- [Compatibility](#compatibility)
-- [Philosophy](#philosophy)
-- [Attribution](#attribution)
+- [Amnesia](#amnesia)
+  - [Summary](#summary)
+  - [Admin Configuration](#admin-configuration)
+    - [Experimental/Volatile Options](#experimentalvolatile-options)
+    - [File Example](#file-example)
+  - [Compatibility](#compatibility)
+  - [Philosophy](#philosophy)
+  - [Attribution](#attribution)
 
 ## Summary
 
-This mod introduces a new player stat called Lives. After the provided number of lives are lost, the player is reset in some configurable way (see [Admin Configuration](#admin-configuration)). Lives can be restored with the help of `Smelling Salts` (non-craftable, but often purchasable from traders for a very high price... i.e. it requires work).
+As you may have guessed, this mod adds a Roguelike element to 7 Days to Die in a way that runs entirely on the server's end and **does not require players to manually download or install anything**.
+
+> :mag: This mod *only* runs on a dedicated server which you can technically run locally and will need to connect to. If you're only looking for a client-side/single-player experience, consider [Mostly Dead](https://7daystodiemods.com/mostly-dead/) by [Khzmusik](https://7daystodiemods.com/tag/khzmusik/).
+
+Each time a player dies (after a configurable level), that player's "Memory" will be reset in various, configurable ways (see [Admin Configuration](#admin-configuration)). Memory can be hardened with the help of `Trader Jen's Memory Booster` (non-craftable, but often purchasable from traders for a very high price... i.e. it will require effort to save up for).
 
 The Goal: improve long-term engagement for various kinds of players and take a step toward 'evergreen' servers by reducing how often map wipes need to occur.
 
-The Target: players are severely turned off by the requirement for client-side mods, so **this mod is entirely server-side and requires no client-side downloads**.
-
-> :mag: If you're only looking for a client-side experience, consider [Mostly Dead](https://7daystodiemods.com/mostly-dead/) by [Khzmusik](https://7daystodiemods.com/tag/khzmusik/).
-
 The Effect: support a heavier risk/reward play style meant to be a balance for servers with a higher XP boost. Fast player growth with the risk of dynamic, configurable player reset.
 
-> :thought_balloon: Regular xp growth can be used as well for a more hardcore experience. Not sure this would attract as many players, though...
+> 💭 Regular xp growth can be used as well for a more hardcore experience. This is definitely something worth discussing with your community if you want to try to keep the server engaging for all players past 3-4 months (your mileage may vary)
 
 ## Admin Configuration
 
+> ℹ️ Every single one of these settings can be adjusted from the admin console *live* and should take all considerations into account for you automatically. If you see *any issue* with these at all, please reach out by creating a new [GitHub Issue](https://github.com/jonathan-robertson/amnesia/issues) and I'll take a look!
+
 Option Name | Default | Description
 --- | :---: | ---
-MaxLives | 2 | The number of lives a player can lose before being reset. Also represents the maximum cap that a player cannot exceed even with `Smelling Salts`. Reducing this number will reduce remaining lives for those players whose remaining lives would exceed the new max. Increasing this number will also increase remaining lives for all players by the difference between the old max lives and new max lives. (these adjustments take effect even for players who are offline; current lives changes will be applied on next login).
-WarnAtLife | 1 | The level at which the player receives a casual reminder buff to let them know they may want to pursue `Smelling Salts` and play a little more carefully to avoid losing more lives. Set this to `0` to disable this warning reminder. Also note that with `0` remaining lives, players will always receive a special warning buff that cannot be disabled.
-EnablePositiveOutlook | true | Whether to grant temporary buff that boosts xp growth at initial server join and on memory loss.
-ProtectMemoryDuringBloodmoon | true | Whether deaths during bloodmoon will cost lives
-ForgetLevelsAndSkills | true | Whether to forget levels, skills, and skill points on memory loss.
+LongTermMemoryLevel | 1 | The number of levels a player must exceed before Memory Loss on death begins. This will also represent the level a player is reset to on death (if Memory Loss is not prevented in some way: PVP, Blood Moon, or Memory Boosters).
+PositiveOutlookMaxTime | 3600 | The maximum number of seconds that can be acquired for the Positive Outlook buff (2x XP boost).
+PositiveOutlookTimeOnFirstJoin | 3600 | How many seconds of Positive Outlook buff to grant a brand new player to the server.
+PositiveOutlookTimeOnMemoryLoss | 3600 | How many seconds of Positive Outlook buff to grant a player who just experienced Memory Loss.
+PositiveOutlookTimeOnKillName | Empty | Names and Values to reward the entire server when any player defeats the given entity. This is best applied to boss zombies such as Vanilla's `zombieDemolition` and modded zombies. *Note that this value is adjusted with the **list** command rather than the **set** command; see admin console for more details.*
+ProtectMemoryDuringBloodmoon | true | Whether deaths during Blood Moon will be PREVENTED from causing Memory Loss.
+ProtectMemoryDuringPvp | true | Whether deaths due to PVP will be PREVENTED from causing Memory Loss.
+ForgetLevelsAndSkills | true | Whether to forget levels, skills, and skill points on Memory Loss.
 ForgetBooks | false | Whether books should be forgotten on memory loss. It's recommended to keep this as `false` because A21 is expected to have hundreds of books to collect for crafting purposes.
 ForgetSchematics | false | Whether schematics should be forgotten on memory loss. *It's recommended to keep this as `false` because A21 is expected to no longer grant crafting recipes when learning skills, so finding/using schematics will be the only way to learn how to craft things.* ***Note that `false` can cause some confusion in A20 because schematics will appear to have been read if the corresponding recipe was already unlocked in a Skill/Perk. The code for how this works is inside C# on the client's end, so changing it for a server-side mod does nto appear to be possible... but again, all the confusion will be gone in A21.***
-ForgetKDR | false | Whether players/zombies killed and times died should be forgotten on memory loss. *I'd strongly recommend setting this to `true`, but have left it as `false` by default only because these metrics can't be recovered once wiped and some admins might not want them to reset for that reason.*
-
-> 📝 This mod is in progress, so plans for many more options are being worked on. As they're added and admins update their servers, the default values will be added for new options without negatively impacting the older options admins have already set.
+ForgetKdr | false | Whether players/zombies killed and times died should be forgotten on memory loss. *I'd strongly recommend setting this to `true`, but have left it as `false` by default only because these metrics can't be recovered once wiped and some admins might not want them to reset for that reason.*
 
 ### Experimental/Volatile Options
 
-> :warning: THESE OPTIONS WILL DISCONNECT THE PLAYER FROM THE SERVER ON FINAL DEATH. THEY ARE TO BE CONSIDERED EXPERIMENTAL AND MAY NOT WORK EXACTLY AS YOU'D LIKE.
+⚙️ I do have a better solution for this (most likely) but it will be in a future update. It's a low priority for me right now since our players aren't interested in quests being reset... but if your players are, please reach out to me in discord or post a comment to [Issue #57](https://github.com/jonathan-robertson/amnesia/issues/57).
+
+> ⚠️ THESE OPTIONS WILL DISCONNECT THE PLAYER FROM THE SERVER ON FINAL DEATH. THEY ARE TO BE CONSIDERED EXPERIMENTAL AND MAY NOT WORK EXACTLY AS YOU'D LIKE.
 
 The reason for the disconnection requirement has to do with Quests currently being managed in an isolated way on the client - not the server. For me to adjust quests for a player, it's necessary to disconnect that player and manipulate the PlayerDataFile (player save) while the player is offline.
-
-> :thought_balloon: I personally feel that this is a gross solution, but it does actually work. Hopefully A21 will provide new NetPackages to allow the server to communicate quest adjustments back to the client in realtime so disconnecting will no longer be necessary.
 
 Option Name | Default | Description
 --- | :---: | ---
 ForgetActiveQuests | false | Whether ongoing quests should be forgotten on memory loss.
 ForgetInactiveQuests | false | Whether completed quests (AND TRADER TIER LEVELS) should be forgotten on memory loss.
 ForgetIntroQuests | false | Whether the intro quests should be forgotten/reset on memory loss.
+
+### File Example
+
+Here's an example of what I'm trying out on my server. All of these options can be set individually via the admin console / telnet, or you could simply create an `amnesia.xml` file within your map's instance directory (the same folder you'll find your server's `players.xml` file in).
+
+```xml
+<config>
+  <LongTermMemoryLevel>50</LongTermMemoryLevel>
+  <PositiveOutlookMaxTime>3600</PositiveOutlookMaxTime>
+  <PositiveOutlookTimeOnFirstJoin>0</PositiveOutlookTimeOnFirstJoin>
+  <PositiveOutlookTimeOnMemoryLoss>0</PositiveOutlookTimeOnMemoryLoss>
+  <PositiveOutlookTimeOnKill>
+    <entry name="ZombieJuggernaut" caption="[FF8000]Juggernaut[-]" value="900" />
+    <entry name="zombieScorcher" caption="[FF007F]Scorcher[-]" value="300" />
+    <entry name="zombieDemolition" caption="[8000FF]Demolition Zombie[-]" value="60" />
+  </PositiveOutlookTimeOnKill>
+  <ProtectMemoryDuringBloodmoon>true</ProtectMemoryDuringBloodmoon>
+  <ProtectMemoryDuringPvp>true</ProtectMemoryDuringPvp>
+  <ForgetLevelsAndSkills>true</ForgetLevelsAndSkills>
+  <ForgetBooks>false</ForgetBooks>
+  <ForgetSchematics>false</ForgetSchematics>
+  <ForgetKdr>false</ForgetKdr>
+  <ForgetActiveQuests>false</ForgetActiveQuests>
+  <ForgetInactiveQuests>false</ForgetInactiveQuests>
+  <ForgetIntroQuests>false</ForgetIntroQuests>
+</config>
+```
 
 ## Compatibility
 

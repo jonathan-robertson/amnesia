@@ -1,12 +1,9 @@
 ﻿using Amnesia.Data;
 using Amnesia.Handlers;
-using Amnesia.Utilities;
 using System.Collections.Generic;
 
 namespace Amnesia {
-    internal class API : IModApi {
-        private static readonly ModLog log = new ModLog(typeof(API));
-
+    internal class ModApi : IModApi {
         public static Dictionary<int, bool> Obituary { get; private set; } = new Dictionary<int, bool>();
 
         public void InitMod(Mod _modInstance) {

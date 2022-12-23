@@ -1,0 +1,7 @@
+<config>
+    <append xpath="/windows/window[@name='spawnselection']/rect[2]">
+        <panel name="header" pos="-104,-200" width="602" height="144" depth="2" createuipanel="true" backgroundspritename="ui_game_panel_header" bordercolor="[black]" borderthickness="3">
+            <label style="header.name" pos="6,-6" width="594" height="138" justify="center" text_key="amnesiaRespawnMessage" />
+        </panel>
+    </append>
+</config>

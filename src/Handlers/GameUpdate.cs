@@ -4,7 +4,7 @@ using System;
 
 namespace Amnesia.Handlers {
     internal class GameUpdate {
-        private static readonly ModLog log = new ModLog(typeof(GameUpdate));
+        private static readonly ModLog<GameUpdate> log = new ModLog<GameUpdate>();
         private static readonly uint _ceiling = 100;
         private static uint _counter = 0;
         private static bool isBloodmoon = false;
@@ -29,13 +29,16 @@ namespace Amnesia.Handlers {
                 }
                 isBloodmoon = !isBloodmoon;
 
+                var players = GameManager.Instance.World.Players.list;
                 if (isBloodmoon) {
-                    GameManager.Instance.World.Players.list.ForEach(p => p.Buffs.AddBuff(Values.BloodmoonLifeProtectionBuff));
+                    for (var i = 0; i < players.Count; i++) {
+                        _ = players[i].Buffs.AddBuff(Values.BloodmoonLifeProtectionBuff);
+                    }
                 } else {
-                    GameManager.Instance.World.Players.list.ForEach(p => {
-                        p.Buffs.AddBuff(Values.PostBloodmoonLifeProtectionBuff);
-                        p.Buffs.RemoveBuff(Values.BloodmoonLifeProtectionBuff);
-                    });
+                    for (var i = 0; i < players.Count; i++) {
+                        _ = players[i].Buffs.AddBuff(Values.PostBloodmoonLifeProtectionBuff);
+                        players[i].Buffs.RemoveBuff(Values.BloodmoonLifeProtectionBuff);
+                    }
                 }
             } catch (Exception e) {
                 log.Error("Failed to handle bloodmoon.", e);
