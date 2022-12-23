@@ -7,14 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.0.0] - ?
 
-- refactor loops to enhance performance
-- remove xp bonus for golden juggernaut
-- remove second amnesia journal entry
-- remove hardcoded xp boosts for zombie kills
 - add admin configurable xp boosts for zombie kills
+- add reminder to respawn screen
 - modify amnesia buffs
+- refactor loops to enhance performance
+- remove hardcoded xp boosts for zombie kills
 - remove remaining lives mechanic
+- remove second amnesia journal entry
+- remove xp bonus for golden juggernaut
 - rename smelling salts -> memory booster
+- update journal entry
 - update newbie coat to continue until amnesia start
 
 ## [0.9.4] - 2022-11-16
