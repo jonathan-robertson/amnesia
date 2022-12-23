@@ -45,8 +45,6 @@ ForgetBooks | false | Whether books should be forgotten on memory loss. It's rec
 ForgetSchematics | false | Whether schematics should be forgotten on memory loss. *It's recommended to keep this as `false` because A21 is expected to no longer grant crafting recipes when learning skills, so finding/using schematics will be the only way to learn how to craft things.* ***Note that `false` can cause some confusion in A20 because schematics will appear to have been read if the corresponding recipe was already unlocked in a Skill/Perk. The code for how this works is inside C# on the client's end, so changing it for a server-side mod does nto appear to be possible... but again, all the confusion will be gone in A21.***
 ForgetKdr | false | Whether players/zombies killed and times died should be forgotten on memory loss. *I'd strongly recommend setting this to `true`, but have left it as `false` by default only because these metrics can't be recovered once wiped and some admins might not want them to reset for that reason.*
 
-> 📝 This mod is in progress, so plans for many more options are being worked on. As they're added and admins update their servers, the default values will be added for new options without negatively impacting the older options admins have already set.
-
 ### Experimental/Volatile Options
 
 ⚙️ I do have a better solution for this (most likely) but it will be in a future update. It's a low priority for me right now since our players aren't interested in quests being reset... but if your players are, please reach out to me in discord or post a comment to [Issue #57](https://github.com/jonathan-robertson/amnesia/issues/57).
