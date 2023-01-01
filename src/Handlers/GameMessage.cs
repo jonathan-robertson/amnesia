@@ -32,8 +32,8 @@ namespace Amnesia.Handlers {
                             }
                         }
 
-                        if (player.Progression.Level <= Config.LongTermMemoryLevel) {
-                            log.Trace($"{clientInfo.InternalId.CombinedString} ({player.GetDebugName()}) died but did not exceed the configured LongTermMemoryLevel of {Config.LongTermMemoryLevel}");
+                        if (player.Progression.Level < Config.LongTermMemoryLevel) {
+                            log.Trace($"{clientInfo.InternalId.CombinedString} ({player.GetDebugName()}) died but had not yet reached the configured LongTermMemoryLevel of {Config.LongTermMemoryLevel}");
                             return true;
                         }
 
