@@ -46,8 +46,8 @@ namespace Amnesia.Data {
             { NamePositiveOutlookTimeOnFirstJoin, "length of time for buff that boosts xp growth at first-time server join" },
             { NamePositiveOutlookTimeOnMemoryLoss, "length of time for buff that boosts xp growth on memory loss" },
 
-            { NameProtectMemoryDuringBloodmoon, "whether deaths during bloodmoon will cost lives" },
-            { NameProtectMemoryDuringPvp, "whether to prevent memory when defeated in pvp" },
+            { NameProtectMemoryDuringBloodmoon, "whether deaths during bloodmoon will harm memory" },
+            { NameProtectMemoryDuringPvp, "whether to prevent harm to memory when defeated in pvp" },
 
             { NameForgetLevelsAndSkills, $"whether to forget levels, skills, and skill points on memory loss (note that players will reset back to the level configured in {NameLongTermMemoryLevel}" },
             { NameForgetBooks, "whether books should be forgotten on memory loss" },
