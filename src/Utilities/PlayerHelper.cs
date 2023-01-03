@@ -136,7 +136,5 @@ namespace Amnesia.Utilities {
             clientInfo.SendPackage(NetPackageManager.GetPackage<NetPackageEntityCollect>().Setup(entityId, clientInfo.entityId));
             _ = GameManager.Instance.World.RemoveEntity(entityId, EnumRemoveEntityReason.Despawned);
         }
-
-        internal static void GiveItem(EntityPlayer player, object memoryBoosterItemName) => throw new NotImplementedException();
     }
 }
