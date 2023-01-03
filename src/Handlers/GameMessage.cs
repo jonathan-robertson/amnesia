@@ -9,38 +9,36 @@ namespace Amnesia.Handlers {
         public static bool Handle(ClientInfo clientInfo, EnumGameMessages messageType, string message, string mainName, bool localizeMain, string secondaryName, bool localizeSecondary) {
             if (!Config.Loaded) { return true; } // do not interrupt other mods from processing event
             try {
-                switch (messageType) {
-                    case EnumGameMessages.EntityWasKilled:
-                        if (!GameManager.Instance.World.Players.dict.TryGetValue(clientInfo.entityId, out var player)) {
-                            return true; // player not present; skip
-                        }
+                if (EnumGameMessages.EntityWasKilled != messageType) {
+                    return true; // only focus on entity killed messages
+                }
 
-                        if (player.Buffs.HasBuff(Values.BuffBloodmoonLifeProtection) || player.Buffs.HasBuff(Values.BuffPostBloodmoonLifeProtection)) {
-                            log.Trace($"{clientInfo.InternalId.CombinedString} ({player.GetDebugName()}) died but had bloodmoon life protection.");
-                            return true; // player had protection
-                        } else {
-                            log.Trace($"{clientInfo.InternalId.CombinedString} ({player.GetDebugName()}) died and did not have bloodmoon life protection.");
-                        }
+                if (!GameManager.Instance.World.Players.dict.TryGetValue(clientInfo.entityId, out var player)) {
+                    return true; // player not present; skip
+                }
 
-                        if (mainName != secondaryName) {
-                            var killerClient = ConnectionManager.Instance.Clients.GetForNameOrId(secondaryName);
-                            if (killerClient != null) {
-                                if (Config.ProtectMemoryDuringPvp) {
-                                    log.Trace($"{clientInfo.InternalId.CombinedString} ({player.GetDebugName()}) was killed by {secondaryName} but this server has pvp deaths set to not remove lives.");
-                                    return true; // being killed in pvp doesn't count against player
-                                }
-                            }
-                        }
+                if (player.Buffs.HasBuff(Values.BuffBloodmoonLifeProtection) || player.Buffs.HasBuff(Values.BuffPostBloodmoonLifeProtection)) {
+                    log.Trace($"{clientInfo.InternalId.CombinedString} ({player.GetDebugName()}) died but had bloodmoon memory protection.");
+                    return true; // player had protection
+                } else {
+                    log.Trace($"{clientInfo.InternalId.CombinedString} ({player.GetDebugName()}) died and did not have bloodmoon memory protection.");
+                }
 
-                        if (player.Progression.Level < Config.LongTermMemoryLevel) {
-                            log.Trace($"{clientInfo.InternalId.CombinedString} ({player.GetDebugName()}) died but had not yet reached the configured LongTermMemoryLevel of {Config.LongTermMemoryLevel}");
-                            return true;
-                        }
+                if (Config.ProtectMemoryDuringPvp && mainName != secondaryName) {
+                    var killerClient = ConnectionManager.Instance.Clients.GetForNameOrId(secondaryName);
+                    if (killerClient != null) {
+                        log.Trace($"{clientInfo.InternalId.CombinedString} ({player.GetDebugName()}) was killed by {secondaryName} but this server has pvp deaths set to not harm memory.");
+                        return true; // being killed in pvp doesn't count against player
+                    }
+                }
 
-                        if (!ModApi.Obituary.ContainsKey(clientInfo.entityId)) {
-                            ModApi.Obituary.Add(clientInfo.entityId, true);
-                        }
-                        break;
+                if (player.Progression.Level < Config.LongTermMemoryLevel) {
+                    log.Trace($"{clientInfo.InternalId.CombinedString} ({player.GetDebugName()}) died but had not yet reached the configured LongTermMemoryLevel of {Config.LongTermMemoryLevel}");
+                    return true;
+                }
+
+                if (!ModApi.Obituary.ContainsKey(clientInfo.entityId)) {
+                    ModApi.Obituary.Add(clientInfo.entityId, true);
                 }
             } catch (Exception e) {
                 log.Error("Failed to handle GameMessage event.", e);
