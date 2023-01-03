@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2023-01-03
+
+- add fragile memory state
+- add retroactive refund for hardened memory
+- disable near death trauma/xp debt for mem loss
+- remove client-side-only respawn window info
+- remove non-time text from buffs for cleanliness
+- remove references to lives in positive outlook
+- update journal entry to reflect new flow
+- update memory boosters to cure fragile memory
+- update memory loss to start at ltm level
+- update to add fragile memory on death
+- update to lose memory if fragile on death
+
 ## [1.0.0] - 2022-12-23
 
 - add admin configurable xp boosts for zombie kills

@@ -21,10 +21,10 @@ namespace Amnesia.Handlers {
                     return; // exit early, do not interrupt other mods from processing event
                 }
 
-                if (player.Buffs.HasBuff(Values.HardenedMemoryBuff)) {
-                    player.Buffs.RemoveBuff(Values.HardenedMemoryBuff);
-                    log.Info($"{clientInfo.InternalId.CombinedString} ({player.GetDebugName()}) died but will not be reset, thanks to Hardened Memory (which has now expired).");
-                    return;
+                if (!player.Buffs.HasBuff(Values.BuffFragileMemory)) {
+                    _ = player.Buffs.AddBuff(Values.BuffFragileMemory);
+                    log.Info($"{clientInfo.InternalId.CombinedString} ({player.GetDebugName()}) died and will not be reset, but now has a Fragile Memory.");
+                    return; // let player know it's time for memory boosters
                 }
 
                 if ((Config.ForgetActiveQuests || Config.ForgetInactiveQuests) && QuestHelper.ResetQuests(player)) {

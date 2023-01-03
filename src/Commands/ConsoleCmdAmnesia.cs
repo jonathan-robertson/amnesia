@@ -79,7 +79,7 @@ namespace Amnesia.Commands {
                 SdtdConsole.Instance.Output("No players are currently online.");
             }
             foreach (var player in players) {
-                SdtdConsole.Instance.Output($"{player.entityId}. {Values.HardenedMemoryBuff}: {player.Buffs.HasBuff(Values.HardenedMemoryBuff)}, {Values.PositiveOutlookRemTimeCVar}: {player.GetCVar(Values.PositiveOutlookRemTimeCVar)} ({player.GetDebugName()})");
+                SdtdConsole.Instance.Output($"{player.entityId}. {Values.BuffHardenedMemory}: {player.Buffs.HasBuff(Values.BuffHardenedMemory)}, {Values.CVarPositiveOutlookRemTime}: {player.GetCVar(Values.CVarPositiveOutlookRemTime)} ({player.GetDebugName()})");
             }
         }
 
@@ -122,7 +122,7 @@ namespace Amnesia.Commands {
                 SdtdConsole.Instance.Output($"Unable to parse command value; expecting 'add', 'rem', or 'clear'.\n{string.Join(", ", @params)}");
                 return;
             }
-            if (Values.PositiveOutlookTimeOnKillName.EqualsCaseInsensitive(@params[1])) {
+            if (Values.NamePositiveOutlookTimeOnKill.EqualsCaseInsensitive(@params[1])) {
                 UpdatePositiveOutlookOnKill(@params);
                 return;
             }
@@ -163,7 +163,7 @@ namespace Amnesia.Commands {
                     }
                     return;
             }
-            SdtdConsole.Instance.Output($"Invald request; run '{Commands[0]} set {Values.PositiveOutlookTimeOnKillName}' to see a list of options.");
+            SdtdConsole.Instance.Output($"Invald request; run '{Commands[0]} set {Values.NamePositiveOutlookTimeOnKill}' to see a list of options.");
             return;
         }
 
@@ -172,55 +172,55 @@ namespace Amnesia.Commands {
                 SdtdConsole.Instance.Output(Values.SingleValueFieldNamesAndDescriptions);
                 return;
             }
-            if (Values.LongTermMemoryLevelName.EqualsCaseInsensitive(@params[1])) {
+            if (Values.NameLongTermMemoryLevel.EqualsCaseInsensitive(@params[1])) {
                 UpdateLongTermMemoryLevel(@params);
                 return;
             }
-            if (Values.PositiveOutlookMaxTimeName.EqualsCaseInsensitive(@params[1])) {
+            if (Values.NamePositiveOutlookMaxTime.EqualsCaseInsensitive(@params[1])) {
                 UpdatePositiveOutlookMaxTime(@params);
                 return;
             }
-            if (Values.PositiveOutlookTimeOnFirstJoinName.EqualsCaseInsensitive(@params[1])) {
+            if (Values.NamePositiveOutlookTimeOnFirstJoin.EqualsCaseInsensitive(@params[1])) {
                 UpdatePositiveOutlookTimeOnFirstJoin(@params);
                 return;
             }
-            if (Values.PositiveOutlookTimeOnMemoryLossName.EqualsCaseInsensitive(@params[1])) {
+            if (Values.NamePositiveOutlookTimeOnMemoryLoss.EqualsCaseInsensitive(@params[1])) {
                 UpdatePositiveOutlookTimeOnMemoryLoss(@params);
                 return;
             }
-            if (Values.ProtectMemoryDuringBloodmoonName.EqualsCaseInsensitive(@params[1])) {
+            if (Values.NameProtectMemoryDuringBloodmoon.EqualsCaseInsensitive(@params[1])) {
                 UpdateProtectMemoryDuringBloodmoon(@params);
                 return;
             }
-            if (Values.ProtectMemoryDuringPvpName.EqualsCaseInsensitive(@params[1])) {
+            if (Values.NameProtectMemoryDuringPvp.EqualsCaseInsensitive(@params[1])) {
                 UpdateProtectMemoryDuringPvp(@params);
                 return;
             }
-            if (Values.ForgetLevelsAndSkillsName.EqualsCaseInsensitive(@params[1])) {
+            if (Values.NameForgetLevelsAndSkills.EqualsCaseInsensitive(@params[1])) {
                 UpdateForgetLevelsAndSkills(@params);
                 return;
             }
-            if (Values.ForgetBooksName.EqualsCaseInsensitive(@params[1])) {
+            if (Values.NameForgetBooks.EqualsCaseInsensitive(@params[1])) {
                 UpdateForgetBooks(@params);
                 return;
             }
-            if (Values.ForgetSchematicsName.EqualsCaseInsensitive(@params[1])) {
+            if (Values.NameForgetSchematics.EqualsCaseInsensitive(@params[1])) {
                 UpdateForgetSchematics(@params);
                 return;
             }
-            if (Values.ForgetKdrName.EqualsCaseInsensitive(@params[1])) {
+            if (Values.NameForgetKdr.EqualsCaseInsensitive(@params[1])) {
                 UpdateForgetKdr(@params);
                 return;
             }
-            if (Values.ForgetActiveQuestsName.EqualsCaseInsensitive(@params[1])) {
+            if (Values.NameForgetActiveQuests.EqualsCaseInsensitive(@params[1])) {
                 UpdateForgetActiveQuests(@params);
                 return;
             }
-            if (Values.ForgetInactiveQuestsName.EqualsCaseInsensitive(@params[1])) {
+            if (Values.NameForgetInactiveQuests.EqualsCaseInsensitive(@params[1])) {
                 UpdateForgetInactiveQuests(@params);
                 return;
             }
-            if (Values.ForgetIntroQuestsName.EqualsCaseInsensitive(@params[1])) {
+            if (Values.NameForgetIntroQuests.EqualsCaseInsensitive(@params[1])) {
                 UpdateForgetIntroQuests(@params);
                 return;
             }
@@ -229,8 +229,8 @@ namespace Amnesia.Commands {
 
         private void UpdateLongTermMemoryLevel(List<string> @params) {
             if (@params.Count == 2) {
-                SdtdConsole.Instance.Output($@"{Values.SingleValueNamesAndDescriptionsDict[Values.LongTermMemoryLevelName]}
-{Commands[0]} set {Values.LongTermMemoryLevelName} <level>");
+                SdtdConsole.Instance.Output($@"{Values.SingleValueNamesAndDescriptionsDict[Values.NameLongTermMemoryLevel]}
+{Commands[0]} set {Values.NameLongTermMemoryLevel} <level>");
                 return;
             }
             if (!int.TryParse(@params[2], out var value)) {
@@ -242,8 +242,8 @@ namespace Amnesia.Commands {
 
         private void UpdatePositiveOutlookMaxTime(List<string> @params) {
             if (@params.Count == 2) {
-                SdtdConsole.Instance.Output($@"{Values.SingleValueNamesAndDescriptionsDict[Values.PositiveOutlookMaxTimeName]}
-{Commands[0]} set {Values.PositiveOutlookMaxTimeName} <timeInSeconds>");
+                SdtdConsole.Instance.Output($@"{Values.SingleValueNamesAndDescriptionsDict[Values.NamePositiveOutlookMaxTime]}
+{Commands[0]} set {Values.NamePositiveOutlookMaxTime} <timeInSeconds>");
                 return;
             }
             if (!int.TryParse(@params[2], out var value)) {
@@ -255,8 +255,8 @@ namespace Amnesia.Commands {
 
         private void UpdatePositiveOutlookTimeOnFirstJoin(List<string> @params) {
             if (@params.Count == 2) {
-                SdtdConsole.Instance.Output($@"{Values.SingleValueNamesAndDescriptionsDict[Values.PositiveOutlookTimeOnFirstJoinName]}
-{Commands[0]} set {Values.PositiveOutlookTimeOnFirstJoinName} <timeInSeconds>");
+                SdtdConsole.Instance.Output($@"{Values.SingleValueNamesAndDescriptionsDict[Values.NamePositiveOutlookTimeOnFirstJoin]}
+{Commands[0]} set {Values.NamePositiveOutlookTimeOnFirstJoin} <timeInSeconds>");
                 return;
             }
             if (!int.TryParse(@params[2], out var value)) {
@@ -268,8 +268,8 @@ namespace Amnesia.Commands {
 
         private void UpdatePositiveOutlookTimeOnMemoryLoss(List<string> @params) {
             if (@params.Count == 2) {
-                SdtdConsole.Instance.Output($@"{Values.SingleValueNamesAndDescriptionsDict[Values.PositiveOutlookTimeOnMemoryLossName]}
-{Commands[0]} set {Values.PositiveOutlookTimeOnMemoryLossName} <timeInSeconds>");
+                SdtdConsole.Instance.Output($@"{Values.SingleValueNamesAndDescriptionsDict[Values.NamePositiveOutlookTimeOnMemoryLoss]}
+{Commands[0]} set {Values.NamePositiveOutlookTimeOnMemoryLoss} <timeInSeconds>");
                 return;
             }
             if (!int.TryParse(@params[2], out var value)) {
@@ -281,8 +281,8 @@ namespace Amnesia.Commands {
 
         private void UpdateProtectMemoryDuringBloodmoon(List<string> @params) {
             if (@params.Count == 2) {
-                SdtdConsole.Instance.Output($@"{Values.SingleValueNamesAndDescriptionsDict[Values.ProtectMemoryDuringBloodmoonName]}
-{Commands[0]} set {Values.ProtectMemoryDuringBloodmoonName} <true|false>");
+                SdtdConsole.Instance.Output($@"{Values.SingleValueNamesAndDescriptionsDict[Values.NameProtectMemoryDuringBloodmoon]}
+{Commands[0]} set {Values.NameProtectMemoryDuringBloodmoon} <true|false>");
                 return;
             }
             if (!bool.TryParse(@params[2], out var value)) {
@@ -294,8 +294,8 @@ namespace Amnesia.Commands {
 
         private void UpdateProtectMemoryDuringPvp(List<string> @params) {
             if (@params.Count == 2) {
-                SdtdConsole.Instance.Output($@"{Values.SingleValueNamesAndDescriptionsDict[Values.ProtectMemoryDuringPvpName]}
-{Commands[0]} set {Values.ProtectMemoryDuringPvpName} <true|false>");
+                SdtdConsole.Instance.Output($@"{Values.SingleValueNamesAndDescriptionsDict[Values.NameProtectMemoryDuringPvp]}
+{Commands[0]} set {Values.NameProtectMemoryDuringPvp} <true|false>");
                 return;
             }
             if (!bool.TryParse(@params[2], out var value)) {
@@ -307,8 +307,8 @@ namespace Amnesia.Commands {
 
         private void UpdateForgetLevelsAndSkills(List<string> @params) {
             if (@params.Count == 2) {
-                SdtdConsole.Instance.Output($@"{Values.SingleValueNamesAndDescriptionsDict[Values.ForgetLevelsAndSkillsName]}
-{Commands[0]} set {Values.ForgetLevelsAndSkillsName} <true|false>");
+                SdtdConsole.Instance.Output($@"{Values.SingleValueNamesAndDescriptionsDict[Values.NameForgetLevelsAndSkills]}
+{Commands[0]} set {Values.NameForgetLevelsAndSkills} <true|false>");
                 return;
             }
             if (!bool.TryParse(@params[2], out var value)) {
@@ -320,8 +320,8 @@ namespace Amnesia.Commands {
 
         private void UpdateForgetBooks(List<string> @params) {
             if (@params.Count == 2) {
-                SdtdConsole.Instance.Output($@"{Values.SingleValueNamesAndDescriptionsDict[Values.ForgetBooksName]}
-{Commands[0]} set {Values.ForgetBooksName} <true|false>");
+                SdtdConsole.Instance.Output($@"{Values.SingleValueNamesAndDescriptionsDict[Values.NameForgetBooks]}
+{Commands[0]} set {Values.NameForgetBooks} <true|false>");
                 return;
             }
             if (!bool.TryParse(@params[2], out var value)) {
@@ -333,8 +333,8 @@ namespace Amnesia.Commands {
 
         private void UpdateForgetSchematics(List<string> @params) {
             if (@params.Count == 2) {
-                SdtdConsole.Instance.Output($@"{Values.SingleValueNamesAndDescriptionsDict[Values.ForgetSchematicsName]}
-{Commands[0]} set {Values.ForgetSchematicsName} <true|false>");
+                SdtdConsole.Instance.Output($@"{Values.SingleValueNamesAndDescriptionsDict[Values.NameForgetSchematics]}
+{Commands[0]} set {Values.NameForgetSchematics} <true|false>");
                 return;
             }
             if (!bool.TryParse(@params[2], out var value)) {
@@ -346,8 +346,8 @@ namespace Amnesia.Commands {
 
         private void UpdateForgetKdr(List<string> @params) {
             if (@params.Count == 2) {
-                SdtdConsole.Instance.Output($@"{Values.SingleValueNamesAndDescriptionsDict[Values.ForgetKdrName]}
-{Commands[0]} set {Values.ForgetKdrName} <true|false>");
+                SdtdConsole.Instance.Output($@"{Values.SingleValueNamesAndDescriptionsDict[Values.NameForgetKdr]}
+{Commands[0]} set {Values.NameForgetKdr} <true|false>");
                 return;
             }
             if (!bool.TryParse(@params[2], out var value)) {
@@ -359,8 +359,8 @@ namespace Amnesia.Commands {
 
         private void UpdateForgetActiveQuests(List<string> @params) {
             if (@params.Count == 2) {
-                SdtdConsole.Instance.Output($@"{Values.SingleValueNamesAndDescriptionsDict[Values.ForgetActiveQuestsName]}
-{Commands[0]} set {Values.ForgetActiveQuestsName} <true|false>");
+                SdtdConsole.Instance.Output($@"{Values.SingleValueNamesAndDescriptionsDict[Values.NameForgetActiveQuests]}
+{Commands[0]} set {Values.NameForgetActiveQuests} <true|false>");
                 return;
             }
             if (!bool.TryParse(@params[2], out var value)) {
@@ -372,8 +372,8 @@ namespace Amnesia.Commands {
 
         private void UpdateForgetInactiveQuests(List<string> @params) {
             if (@params.Count == 2) {
-                SdtdConsole.Instance.Output($@"{Values.SingleValueNamesAndDescriptionsDict[Values.ForgetInactiveQuestsName]}
-{Commands[0]} set {Values.ForgetInactiveQuestsName} <true|false>");
+                SdtdConsole.Instance.Output($@"{Values.SingleValueNamesAndDescriptionsDict[Values.NameForgetInactiveQuests]}
+{Commands[0]} set {Values.NameForgetInactiveQuests} <true|false>");
                 return;
             }
             if (!bool.TryParse(@params[2], out var value)) {
@@ -385,8 +385,8 @@ namespace Amnesia.Commands {
 
         private void UpdateForgetIntroQuests(List<string> @params) {
             if (@params.Count == 2) {
-                SdtdConsole.Instance.Output($@"{Values.SingleValueNamesAndDescriptionsDict[Values.ForgetIntroQuestsName]}
-{Commands[0]} set {Values.ForgetInactiveQuestsName} <true|false>");
+                SdtdConsole.Instance.Output($@"{Values.SingleValueNamesAndDescriptionsDict[Values.NameForgetIntroQuests]}
+{Commands[0]} set {Values.NameForgetInactiveQuests} <true|false>");
                 return;
             }
             if (!bool.TryParse(@params[2], out var value)) {

@@ -6,6 +6,7 @@
 
 - [Amnesia](#amnesia)
   - [Summary](#summary)
+  - [Flow](#flow)
   - [Admin Configuration](#admin-configuration)
     - [Experimental/Volatile Options](#experimentalvolatile-options)
     - [File Example](#file-example)
@@ -19,13 +20,31 @@ As you may have guessed, this mod adds a Roguelike element to 7 Days to Die in a
 
 > :mag: This mod *only* runs on a dedicated server which you can technically run locally and will need to connect to. If you're only looking for a client-side/single-player experience, consider [Mostly Dead](https://7daystodiemods.com/mostly-dead/) by [Khzmusik](https://7daystodiemods.com/tag/khzmusik/).
 
-Each time a player dies (after a configurable level), that player's "Memory" will be reset in various, configurable ways (see [Admin Configuration](#admin-configuration)). Memory can be hardened with the help of `Trader Jen's Memory Booster` (non-craftable, but often purchasable from traders for a very high price... i.e. it will require effort to save up for).
+After reaching an admin-configurable level (which defaults to 1), a player will receive the debuff `Fragile Memory` upon death, along with `Near Death Trauma` and an XP Debt to work off.
 
-The Goal: improve long-term engagement for various kinds of players and take a step toward 'evergreen' servers by reducing how often map wipes need to occur.
+Dying with the `Fragile Memory` debuff will cause a player to **Lose Memory**, resulting in *no* XP Debt or the `Near Death Trauma` debuff, but will trigger a series of admin-configurable changes to the player: levels being reset, forgetting books/schematics, even forgetting kill stats for pvp, death, and zombies. More details on settings and defaults are listed in the [Admin Configuration](#admin-configuration) section.
 
-The Effect: support a heavier risk/reward play style meant to be a balance for servers with a higher XP boost. Fast player growth with the risk of dynamic, configurable player reset.
+Players can recover from `Fragile Memory` with the help of `Trader Jen's Memory Booster`: a non-craftable item that all traders sell for a very high price... so it will require effort to save up for.
 
-> 💭 Regular xp growth can be used as well for a more hardcore experience. This is definitely something worth discussing with your community if you want to try to keep the server engaging for all players past 3-4 months (your mileage may vary)
+The Primary Goal is to improve long-term engagement by introducing a *far* heavier risk/reward play style that should mix well with a post-apocalyptic survival experience.
+
+The Secondary Goal is to take a meaningful step toward 'evergreen' servers by reducing how often map wipes need to occur due to total exhaustion of all challenge to the players (i.e. when most players have reached max level and no longer feel they have anything exciting to work towards). While it is the case that other reasons for wiping a map may be unavoidable, Amnesia is meant to help with player engagement/boredom/challenge/etc.
+
+> 💭 Higher XP growth is recommended; possibly 2x or 3x. Regular xp growth can be used, but may be very challenging. This is definitely something worth discussing with your community if you want to try to keep the server engaging for all players past 3-4 months (your mileage may vary).
+
+## Flow
+
+```mermaid
+flowchart LR
+    alive[[Alive]]-->incap[[Incapacitated]]
+    incap-->|not fragile|fragile[[Fragile Memory]]
+    incap-->|fragile|amnesia[Lose Memory, Reset to Level 50]
+
+    amnesia-->fragile
+    fragile-->incap
+
+    fragile-->|use memory booster|alive
+```
 
 ## Admin Configuration
 

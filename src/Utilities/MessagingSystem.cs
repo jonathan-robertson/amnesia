@@ -31,7 +31,7 @@ namespace Amnesia.Utilities {
             }
             Send(EChatType.Global, message, entityIds);
         }
-        
+
         /// <summary>
         /// Send a message to all players who match the given condition.
         /// </summary>
