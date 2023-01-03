@@ -109,6 +109,18 @@ namespace Amnesia.Utilities {
             GiveItemStack(clientInfo, player.GetBlockPosition(), itemStack);
         }
 
+        /// <summary>
+        /// Give an item to the player, placing it in the player's inventory if possible.
+        /// </summary>
+        /// <param name="clientInfo">ClientInfo for player to send the network package to.</param>
+        /// <param name="player">EntityPlayer to give item to.</param>
+        /// <param name="itemName">Name of the item to give the player.</param>
+        /// <param name="count">Number of items to give within a single stack (only works with stackable items).</param>
+        public static void GiveItem(ClientInfo clientInfo, EntityPlayer player, string itemName, int count = 1) {
+            var itemStack = new ItemStack(ItemClass.GetItem(itemName, true), count);
+            GiveItemStack(clientInfo, player.GetBlockPosition(), itemStack);
+        }
+
         internal static void GiveItemStack(ClientInfo clientInfo, Vector3i pos, ItemStack itemStack) {
             var entityId = EntityFactory.nextEntityID++;
             GameManager.Instance.World.SpawnEntityInWorld((EntityItem)EntityFactory.CreateEntity(new EntityCreationData {

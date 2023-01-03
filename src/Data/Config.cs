@@ -30,13 +30,9 @@ namespace Amnesia.Data {
             public string caption;
             public int value;
 
-            public override string ToString() {
-                return ToString("name", "caption", "value");
-            }
+            public override string ToString() => ToString("name", "caption", "value");
 
-            public string ToString(string nameDisplay, string captionDisplay, string valueDisplay, bool hideName = false) {
-                return $"{{ {(hideName ? "" : nameDisplay + ": " + name + ", ")}{captionDisplay}: {caption}, {valueDisplay}: {value} }}";
-            }
+            public string ToString(string nameDisplay, string captionDisplay, string valueDisplay, bool hideName = false) => $"{{ {(hideName ? "" : nameDisplay + ": " + name + ", ")}{captionDisplay}: {caption}, {valueDisplay}: {value} }}";
         };
 
         /// <summary>Whether to prevent memory loss during blood moon.</summary>
@@ -61,7 +57,7 @@ namespace Amnesia.Data {
         public static bool ForgetIntroQuests { get; private set; } = false;
 
         public static string PrintPositiveOutlookTimeOnMemoryLoss() => PositiveOutlookTimeOnKill.Count == 0 ? "None" : "[\n    " + string.Join(",\n    ", PositiveOutlookTimeOnKill.Select(kvp => kvp.Value.ToString("entityName", "displayName", "bonusTimeInSeconds")).ToArray()) + "\n]";
-        public static string AsString() =>  $@"=== Amnesia Configuration ===
+        public static string AsString() => $@"=== Amnesia Configuration ===
 {Values.NameLongTermMemoryLevel}: {LongTermMemoryLevel}
 
 {Values.NamePositiveOutlookMaxTime}: {PositiveOutlookMaxTime}

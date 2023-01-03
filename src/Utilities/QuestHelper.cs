@@ -76,7 +76,7 @@ namespace Amnesia.Utilities {
             }
             return true;
         }
-        
+
         /// <summary>
         /// Server-safe version of quest.HandleUnlockPOI.
         /// </summary>
@@ -156,7 +156,7 @@ Objective Type: {quest.Objectives[i].GetType().Name}", e);
 
             _ = player.bag.DecItem(expectedItem, 1, false);
         }
-        
+
         /// <summary>
         /// Server-safe version of QuestJournal.HandlePartyRemoveQuest.
         /// </summary>
