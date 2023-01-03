@@ -23,6 +23,7 @@ namespace Amnesia.Handlers {
         }
 
         private static void HandleBloodMoon() {
+            // TODO: this should probably be injected into triggers when bloodmoon starts and ends, honestly
             try {
                 if (isBloodmoon == GameManager.Instance.World.aiDirector.BloodMoonComponent.BloodMoonActive) {
                     return;
