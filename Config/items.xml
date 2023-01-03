@@ -3,6 +3,7 @@
         <item name="drugAmnesiaMemoryBooster">
             <property name="Tags" value="medical" />
 
+            <property name="DisplayType" value="drugAmnesiaMemoryBooster" />
             <property name="DescriptionKey" value="drugAmnesiaMemoryBoosterDesc" />
             <property name="CustomIcon" value="drugPainkillers" />
             <property name="CustomIconTint" value="0,127,255" />
@@ -24,12 +25,12 @@
                 <property name="Delay" value="1.0" />
                 <property name="Use_time" value="..." />
                 <property name="Sound_start" value="player_painkillers" />
-                <requirement name="!HasBuff" buff="buffAmnesiaHardenedMemory" />
-                <requirement name="PlayerLevel" operation="GT" value="50" />
+                <requirement name="HasBuff" buff="buffAmnesiaFragileMemory" />
             </property>
             <effect_group tiered="false">
                 <triggered_effect trigger="onSelfPrimaryActionEnd" action="PlaySound" sound="spawnInStinger" />
-                <triggered_effect trigger="onSelfPrimaryActionEnd" action="AddBuff" buff="buffAmnesiaHardenedMemory" />
+                <triggered_effect trigger="onSelfPrimaryActionEnd" action="RemoveBuff" buff="buffAmnesiaFragileMemory" />
+                <display_value name="dStopsFragileMemory" value="1" />
             </effect_group>
         </item>
     </append>

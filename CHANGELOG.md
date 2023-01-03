@@ -7,7 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.1.0] - ?
 
+- add fragile memory state
+- remove non-time text from buffs for cleanliness
+- remove references to lives in positive outlook
+- update journal entry to reflect new flow
 - update memory loss to start at ltm level
+- update respawn window to reflect new flow
 
 ## [1.0.0] - 2022-12-23
 

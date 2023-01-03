@@ -9,25 +9,32 @@
     <set xpath="/buffs/buff[@name='buffNewbieCoat']/effect_group/triggered_effect/requirement[@name='PlayerLevel']/@value">@amnesiaLongTermMemoryLevel</set>
 
     <append xpath="/buffs">
-        <buff name="buffAmnesiaHardenedMemory" name_key="buffAmnesiaHardenedMemoryName" description_key="buffAmnesiaHardenedMemoryDesc" icon="ui_game_symbol_intellect" icon_color="0,127,255" remove_on_death="false">
+        <!-- deprecated: keeping around for a while for backwards compatibility -->
+        <buff name="buffAmnesiaHardenedMemory" remove_on_death="false" hidden="true">
+            <duration value="0" />
+            <stack_type value="ignore" />
+        </buff>
+
+        <buff name="buffAmnesiaFragileMemory" name_key="buffAmnesiaFragileMemoryName" description_key="buffAmnesiaFragileMemoryDesc" icon="ui_game_symbol_intellect" icon_color="255,128,0" remove_on_death="false">
             <duration value="0" />
             <stack_type value="ignore" />
 
             <effect_group>
-                <triggered_effect trigger="onSelfBuffStart" action="ShowToolbeltMessage" message_key="buffAmnesiaHardenedMemoryTooltipAdd" />
+                <triggered_effect trigger="onSelfBuffStart" action="ShowToolbeltMessage" message_key="buffAmnesiaFragileMemoryStartTooltip" />
                 <!-- TODO: add sound to notification (a good sound! your memory was kept!) -->
-                <triggered_effect trigger="onSelfBuffRemove" action="ShowToolbeltMessage" message_key="buffAmnesiaHardenedMemoryTooltipRemove" />
+                <triggered_effect trigger="onSelfBuffRemove" action="ShowToolbeltMessage" message_key="buffAmnesiaFragileMemoryRemoveTooltip" />
+                <passive_effect name="BuffBlink" operation="base_set" value="2" duration="0,3" tags="buffAmnesiaFragileMemory" />
             </effect_group>
         </buff>
 
         <buff name="buffAmnesiaMemoryLoss" name_key="buffAmnesiaMemoryLossName" description_key="buffAmnesiaMemoryLossDesc" icon="ui_game_symbol_skull_crusher" icon_color="255,0,127" remove_on_death="false">
             <duration value="30" />
             <stack_type value="ignore" />
-            <display_value_key value="Memory Loss" />
-            <display_value value="x" />
             <effect_group>
                 <!-- TODO: add bad/sad sound (you lost your memory :[ ) -->
                 <triggered_effect trigger="onSelfBuffStart" action="ShowToolbeltMessage" message_key="buffAmnesiaMemoryLossTooltip" />
+                <passive_effect name="BuffBlink" operation="base_set" value="2" duration="0,3" tags="buffAmnesiaFragileMemory" />
+                <passive_effect name="BuffBlink" operation="base_set" value="2" duration="0,3" tags="buffAmnesiaMemoryLoss" />
             </effect_group>
         </buff>
 
@@ -37,6 +44,7 @@
             <display_value_format value="time" />
 
             <effect_group name="activeEffects">
+                <passive_effect name="BuffBlink" operation="base_set" value="2" duration="0,3" tags="buffAmnesiaPositiveOutlook" />
                 <!-- TODO: consider setting to @amnesiaPositiveOutlookXpBoostPerc instead so admins can adjust as necessary -->
                 <passive_effect name="PlayerExpGain" operation="perc_add" value="1" />
             </effect_group>
@@ -54,9 +62,8 @@
         <buff name="buffAmnesiaBloodmoonLifeProtection" name_key="buffAmnesiaBloodmoonLifeProtectionName" description_key="buffAmnesiaBloodmoonLifeProtectionDesc" icon="ui_game_symbol_intellect" icon_color="0,255,128" remove_on_death="false">
             <duration value="0" />
             <stack_type value="ignore" />
-            <display_value_key value="Mem Safe" />
-            <display_value value="x" />
             <effect_group>
+                <passive_effect name="BuffBlink" operation="base_set" value="2" duration="0,3" tags="buffAmnesiaBloodmoonLifeProtection" />
                 <triggered_effect trigger="onSelfBuffStart" action="ShowToolbeltMessage" message_key="buffAmnesiaBloodmoonLifeProtectionTooltip" />
             </effect_group>
         </buff>
@@ -67,6 +74,7 @@
             <display_value value="$postBloodmoonProtectionTime" />
             <display_value_format value="time" />
             <effect_group name="setup">
+                <passive_effect name="BuffBlink" operation="base_set" value="2" duration="0,3" tags="buffAmnesiaPostBloodmoonLifeProtection" />
                 <!-- 300s == 5m -->
                 <triggered_effect trigger="onSelfBuffStart" action="ModifyCVar" cvar="$postBloodmoonProtectionTime" operation="set" value="300" />
             </effect_group>
