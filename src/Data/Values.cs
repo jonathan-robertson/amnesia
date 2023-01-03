@@ -16,6 +16,7 @@ namespace Amnesia.Data {
         public const string BuffHardenedMemory = "buffAmnesiaHardenedMemory";
         public const string BuffFragileMemory = "buffAmnesiaFragileMemory";
         public const string BuffNewbieCoat = "buffNewbieCoat";
+        public const string BuffNearDeathTrauma = "buffNearDeathTrauma";
         public const string BuffMemoryLossNotification = "buffAmnesiaMemoryLoss";
 
         // items

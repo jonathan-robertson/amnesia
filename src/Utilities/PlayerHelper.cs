@@ -34,6 +34,7 @@ namespace Amnesia.Utilities {
                 player.Progression.SkillPoints = Config.LongTermMemoryLevel - 1;
 
                 // Zero out xp debt; the reset has caused enough suffering ;)
+                player.Buffs.RemoveBuff(Values.BuffNearDeathTrauma);
                 player.Progression.ExpDeficit = 0;
                 player.SetCVar("_expdeficit", 0);
 

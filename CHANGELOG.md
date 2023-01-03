@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - add fragile memory state
 - add retroactive refund for hardened memory
+- remove nearDeathTrauma debuff on mem loss
 - remove non-time text from buffs for cleanliness
 - remove references to lives in positive outlook
 - update journal entry to reflect new flow

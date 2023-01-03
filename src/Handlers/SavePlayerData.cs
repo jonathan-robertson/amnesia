@@ -22,7 +22,7 @@ namespace Amnesia.Handlers {
                 }
 
                 if (!player.Buffs.HasBuff(Values.BuffFragileMemory)) {
-                    player.Buffs.AddBuff(Values.BuffFragileMemory);
+                    _ = player.Buffs.AddBuff(Values.BuffFragileMemory);
                     log.Info($"{clientInfo.InternalId.CombinedString} ({player.GetDebugName()}) died and will not be reset, but now has a Fragile Memory.");
                     return; // let player know it's time for memory boosters
                 }
