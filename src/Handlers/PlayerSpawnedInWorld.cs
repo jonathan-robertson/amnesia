@@ -79,11 +79,7 @@ namespace Amnesia.Handlers {
         /// <param name="player">EntityPlayer to check buffs for and refund if hardened.</param>
         private static void RefundHardenedMemory(ClientInfo clientInfo, EntityPlayer player) {
             if (player.Buffs.HasBuff(Values.BuffHardenedMemory)) {
-                PlayerHelper.GiveItem(clientInfo, player, Values.NameMemoryBoosterItem);
-                MessagingSystem.Whisper("[ff8000]The Amnesia mod was recently updated and some things have changed.[-]", player.entityId);
-                MessagingSystem.Whisper("A [007fff]Memory Booster[-] you previously used [00ff80]is being given back to you[-] since it now serves a slightly different purpose.", player.entityId);
-                MessagingSystem.Whisper("[ff007f]Please check your inventory now to confirm it was received[-]. If you don't see it there, check for a bag on the ground.", player.entityId);
-                MessagingSystem.Whisper("For more info on changes, please take a look at the Amnesia entry in your [ff8000]Journal[-].", player.entityId);
+                PlayerHelper.GiveItem(clientInfo, player, Values.NameMemoryBoosters);
                 player.Buffs.RemoveBuff(Values.BuffHardenedMemory);
             }
         }

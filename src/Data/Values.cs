@@ -19,7 +19,7 @@ namespace Amnesia.Data {
         public const string BuffMemoryLossNotification = "buffAmnesiaMemoryLoss";
 
         // items
-        public const string NameMemoryBoosterItem = "drugAmnesiaMemoryBooster";
+        public const string NameMemoryBoosters = "drugAmnesiaMemoryBoosters";
 
         // names
         public const string NameLongTermMemoryLevel = "LongTermMemoryLevel";

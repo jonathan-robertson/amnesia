@@ -13,6 +13,9 @@
         <buff name="buffAmnesiaHardenedMemory" remove_on_death="false" hidden="true">
             <duration value="0" />
             <stack_type value="ignore" />
+            <effect_group>
+                <triggered_effect trigger="onSelfBuffRemove" action="ShowToolbeltMessage" message_key="buffAmnesiaHardenedMemoryRemoveTooltip" />
+            </effect_group>
         </buff>
 
         <buff name="buffAmnesiaFragileMemory" name_key="buffAmnesiaFragileMemoryName" description_key="buffAmnesiaFragileMemoryDesc" icon="ui_game_symbol_intellect" icon_color="255,128,0" remove_on_death="false">

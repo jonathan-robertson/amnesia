@@ -1,10 +1,10 @@
 ﻿<config>
     <append xpath="/items">
-        <item name="drugAmnesiaMemoryBooster">
+        <item name="drugAmnesiaMemoryBoosters">
             <property name="Tags" value="medical" />
 
-            <property name="DisplayType" value="drugAmnesiaMemoryBooster" />
-            <property name="DescriptionKey" value="drugAmnesiaMemoryBoosterDesc" />
+            <property name="DisplayType" value="drugAmnesiaMemoryBoosters" />
+            <property name="DescriptionKey" value="drugAmnesiaMemoryBoostersDesc" />
             <property name="CustomIcon" value="drugPainkillers" />
             <property name="CustomIconTint" value="0,127,255" />
             <property name="TintColor" value="0,127,255" />

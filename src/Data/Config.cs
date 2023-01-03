@@ -96,7 +96,7 @@ namespace Amnesia.Data {
                     }
                     if (player.Buffs.HasBuff(Values.BuffHardenedMemory)) {
                         player.Buffs.RemoveBuff(Values.BuffHardenedMemory);
-                        PlayerHelper.GiveItem(player, Values.NameMemoryBoosterItem);
+                        PlayerHelper.GiveItem(player, Values.NameMemoryBoosters);
                     }
                 }
             }
