@@ -15,7 +15,7 @@ namespace Amnesia.Handlers {
                             return true; // player not present; skip
                         }
 
-                        if (player.Buffs.HasBuff(Values.BloodmoonLifeProtectionBuff) || player.Buffs.HasBuff(Values.PostBloodmoonLifeProtectionBuff)) {
+                        if (player.Buffs.HasBuff(Values.BuffBloodmoonLifeProtection) || player.Buffs.HasBuff(Values.BuffPostBloodmoonLifeProtection)) {
                             log.Trace($"{clientInfo.InternalId.CombinedString} ({player.GetDebugName()}) died but had bloodmoon life protection.");
                             return true; // player had protection
                         } else {

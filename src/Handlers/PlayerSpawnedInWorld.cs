@@ -26,7 +26,7 @@ namespace Amnesia.Handlers {
                         break;
                     case RespawnType.JoinMultiplayer: // existing player rejoining
                         // grace period should continue only so long as you don't disconnect
-                        player.Buffs.RemoveBuff(Values.PostBloodmoonLifeProtectionBuff);
+                        player.Buffs.RemoveBuff(Values.BuffPostBloodmoonLifeProtection);
                         HandleStandardRespawnSteps(player);
                         break;
                     case RespawnType.Died: // existing player returned from death
@@ -47,27 +47,27 @@ namespace Amnesia.Handlers {
         private static void HandleStandardRespawnSteps(EntityPlayer player) {
 
             // Ensure joining/respawning players have their constants updated
-            if (player.GetCVar(Values.LongTermMemoryLevelCVar) != Config.LongTermMemoryLevel) {
-                player.SetCVar(Values.LongTermMemoryLevelCVar, Config.LongTermMemoryLevel);
+            if (player.GetCVar(Values.CVarLongTermMemoryLevel) != Config.LongTermMemoryLevel) {
+                player.SetCVar(Values.CVarLongTermMemoryLevel, Config.LongTermMemoryLevel);
             }
 
             // Remove Positive Outlook if admin disabled it since player's last login
-            if (Config.PositiveOutlookTimeOnMemoryLoss == 0 && player.Buffs.HasBuff(Values.PositiveOutlookBuff)) {
-                player.Buffs.RemoveBuff(Values.PositiveOutlookBuff);
+            if (Config.PositiveOutlookTimeOnMemoryLoss == 0 && player.Buffs.HasBuff(Values.BuffPositiveOutlook)) {
+                player.Buffs.RemoveBuff(Values.BuffPositiveOutlook);
             }
 
             // Apply/Remove memory protection based on configuration
             if (Config.ProtectMemoryDuringBloodmoon) {
                 // add or remove protection based on whether BM is active
                 if (GameManager.Instance.World.aiDirector.BloodMoonComponent.BloodMoonActive) {
-                    _ = player.Buffs.AddBuff(Values.BloodmoonLifeProtectionBuff);
+                    _ = player.Buffs.AddBuff(Values.BuffBloodmoonLifeProtection);
                 } else {
-                    player.Buffs.RemoveBuff(Values.BloodmoonLifeProtectionBuff);
+                    player.Buffs.RemoveBuff(Values.BuffBloodmoonLifeProtection);
                 }
             } else {
                 // remove/clean up since protection is inactive
-                player.Buffs.RemoveBuff(Values.BloodmoonLifeProtectionBuff);
-                player.Buffs.RemoveBuff(Values.PostBloodmoonLifeProtectionBuff);
+                player.Buffs.RemoveBuff(Values.BuffBloodmoonLifeProtection);
+                player.Buffs.RemoveBuff(Values.BuffPostBloodmoonLifeProtection);
             }
         }
     }

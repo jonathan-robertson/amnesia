@@ -62,25 +62,25 @@ namespace Amnesia.Data {
 
         public static string PrintPositiveOutlookTimeOnMemoryLoss() => PositiveOutlookTimeOnKill.Count == 0 ? "None" : "[\n    " + string.Join(",\n    ", PositiveOutlookTimeOnKill.Select(kvp => kvp.Value.ToString("entityName", "displayName", "bonusTimeInSeconds")).ToArray()) + "\n]";
         public static string AsString() =>  $@"=== Amnesia Configuration ===
-{Values.LongTermMemoryLevelName}: {LongTermMemoryLevel}
+{Values.NameLongTermMemoryLevel}: {LongTermMemoryLevel}
 
-{Values.PositiveOutlookMaxTimeName}: {PositiveOutlookMaxTime}
-{Values.PositiveOutlookTimeOnFirstJoinName}: {PositiveOutlookTimeOnFirstJoin}
-{Values.PositiveOutlookTimeOnMemoryLossName}: {PositiveOutlookTimeOnMemoryLoss}
-{Values.PositiveOutlookTimeOnKillName}: {PrintPositiveOutlookTimeOnMemoryLoss()}
+{Values.NamePositiveOutlookMaxTime}: {PositiveOutlookMaxTime}
+{Values.NamePositiveOutlookTimeOnFirstJoin}: {PositiveOutlookTimeOnFirstJoin}
+{Values.NamePositiveOutlookTimeOnMemoryLoss}: {PositiveOutlookTimeOnMemoryLoss}
+{Values.NamePositiveOutlookTimeOnKill}: {PrintPositiveOutlookTimeOnMemoryLoss()}
 
-{Values.ProtectMemoryDuringBloodmoonName}: {ProtectMemoryDuringBloodmoon}
-{Values.ProtectMemoryDuringPvpName}: {ProtectMemoryDuringPvp}
+{Values.NameProtectMemoryDuringBloodmoon}: {ProtectMemoryDuringBloodmoon}
+{Values.NameProtectMemoryDuringPvp}: {ProtectMemoryDuringPvp}
 
-{Values.ForgetLevelsAndSkillsName}: {ForgetLevelsAndSkills}
-{Values.ForgetBooksName}: {ForgetBooks}
-{Values.ForgetSchematicsName}: {ForgetSchematics}
-{Values.ForgetKdrName}: {ForgetKdr}
+{Values.NameForgetLevelsAndSkills}: {ForgetLevelsAndSkills}
+{Values.NameForgetBooks}: {ForgetBooks}
+{Values.NameForgetSchematics}: {ForgetSchematics}
+{Values.NameForgetKdr}: {ForgetKdr}
 
 == Experimental Features (require player disconnection on final death) ==
-{Values.ForgetActiveQuestsName}: {ForgetActiveQuests}
-{Values.ForgetInactiveQuestsName}: {ForgetInactiveQuests}
-{Values.ForgetIntroQuestsName}: {ForgetIntroQuests}";
+{Values.NameForgetActiveQuests}: {ForgetActiveQuests}
+{Values.NameForgetInactiveQuests}: {ForgetInactiveQuests}
+{Values.NameForgetIntroQuests}: {ForgetIntroQuests}";
 
         /// <summary>
         /// Update the long term memory level. This will determine when Amnesia activates and the level players will be reset to on death.
@@ -93,14 +93,14 @@ namespace Amnesia.Data {
             LongTermMemoryLevel = Math.Max(1, value);
             _ = Save();
             foreach (var player in GameManager.Instance.World.Players.list) {
-                player.SetCVar(Values.LongTermMemoryLevelCVar, LongTermMemoryLevel);
+                player.SetCVar(Values.CVarLongTermMemoryLevel, LongTermMemoryLevel);
                 if (player.Progression.Level <= LongTermMemoryLevel) {
-                    if (!player.Buffs.HasBuff(Values.NewbieCoatBuff)) {
-                        _ = player.Buffs.AddBuff(Values.NewbieCoatBuff);
+                    if (!player.Buffs.HasBuff(Values.BuffNewbieCoat)) {
+                        _ = player.Buffs.AddBuff(Values.BuffNewbieCoat);
                     }
-                    if (player.Buffs.HasBuff(Values.HardenedMemoryBuff)) {
-                        player.Buffs.RemoveBuff(Values.HardenedMemoryBuff);
-                        PlayerHelper.GiveItem(player, Values.MemoryBoosterItemName);
+                    if (player.Buffs.HasBuff(Values.BuffHardenedMemory)) {
+                        player.Buffs.RemoveBuff(Values.BuffHardenedMemory);
+                        PlayerHelper.GiveItem(player, Values.NameMemoryBoosterItem);
                     }
                 }
             }
@@ -117,16 +117,16 @@ namespace Amnesia.Data {
             PositiveOutlookMaxTime = Math.Max(0, timeInSeconds);
             _ = Save();
             foreach (var player in GameManager.Instance.World.Players.list) {
-                var playerRemTime = player.GetCVar(Values.PositiveOutlookRemTimeCVar);
+                var playerRemTime = player.GetCVar(Values.CVarPositiveOutlookRemTime);
                 if (playerRemTime > 0) {
-                    var playerMaxTime = player.GetCVar(Values.PositiveOutlookMaxTimeCVar);
+                    var playerMaxTime = player.GetCVar(Values.CVarPositiveOutlookMaxTime);
                     if (playerMaxTime < PositiveOutlookMaxTime) {
-                        player.SetCVar(Values.PositiveOutlookRemTimeCVar, PositiveOutlookMaxTime - playerMaxTime + playerRemTime);
+                        player.SetCVar(Values.CVarPositiveOutlookRemTime, PositiveOutlookMaxTime - playerMaxTime + playerRemTime);
                     } else if (playerMaxTime > PositiveOutlookMaxTime) {
-                        player.SetCVar(Values.PositiveOutlookRemTimeCVar, PositiveOutlookMaxTime);
+                        player.SetCVar(Values.CVarPositiveOutlookRemTime, PositiveOutlookMaxTime);
                     }
                 }
-                player.SetCVar(Values.PositiveOutlookMaxTimeCVar, PositiveOutlookMaxTime);
+                player.SetCVar(Values.CVarPositiveOutlookMaxTime, PositiveOutlookMaxTime);
             }
         }
 
@@ -220,12 +220,12 @@ namespace Amnesia.Data {
             _ = Save();
             if (ProtectMemoryDuringBloodmoon && GameManager.Instance.World.aiDirector.BloodMoonComponent.BloodMoonActive) {
                 foreach (var player in GameManager.Instance.World.Players.list) {
-                    _ = player.Buffs.AddBuff(Values.BloodmoonLifeProtectionBuff);
+                    _ = player.Buffs.AddBuff(Values.BuffBloodmoonLifeProtection);
                 }
             } else {
                 foreach (var player in GameManager.Instance.World.Players.list) {
-                    player.Buffs.RemoveBuff(Values.BloodmoonLifeProtectionBuff);
-                    player.Buffs.RemoveBuff(Values.PostBloodmoonLifeProtectionBuff);
+                    player.Buffs.RemoveBuff(Values.BuffBloodmoonLifeProtection);
+                    player.Buffs.RemoveBuff(Values.BuffPostBloodmoonLifeProtection);
                 }
             }
         }
@@ -328,7 +328,7 @@ namespace Amnesia.Data {
 
         public static bool Save() {
             try {
-                var timeOnKillElement = new XElement(Values.PositiveOutlookTimeOnKillName);
+                var timeOnKillElement = new XElement(Values.NamePositiveOutlookTimeOnKill);
                 foreach (var kvp in PositiveOutlookTimeOnKill) {
                     timeOnKillElement.Add(new XElement("entry",
                         new XAttribute("name", kvp.Value.name),
@@ -337,24 +337,24 @@ namespace Amnesia.Data {
                 }
 
                 new XElement("config",
-                    new XElement(Values.LongTermMemoryLevelName, LongTermMemoryLevel),
+                    new XElement(Values.NameLongTermMemoryLevel, LongTermMemoryLevel),
 
-                    new XElement(Values.PositiveOutlookMaxTimeName, PositiveOutlookMaxTime),
-                    new XElement(Values.PositiveOutlookTimeOnFirstJoinName, PositiveOutlookTimeOnFirstJoin),
-                    new XElement(Values.PositiveOutlookTimeOnMemoryLossName, PositiveOutlookTimeOnMemoryLoss),
+                    new XElement(Values.NamePositiveOutlookMaxTime, PositiveOutlookMaxTime),
+                    new XElement(Values.NamePositiveOutlookTimeOnFirstJoin, PositiveOutlookTimeOnFirstJoin),
+                    new XElement(Values.NamePositiveOutlookTimeOnMemoryLoss, PositiveOutlookTimeOnMemoryLoss),
                     timeOnKillElement,
 
-                    new XElement(Values.ProtectMemoryDuringBloodmoonName, ProtectMemoryDuringBloodmoon),
-                    new XElement(Values.ProtectMemoryDuringPvpName, ProtectMemoryDuringPvp),
+                    new XElement(Values.NameProtectMemoryDuringBloodmoon, ProtectMemoryDuringBloodmoon),
+                    new XElement(Values.NameProtectMemoryDuringPvp, ProtectMemoryDuringPvp),
 
-                    new XElement(Values.ForgetLevelsAndSkillsName, ForgetLevelsAndSkills),
-                    new XElement(Values.ForgetBooksName, ForgetBooks),
-                    new XElement(Values.ForgetSchematicsName, ForgetSchematics),
-                    new XElement(Values.ForgetKdrName, ForgetKdr),
+                    new XElement(Values.NameForgetLevelsAndSkills, ForgetLevelsAndSkills),
+                    new XElement(Values.NameForgetBooks, ForgetBooks),
+                    new XElement(Values.NameForgetSchematics, ForgetSchematics),
+                    new XElement(Values.NameForgetKdr, ForgetKdr),
 
-                    new XElement(Values.ForgetActiveQuestsName, ForgetActiveQuests),
-                    new XElement(Values.ForgetInactiveQuestsName, ForgetInactiveQuests),
-                    new XElement(Values.ForgetIntroQuestsName, ForgetIntroQuests)
+                    new XElement(Values.NameForgetActiveQuests, ForgetActiveQuests),
+                    new XElement(Values.NameForgetInactiveQuests, ForgetInactiveQuests),
+                    new XElement(Values.NameForgetIntroQuests, ForgetIntroQuests)
                 ).Save(filename);
                 log.Info($"Successfully saved {filename}");
                 return true;
@@ -367,14 +367,14 @@ namespace Amnesia.Data {
         public static void Load() {
             try {
                 var config = XElement.Load(filename);
-                LongTermMemoryLevel = ParseInt(config, Values.LongTermMemoryLevelName, LongTermMemoryLevel);
+                LongTermMemoryLevel = ParseInt(config, Values.NameLongTermMemoryLevel, LongTermMemoryLevel);
 
-                PositiveOutlookMaxTime = ParseInt(config, Values.PositiveOutlookMaxTimeName, PositiveOutlookMaxTime);
-                PositiveOutlookTimeOnFirstJoin = ParseInt(config, Values.PositiveOutlookTimeOnFirstJoinName, PositiveOutlookTimeOnFirstJoin);
-                PositiveOutlookTimeOnMemoryLoss = ParseInt(config, Values.PositiveOutlookTimeOnMemoryLossName, PositiveOutlookTimeOnMemoryLoss);
+                PositiveOutlookMaxTime = ParseInt(config, Values.NamePositiveOutlookMaxTime, PositiveOutlookMaxTime);
+                PositiveOutlookTimeOnFirstJoin = ParseInt(config, Values.NamePositiveOutlookTimeOnFirstJoin, PositiveOutlookTimeOnFirstJoin);
+                PositiveOutlookTimeOnMemoryLoss = ParseInt(config, Values.NamePositiveOutlookTimeOnMemoryLoss, PositiveOutlookTimeOnMemoryLoss);
 
                 PositiveOutlookTimeOnKill.Clear();
-                foreach (var entry in config.Descendants(Values.PositiveOutlookTimeOnKillName).First().Descendants("entry")) {
+                foreach (var entry in config.Descendants(Values.NamePositiveOutlookTimeOnKill).First().Descendants("entry")) {
                     if (!int.TryParse(entry.Attribute("value").Value, out var intValue)) {
                         log.Error($"Unable to parse value; expecting int");
                         return;
@@ -386,17 +386,17 @@ namespace Amnesia.Data {
                     });
                 }
 
-                ProtectMemoryDuringBloodmoon = ParseBool(config, Values.ProtectMemoryDuringBloodmoonName, ProtectMemoryDuringBloodmoon);
-                ProtectMemoryDuringPvp = ParseBool(config, Values.ProtectMemoryDuringPvpName, ProtectMemoryDuringPvp);
+                ProtectMemoryDuringBloodmoon = ParseBool(config, Values.NameProtectMemoryDuringBloodmoon, ProtectMemoryDuringBloodmoon);
+                ProtectMemoryDuringPvp = ParseBool(config, Values.NameProtectMemoryDuringPvp, ProtectMemoryDuringPvp);
 
-                ForgetLevelsAndSkills = ParseBool(config, Values.ForgetLevelsAndSkillsName, ForgetLevelsAndSkills);
-                ForgetBooks = ParseBool(config, Values.ForgetBooksName, ForgetBooks);
-                ForgetSchematics = ParseBool(config, Values.ForgetSchematicsName, ForgetSchematics);
-                ForgetKdr = ParseBool(config, Values.ForgetKdrName, ForgetKdr);
+                ForgetLevelsAndSkills = ParseBool(config, Values.NameForgetLevelsAndSkills, ForgetLevelsAndSkills);
+                ForgetBooks = ParseBool(config, Values.NameForgetBooks, ForgetBooks);
+                ForgetSchematics = ParseBool(config, Values.NameForgetSchematics, ForgetSchematics);
+                ForgetKdr = ParseBool(config, Values.NameForgetKdr, ForgetKdr);
 
-                ForgetActiveQuests = ParseBool(config, Values.ForgetActiveQuestsName, ForgetActiveQuests);
-                ForgetInactiveQuests = ParseBool(config, Values.ForgetInactiveQuestsName, ForgetInactiveQuests);
-                ForgetIntroQuests = ParseBool(config, Values.ForgetIntroQuestsName, ForgetIntroQuests);
+                ForgetActiveQuests = ParseBool(config, Values.NameForgetActiveQuests, ForgetActiveQuests);
+                ForgetInactiveQuests = ParseBool(config, Values.NameForgetInactiveQuests, ForgetInactiveQuests);
+                ForgetIntroQuests = ParseBool(config, Values.NameForgetIntroQuests, ForgetIntroQuests);
                 log.Info($"Successfully loaded {filename}");
                 Loaded = true;
             } catch (FileNotFoundException) {

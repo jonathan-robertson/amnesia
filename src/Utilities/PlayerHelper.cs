@@ -76,11 +76,11 @@ namespace Amnesia.Utilities {
                 ConnectionManager.Instance.SendPackage(NetPackageManager.GetPackage<NetPackagePlayerStats>().Setup(player), false, player.entityId);
             }
 
-            _ = player.Buffs.AddBuff(Values.MemoryLossNotificationBuff);
+            _ = player.Buffs.AddBuff(Values.BuffMemoryLossNotification);
             if (Config.PositiveOutlookTimeOnMemoryLoss > 0) {
                 log.Trace($"{player.GetDebugName()} will receive the Positive Outlook buff.");
-                player.SetCVar(Values.PositiveOutlookRemTimeCVar, Config.PositiveOutlookTimeOnMemoryLoss);
-                _ = player.Buffs.AddBuff(Values.PositiveOutlookBuff);
+                player.SetCVar(Values.CVarPositiveOutlookRemTime, Config.PositiveOutlookTimeOnMemoryLoss);
+                _ = player.Buffs.AddBuff(Values.BuffPositiveOutlook);
             }
         }
 
@@ -88,11 +88,11 @@ namespace Amnesia.Utilities {
             if (valueToAdd == 0) {
                 return 0;
             }
-            var playerRemTime = Math.Max(0, player.GetCVar(Values.PositiveOutlookRemTimeCVar));
+            var playerRemTime = Math.Max(0, player.GetCVar(Values.CVarPositiveOutlookRemTime));
             var targetValue = Math.Min(playerRemTime + valueToAdd, Config.PositiveOutlookMaxTime);
-            player.SetCVar(Values.PositiveOutlookRemTimeCVar, targetValue);
-            if (!player.Buffs.HasBuff(Values.PositiveOutlookBuff)) {
-                _ = player.Buffs.AddBuff(Values.PositiveOutlookBuff);
+            player.SetCVar(Values.CVarPositiveOutlookRemTime, targetValue);
+            if (!player.Buffs.HasBuff(Values.BuffPositiveOutlook)) {
+                _ = player.Buffs.AddBuff(Values.BuffPositiveOutlook);
             }
             return targetValue;
         }

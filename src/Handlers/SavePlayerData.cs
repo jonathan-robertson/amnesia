@@ -21,8 +21,8 @@ namespace Amnesia.Handlers {
                     return; // exit early, do not interrupt other mods from processing event
                 }
 
-                if (player.Buffs.HasBuff(Values.HardenedMemoryBuff)) {
-                    player.Buffs.RemoveBuff(Values.HardenedMemoryBuff);
+                if (player.Buffs.HasBuff(Values.BuffHardenedMemory)) {
+                    player.Buffs.RemoveBuff(Values.BuffHardenedMemory);
                     log.Info($"{clientInfo.InternalId.CombinedString} ({player.GetDebugName()}) died but will not be reset, thanks to Hardened Memory (which has now expired).");
                     return;
                 }
