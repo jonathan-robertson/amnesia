@@ -33,11 +33,6 @@ namespace Amnesia.Utilities {
                 player.Progression.ExpToNextLevel = player.Progression.GetExpForNextLevel();
                 player.Progression.SkillPoints = Config.LongTermMemoryLevel - 1;
 
-                // Zero out xp debt; the reset has caused enough suffering ;)
-                player.Buffs.RemoveBuff(Values.BuffNearDeathTrauma);
-                player.Progression.ExpDeficit = 0;
-                player.SetCVar("_expdeficit", 0);
-
                 // Return all skill points rewarded from completed quest; should cover vanilla quest_BasicSurvival8, for example
                 if (!Config.ForgetIntroQuests) {
                     try {
@@ -77,7 +72,7 @@ namespace Amnesia.Utilities {
                 ConnectionManager.Instance.SendPackage(NetPackageManager.GetPackage<NetPackagePlayerStats>().Setup(player), false, player.entityId);
             }
 
-            _ = player.Buffs.AddBuff(Values.BuffMemoryLossNotification);
+            _ = player.Buffs.AddBuff(Values.BuffMemoryLoss);
             if (Config.PositiveOutlookTimeOnMemoryLoss > 0) {
                 log.Trace($"{player.GetDebugName()} will receive the Positive Outlook buff.");
                 player.SetCVar(Values.CVarPositiveOutlookRemTime, Config.PositiveOutlookTimeOnMemoryLoss);

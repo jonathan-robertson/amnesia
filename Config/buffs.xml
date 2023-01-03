@@ -5,6 +5,7 @@
         </effect_group>
     </append>
 
+
     <set xpath="/buffs/buff[@name='buffNewbieCoat']/effect_group/requirement[@name='PlayerLevel']/@value">@amnesiaLongTermMemoryLevel</set>
     <set xpath="/buffs/buff[@name='buffNewbieCoat']/effect_group/triggered_effect/requirement[@name='PlayerLevel']/@value">@amnesiaLongTermMemoryLevel</set>
 
@@ -24,7 +25,6 @@
 
             <effect_group>
                 <triggered_effect trigger="onSelfBuffStart" action="ShowToolbeltMessage" message_key="buffAmnesiaFragileMemoryStartTooltip" />
-                <!-- TODO: add sound to notification (a good sound! your memory was kept!) -->
                 <triggered_effect trigger="onSelfBuffRemove" action="ShowToolbeltMessage" message_key="buffAmnesiaFragileMemoryRemoveTooltip" />
                 <passive_effect name="BuffBlink" operation="base_set" value="2" duration="0,3" tags="buffAmnesiaFragileMemory" />
             </effect_group>
@@ -33,11 +33,15 @@
         <buff name="buffAmnesiaMemoryLoss" name_key="buffAmnesiaMemoryLossName" description_key="buffAmnesiaMemoryLossDesc" icon="ui_game_symbol_skull_crusher" icon_color="255,0,127" remove_on_death="false">
             <duration value="30" />
             <stack_type value="ignore" />
-            <effect_group>
+            <effect_group name="display-effects">
                 <!-- TODO: add bad/sad sound (you lost your memory :[ ) -->
                 <triggered_effect trigger="onSelfBuffStart" action="ShowToolbeltMessage" message_key="buffAmnesiaMemoryLossTooltip" />
                 <passive_effect name="BuffBlink" operation="base_set" value="2" duration="0,3" tags="buffAmnesiaFragileMemory" />
                 <passive_effect name="BuffBlink" operation="base_set" value="2" duration="0,3" tags="buffAmnesiaMemoryLoss" />
+            </effect_group>
+            <effect_group name="erase-xp-debt">
+                <passive_effect name="ExpDeficitPerDeathPercentage" operation="base_set" value="0" />
+                <passive_effect name="ExpDeficitMaxPercentage" operation="base_set" value="0" />
             </effect_group>
         </buff>
 
