@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace Amnesia.Data {
-    internal class Values {
+namespace Amnesia.Data
+{
+    internal class Values
+    {
 
         // cvars
         public const string CVarLongTermMemoryLevel = "amnesiaLongTermMemoryLevel";
