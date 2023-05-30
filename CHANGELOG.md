@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - add clarification for blood moon protection buff
 - add debug toggle console command
+- add clarifying text to amnesia buffs
 - fix positive outlook bonus xp color
 - improve performance of blood moon triggers
 - move default console command to players param
