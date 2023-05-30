@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [UNRELEASED]
 
+- add debug toggle console command
 - fix positive outlook bonus xp color
 - move default console command to players param
 
