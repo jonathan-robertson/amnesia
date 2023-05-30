@@ -22,7 +22,7 @@ buffAmnesiaPositiveOutlookDesc,buffs,Buffs,"You're feeling especially positive a
 buffAmnesiaPositiveOutlookTooltip,buffs,Buffs,"Positive Outlook: [00ff80]XP Gain Doubled!"
 
 buffAmnesiaBloodmoonLifeProtectionName,buffs,Buffs,"Blood Moon Life Protection"
-buffAmnesiaBloodmoonLifeProtectionDesc,buffs,Buffs,"You feel something in the air that seems to provide you with a sense of peace and clarity of thought... perhaps this is the same 'something' causing the zombies to go wild.\n\n[00ff80]You [00ff80]CANNOT[-] lose memory during or otherwise experience harm to your memory if you die during this event[-].\n\n... but still, try to play it safe."
+buffAmnesiaBloodmoonLifeProtectionDesc,buffs,Buffs,"You feel something in the air that seems to provide you with a sense of peace and clarity of thought... perhaps this is the same 'something' causing the zombies to go wild.\n\n[00ff80]You [00ff80]CANNOT[-] lose memory or otherwise experience harm to your memory if you die during this event[-].\n\n... but still, try to play it safe.\n\nBefore level [007fff]{cvar(amnesiaLongTermMemoryLevel)}[-], this buff has no practical effect since your young, healthy brain wards off the mental impact of the apocalypse."
 buffAmnesiaBloodmoonLifeProtectionTooltip,buffs,Buffs,"You [00ff80]CANNOT[-] lose memory if you die during this event"
 buffAmnesiaBloodmoonLifeProtectionEndTooltip,buffs,Buffs,"Blood Moon Memory Protection [ff007f]HAS ENDED[-]"
 
