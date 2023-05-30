@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - add debug toggle console command
 - fix positive outlook bonus xp color
+- improve performance of blood moon triggers
 - move default console command to players param
 
 ## [1.1.1] - 2023-02-19

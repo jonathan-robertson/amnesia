@@ -1,6 +1,8 @@
 ﻿using Amnesia.Data;
 using Amnesia.Handlers;
+using HarmonyLib;
 using System.Collections.Generic;
+using System.Reflection;
 
 namespace Amnesia
 {
@@ -11,8 +13,10 @@ namespace Amnesia
 
         public void InitMod(Mod _modInstance)
         {
+            var harmony = new Harmony(GetType().ToString());
+            harmony.PatchAll(Assembly.GetExecutingAssembly());
+
             ModEvents.GameStartDone.RegisterHandler(Config.Load);
-            ModEvents.GameUpdate.RegisterHandler(GameUpdate.Handle);
             ModEvents.PlayerSpawnedInWorld.RegisterHandler(PlayerSpawnedInWorld.Handle);
             ModEvents.GameMessage.RegisterHandler(GameMessage.Handle);
             ModEvents.SavePlayerData.RegisterHandler(SavePlayerData.Handle);

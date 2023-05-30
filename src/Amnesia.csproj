@@ -31,6 +31,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="0Harmony">
+      <HintPath>..\References\0Harmony.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="Assembly-CSharp">
       <HintPath>..\References\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
@@ -58,13 +62,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Patches\AIDirectorBloodMoonComponent.cs" />
     <Compile Include="ModApi.cs" />
     <Compile Include="Commands\ConsoleCmdAmnesia.cs" />
     <Compile Include="Data\Config.cs" />
     <Compile Include="Data\Values.cs" />
     <Compile Include="Handlers\EntityKilled.cs" />
     <Compile Include="Handlers\GameMessage.cs" />
-    <Compile Include="Handlers\GameUpdate.cs" />
     <Compile Include="Handlers\PlayerSpawnedInWorld.cs" />
     <Compile Include="Handlers\SavePlayerData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
