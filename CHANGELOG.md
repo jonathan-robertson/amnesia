@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [UNRELEASED]
 
 - fix positive outlook bonus xp color
+- move default console command to players param
 
 ## [1.1.1] - 2023-02-19
 

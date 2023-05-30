@@ -17,7 +17,7 @@ namespace Amnesia.Commands
         public ConsoleCmdAmnesia()
         {
             var dict = new Dictionary<string, string>() {
-                { "", "show players and their amnesia-related info" },
+                { "players", "show players and their amnesia-related info" },
                 { "grant <user id / player name / entity id> <timeInSeconds>", "grant player some bonus xp time" },
                 { "config", "show current amnesia configuration" },
                 { "set", "show the single-value fields you can adjust" },
@@ -56,11 +56,14 @@ namespace Amnesia.Commands
             {
                 if (_params.Count == 0)
                 {
-                    HandleShowPlayers();
+                    SdtdConsole.Instance.Output("A parameter is required");
                     return;
                 }
                 switch (_params[0].ToLower())
                 {
+                    case "players":
+                        HandleShowPlayers();
+                        return;
                     case "test":
                         HandleTest(_params, _senderInfo);
                         return;
