@@ -11,8 +11,6 @@ buffAmnesiaFragileMemoryDesc,buffs,Buffs,"You now have a [ff8000]Fragile Memory[
 buffAmnesiaFragileMemoryStartTooltip,buffs,Buffs,"You now have a [ff8000]Fragile Memory[-] due to being incapacitated"
 buffAmnesiaFragileMemoryRemoveTooltip,buffs,Buffs,"You no longer have a [ff8000]Fragile Memory[-], thanks to [007fff]Trader Jen's Memory Boosters[-]"
 
-buffAmnesiaHardenedMemoryRemoveTooltip,buffs,Buffs,"[007fff]Memory Boosters[-] you previously used [00ff80]are being given back to you[-]; see Amnesia entry in [ff8000]Journal[-] for more info."
-
 buffAmnesiaMemoryLossName,buffs,Buffs,"Memory Loss"
 buffAmnesiaMemoryLossDesc,buffs,Buffs,"You feel a sense that mistakes were made, but perhaps can find a more effective method of survival this time around.\n\n[007fff]Trader Jen's Memory Boosters[-] can be purchased from any trader to cure your [ff8000]Fragile Memory[-], which will provide a buffer against [ff007f]Memory Loss[-]."
 buffAmnesiaMemoryLossTooltip,buffs,Buffs,"You experienced [ff007f]Memory Loss[-] due to being incapacitated"

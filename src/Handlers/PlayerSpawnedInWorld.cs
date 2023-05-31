@@ -28,13 +28,11 @@ namespace Amnesia.Handlers
                 {
                     case RespawnType.EnterMultiplayer: // first-time login for new player
                         _ = PlayerHelper.AddPositiveOutlookTime(player, Config.PositiveOutlookTimeOnFirstJoin);
-                        RefundHardenedMemory(clientInfo, player); // TODO: deprecated; remove in 2.0.0
                         HandleStandardRespawnSteps(player);
                         break;
                     case RespawnType.JoinMultiplayer: // existing player rejoining
                         // grace period should continue only so long as you don't disconnect
                         player.Buffs.RemoveBuff(Values.BuffPostBloodmoonLifeProtection);
-                        RefundHardenedMemory(clientInfo, player); // TODO: deprecated; remove in 2.0.0
                         HandleStandardRespawnSteps(player);
                         break;
                     case RespawnType.Died: // existing player returned from death
@@ -87,19 +85,6 @@ namespace Amnesia.Handlers
                 // remove/clean up since protection is inactive
                 player.Buffs.RemoveBuff(Values.BuffBloodmoonLifeProtection);
                 player.Buffs.RemoveBuff(Values.BuffPostBloodmoonLifeProtection);
-            }
-        }
-
-        /// <summary>
-        /// Temporary method to automatically refund any players with the Hardened Memory buff from version 1.0.0.
-        /// </summary>
-        /// <param name="player">EntityPlayer to check buffs for and refund if hardened.</param>
-        private static void RefundHardenedMemory(ClientInfo clientInfo, EntityPlayer player) // TODO: deprecated; remove in 2.0.0
-        {
-            if (player.Buffs.HasBuff(Values.BuffHardenedMemory))
-            {
-                PlayerHelper.GiveItem(clientInfo, player, Values.NameMemoryBoosters);
-                player.Buffs.RemoveBuff(Values.BuffHardenedMemory);
             }
         }
     }
