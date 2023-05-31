@@ -8,7 +8,8 @@ namespace Amnesia.Commands
 {
     internal class ConsoleCmdAmnesia : ConsoleCmdAbstract
     {
-        private static readonly string[] Commands = new string[] {
+        private static readonly string[] Commands = new string[]
+        {
             "amnesia",
             "amn"
         };
@@ -16,8 +17,10 @@ namespace Amnesia.Commands
 
         public ConsoleCmdAmnesia()
         {
-            var dict = new Dictionary<string, string>() {
-                { "", "show players and their amnesia-related info" },
+            var dict = new Dictionary<string, string>()
+            {
+                { "debug", "toggle debug logging mode" },
+                { "players", "show players and their amnesia-related info" },
                 { "grant <user id / player name / entity id> <timeInSeconds>", "grant player some bonus xp time" },
                 { "config", "show current amnesia configuration" },
                 { "set", "show the single-value fields you can adjust" },
@@ -56,11 +59,18 @@ namespace Amnesia.Commands
             {
                 if (_params.Count == 0)
                 {
-                    HandleShowPlayers();
+                    SdtdConsole.Instance.Output($"A parameter is required; run 'help {Commands[0]}' for more info");
                     return;
                 }
                 switch (_params[0].ToLower())
                 {
+                    case "debug":
+                        ModApi.DebugMode = !ModApi.DebugMode;
+                        SdtdConsole.Instance.Output($"Debug Mode has successfully been {(ModApi.DebugMode ? "enabled" : "disabled")}.");
+                        return;
+                    case "players":
+                        HandleShowPlayers();
+                        return;
                     case "test":
                         HandleTest(_params, _senderInfo);
                         return;
