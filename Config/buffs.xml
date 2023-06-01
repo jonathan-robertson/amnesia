@@ -5,7 +5,6 @@
         </effect_group>
     </append>
 
-
     <set xpath="/buffs/buff[@name='buffNewbieCoat']/effect_group/requirement[@name='PlayerLevel']/@value">@amnesiaLongTermMemoryLevel</set>
     <set xpath="/buffs/buff[@name='buffNewbieCoat']/effect_group/triggered_effect/requirement[@name='PlayerLevel']/@value">@amnesiaLongTermMemoryLevel</set>
 
@@ -97,6 +96,17 @@
                 <triggered_effect trigger="onSelfBuffRemove" action="ModifyCVar" cvar="$postBloodmoonProtectionTime" operation="set" value="0" />
                 <triggered_effect trigger="onSelfBuffRemove" action="ShowToolbeltMessage" message_key="buffAmnesiaBloodmoonLifeProtectionEndTooltip" />
             </effect_group>
+        </buff>
+
+        <buff name="buffAmnesiaTryBuyTreatment" hidden="true" remove_on_death="false">
+            <stack_type value="ignore" />
+            <duration value="0" />
+            <!-- wait for server to process and remove this, along with buffAmnesiaFragileMemory -->
+        </buff>
+        <buff name="buffAmnesiaRequestChangeCallback" hidden="true" remove_on_death="false">
+            <stack_type value="ignore" />
+            <duration value="0" />
+            <!-- wait for server to process and remove this, along with buffAmnesiaFragileMemory -->
         </buff>
     </append>
     <!-- TODO: explore how onCombatEntered works: perhaps a screen effect could be added when on last life onCombatEntered as a reminder -->
