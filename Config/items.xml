@@ -1,4 +1,6 @@
 ﻿<config>
+    <append xpath="/items/item[@name='casinoCoin']/property[@name='Tags']/@value">,amnesiaCurrency</append>
+
     <append xpath="/items">
         <item name="drugAmnesiaMemoryBoosters">
             <property name="Tags" value="medical" />

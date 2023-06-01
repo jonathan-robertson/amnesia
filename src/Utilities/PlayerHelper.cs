@@ -6,7 +6,35 @@ namespace Amnesia.Utilities
 {
     internal class PlayerHelper
     {
-        private static readonly ModLog<PlayerHelper> log = new ModLog<PlayerHelper>();
+        private static readonly ModLog<PlayerHelper> _log = new ModLog<PlayerHelper>();
+
+        public static bool TryGetClientInfo(int entityId, out ClientInfo clientInfo)
+        {
+            clientInfo = ConnectionManager.Instance.Clients.ForEntityId(entityId);
+            if (clientInfo == null)
+            {
+                _log.Error($"Could not retrieve remote player connection for {entityId}");
+                return false;
+            }
+            return true;
+        }
+
+        public static bool TryGetClientInfoAndEntityPlayer(World world, int entityId, out ClientInfo clientInfo, out EntityPlayer player)
+        {
+            clientInfo = ConnectionManager.Instance.Clients.ForEntityId(entityId);
+            if (clientInfo == null)
+            {
+                _log.Error($"Could not retrieve remote player connection for {entityId}");
+                player = null;
+                return false;
+            }
+            if (!world.Players.dict.TryGetValue(entityId, out player))
+            {
+                _log.Error($"Could not retrieve player for {entityId}");
+                return false;
+            }
+            return true;
+        }
 
         /// <remarks>Most of the following core logic was lifted from ActionResetPlayerData.PerformTargetAction</remarks>
         public static void ResetPlayer(EntityPlayer player)
@@ -63,7 +91,7 @@ namespace Amnesia.Utilities
                     }
                     catch (Exception e)
                     {
-                        log.Error("Failed to scan for completed skillpoints.", e);
+                        _log.Error("Failed to scan for completed skillpoints.", e);
                     }
                 }
 
@@ -92,7 +120,7 @@ namespace Amnesia.Utilities
             _ = player.Buffs.AddBuff(Values.BuffMemoryLoss);
             if (Config.PositiveOutlookTimeOnMemoryLoss > 0)
             {
-                log.Trace($"{player.GetDebugName()} will receive the Positive Outlook buff.");
+                _log.Trace($"{player.GetDebugName()} will receive the Positive Outlook buff.");
                 player.SetCVar(Values.CVarPositiveOutlookRemTime, Config.PositiveOutlookTimeOnMemoryLoss);
                 _ = player.Buffs.AddBuff(Values.BuffPositiveOutlook);
             }
