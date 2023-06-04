@@ -5,9 +5,9 @@ using System;
 namespace Amnesia.Patches
 {
     /// <summary>
-    /// Detect level change and update weight/gear values.
+    /// Detect level change.
     /// </summary>
-    /// <remarks>local players</remarks>
+    /// <remarks>Supports: local </remarks>
     [HarmonyPatch(typeof(Progression), "AddLevelExp")]
     internal class Progression_AddLevelExp_Patches
     {
@@ -18,7 +18,8 @@ namespace Amnesia.Patches
             __state = -1; // default to ignore
             try
             {
-                if (!ConnectionManager.Instance.IsServer // TODO: do these checks in many more parts of the code to support remote having local mod (disable remote clients)
+                // TODO: do these checks in many more parts of the code to support remote having local mod (disable remote clients)
+                if (!ConnectionManager.Instance.IsServer
                     || __instance.parent.isEntityRemote // only track local entity
                     || !(__instance.parent is EntityPlayerLocal)) // only track EntityPlayerLocal
                 {
@@ -26,7 +27,6 @@ namespace Amnesia.Patches
                 }
 
                 __state = ___Level;
-                // TODO: ?
             }
             catch (Exception e)
             {
@@ -47,10 +47,12 @@ namespace Amnesia.Patches
                 }
 
                 _log.Trace($"change in player level detected: {__state} -> {___Level}");
-                //WeightManager.UpdatePlayerWeight(player, player.inventory.GetSlots(), player.bag.GetSlots(), player.equipment);
-                // TODO: add behavior
 
                 // TOOD: calculate and push amnesia treatment and therapy costs as levels change...? Or perhaps as skill points change?
+                DialogShop.UpdatePrices(player);
+
+                //WeightManager.UpdatePlayerWeight(player, player.inventory.GetSlots(), player.bag.GetSlots(), player.equipment);
+                // TODO: add behavior
 
                 // TODO: (in another hook) as each skill point is applied, record that added skill point in permanent memory and write to drive
             }

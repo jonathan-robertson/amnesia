@@ -26,18 +26,20 @@ namespace Amnesia.Handlers
                 }
                 switch (respawnType)
                 {
-                    //case RespawnType.NewGame: // TODO: update to support local players
-                    //case RespawnType.LoadedGame: // TODO: update to support local players
+                    // TODO: case RespawnType.NewGame: // local player creating a new game
                     case RespawnType.EnterMultiplayer: // first-time login for new player
                         _ = PlayerHelper.AddPositiveOutlookTime(player, Config.PositiveOutlookTimeOnFirstJoin);
                         HandleStandardRespawnSteps(player);
-                        DialogShop.UpdateMoney(player.entityId, player.inventory.GetSlots(), player.bag.GetSlots());
+                        DialogShop.UpdatePrices(player);
+                        DialogShop.UpdateMoneyTracker(player.entityId, player.inventory.GetSlots(), player.bag.GetSlots());
                         break;
+                    // TODO: case RespawnType.LoadedGame: // local player loading existing game
                     case RespawnType.JoinMultiplayer: // existing player rejoining
                         // grace period should continue only so long as you don't disconnect
                         player.Buffs.RemoveBuff(Values.BuffPostBloodmoonLifeProtection);
                         HandleStandardRespawnSteps(player);
-                        DialogShop.UpdateMoney(player.entityId, player.inventory.GetSlots(), player.bag.GetSlots());
+                        DialogShop.UpdatePrices(player);
+                        DialogShop.UpdateMoneyTracker(player.entityId, player.inventory.GetSlots(), player.bag.GetSlots());
                         break;
                     case RespawnType.Died: // existing player returned from death
                         _ = PlayerHelper.AddPositiveOutlookTime(player, Config.PositiveOutlookTimeOnMemoryLoss);
