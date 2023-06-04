@@ -15,6 +15,9 @@ namespace Amnesia.Utilities
         private const string GAME_EVENT_PAY_FROM_BLT = "amnesia_pay_from_blt";
         public const string GAME_EVENT_REQUEST_CHANGE = "amnesia_request_change";
 
+        private const string CVAR_TREATMENT_PRICE_NAME = "amnesiaTreatmentPrice";
+        private const string CVAR_THERAPY_PRICE_NAME = "amnesiaTherapyPrice";
+
         private static readonly ModLog<DialogShop> _log = new ModLog<DialogShop>();
         private static readonly ItemValue CASINO_COIN_ITEM_VALUE = ItemClass.GetItem("casinoCoin", false);
         private static readonly FastTags moneyTag = FastTags.Parse("amnesiaCurrency");
@@ -23,7 +26,7 @@ namespace Amnesia.Utilities
         public static Dictionary<int, int> BltMoney { get; private set; } = new Dictionary<int, int>();
         public static Dictionary<int, int> Change { get; private set; } = new Dictionary<int, int>();
 
-        public static void UpdateMoney(int entityId, ItemStack[] ___toolbelt = null, ItemStack[] ___bag = null)
+        public static void UpdateMoneyTracker(int entityId, ItemStack[] ___toolbelt = null, ItemStack[] ___bag = null)
         {
             if (___toolbelt != null) { BltMoney[entityId] = CountCoins(___toolbelt); }
             if (___bag != null) { BagMoney[entityId] = CountCoins(___bag); }
@@ -31,6 +34,11 @@ namespace Amnesia.Utilities
             _ = BltMoney.TryGetValue(entityId, out var blt);
             _ = BagMoney.TryGetValue(entityId, out var bag);
             _log.Debug($"blt: {blt}, bag: {bag}, total: {blt + bag}");
+        }
+
+        public static void UpdatePrices(EntityPlayer player)
+        {
+            player.SetCVar(CVAR_TREATMENT_PRICE_NAME, GetCost(player.Progression.Level, Product.Treatment));
         }
 
         public static void GiveChange(ClientInfo clientInfo, EntityPlayer player)

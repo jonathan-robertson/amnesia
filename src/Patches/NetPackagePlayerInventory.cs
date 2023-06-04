@@ -15,7 +15,7 @@ namespace Amnesia.Patches
             {
                 if (___toolbelt == null && ___bag == null) { return; }
                 var entityId = __instance.Sender.entityId; // TODO: refactor to support local player
-                DialogShop.UpdateMoney(entityId, ___toolbelt, ___bag);
+                DialogShop.UpdateMoneyTracker(entityId, ___toolbelt, ___bag);
             }
             catch (Exception e)
             {

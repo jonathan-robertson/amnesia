@@ -73,6 +73,7 @@
     <Compile Include="Handlers\SavePlayerData.cs" />
     <Compile Include="Patches\EntityBuffs.cs" />
     <Compile Include="Patches\NetPackagePlayerInventory.cs" />
+    <Compile Include="Patches\NetPackagePlayerStats.cs" />
     <Compile Include="Patches\Progression.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utilities\DialogShop.cs" />

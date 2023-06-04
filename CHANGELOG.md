@@ -7,13 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## TODO
 
+- test level up on local to ensure it triggers therapy cost adjustment
+- test login on local to ensure it triggers therapy cost adjustment
 - update localization for amnesia buffs (instruct player to seek treatment from traders, maybe even show treatment cost)
-- update tooltips to no longer use orange color (interferes with player arm color)
+- update amn help command to return info around `buffAmnesiaFragileMemory` instead of hardened memory
 
 ## [UNRELEASED]
 
 - add dialog purchasing system for treatments
 - remove deprecated buff
+- update therapy prices on login and level-up
 
 ## [1.2.1] - 2023-06-04
 
