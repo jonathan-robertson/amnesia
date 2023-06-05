@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Amnesia.Data;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -11,13 +12,6 @@ namespace Amnesia.Utilities
 
     internal class DialogShop
     {
-        private const string GAME_EVENT_PAY_FROM_BAG = "amnesia_pay_from_bag";
-        private const string GAME_EVENT_PAY_FROM_BLT = "amnesia_pay_from_blt";
-        public const string GAME_EVENT_REQUEST_CHANGE = "amnesia_request_change";
-
-        private const string CVAR_TREATMENT_PRICE_NAME = "amnesiaTreatmentPrice";
-        private const string CVAR_THERAPY_PRICE_NAME = "amnesiaTherapyPrice";
-
         private static readonly ModLog<DialogShop> _log = new ModLog<DialogShop>();
         private static readonly ItemValue CASINO_COIN_ITEM_VALUE = ItemClass.GetItem("casinoCoin", false);
         private static readonly FastTags moneyTag = FastTags.Parse("amnesiaCurrency");
@@ -38,7 +32,7 @@ namespace Amnesia.Utilities
 
         public static void UpdatePrices(EntityPlayer player)
         {
-            player.SetCVar(CVAR_TREATMENT_PRICE_NAME, GetCost(player.Progression.Level, Product.Treatment));
+            player.SetCVar(Values.CVarTreatmentPrice, GetCost(player.Progression.Level, Product.Treatment));
         }
 
         public static void GiveChange(ClientInfo clientInfo, EntityPlayer player)
@@ -103,7 +97,7 @@ namespace Amnesia.Utilities
             _log.Trace($"player {player.GetDebugName()} charge attempt for {cost}");
             if (BagMoney.TryGetValue(clientInfo.entityId, out var bag))
             {
-                TriggerGameEvent(clientInfo, player, GAME_EVENT_PAY_FROM_BAG);
+                TriggerGameEvent(clientInfo, player, Values.GameEventPayFromBag);
                 if (bag >= cost)
                 {
                     if (bag > cost)
@@ -111,7 +105,7 @@ namespace Amnesia.Utilities
                         //AddCoins(clientInfo, player.position, bag - cost);
                         //BagMoney[player.entityId] = bag - cost;
                         Change.Add(player.entityId, bag - cost);
-                        TriggerGameEvent(clientInfo, player, GAME_EVENT_REQUEST_CHANGE);
+                        TriggerGameEvent(clientInfo, player, Values.GameEventRequestChg);
                     }
                     else
                     {
@@ -123,13 +117,13 @@ namespace Amnesia.Utilities
             }
             if (BltMoney.TryGetValue(clientInfo.entityId, out var blt))
             {
-                TriggerGameEvent(clientInfo, player, GAME_EVENT_PAY_FROM_BLT);
+                TriggerGameEvent(clientInfo, player, Values.GameEventPayFromBlt);
                 if (blt > cost)
                 {
                     //AddCoins(clientInfo, player.position, blt - cost);
                     //BltMoney[player.entityId] = blt - cost;
                     Change.Add(player.entityId, blt - cost);
-                    TriggerGameEvent(clientInfo, player, GAME_EVENT_REQUEST_CHANGE);
+                    TriggerGameEvent(clientInfo, player, Values.GameEventRequestChg);
                 }
                 else
                 {

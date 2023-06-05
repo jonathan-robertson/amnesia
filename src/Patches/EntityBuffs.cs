@@ -1,4 +1,5 @@
-﻿using Amnesia.Utilities;
+﻿using Amnesia.Data;
+using Amnesia.Utilities;
 using HarmonyLib;
 using System;
 
@@ -11,24 +12,21 @@ namespace Amnesia.Patches
     [HarmonyPatch(typeof(EntityBuffs), "AddBuff")]
     internal class EntityBuffs_AddBuff_Patches
     {
-        private const string BUFF_TRY_BUY_TREATMENT_NAME = "buffAmnesiaTryBuyTreatment";
-        private const string BUFF_REQUEST_CHANGE_CALLBACK_NAME = "buffAmnesiaRequestChangeCallback";
-        private const string BUFF_FRAGILE_MEMORY_NAME = "buffAmnesiaFragileMemory";
-
         private static readonly ModLog<EntityBuffs_AddBuff_Patches> _log = new ModLog<EntityBuffs_AddBuff_Patches>();
 
         public static void Postfix(EntityBuffs __instance, string _name)
         {
             try
             {
-                switch (_name)
+                if (Values.BuffTryBuyTreatment.Equals(_name))
                 {
-                    case BUFF_TRY_BUY_TREATMENT_NAME:
-                        TryBuy(__instance.parent);
-                        return;
-                    case BUFF_REQUEST_CHANGE_CALLBACK_NAME:
-                        TryGiveChange(__instance.parent);
-                        return;
+                    TryBuy(__instance.parent);
+                    return;
+                }
+                if (Values.BuffRequestChangeCallback.Equals(_name))
+                {
+                    TryGiveChange(__instance.parent);
+                    return;
                 }
             }
             catch (Exception e)
@@ -42,17 +40,17 @@ namespace Amnesia.Patches
             if (!entity.isEntityRemote)
             {
                 var entityPlayerLocal = entity.world.GetPrimaryPlayer();
-                entityPlayerLocal.Buffs.RemoveBuff(BUFF_TRY_BUY_TREATMENT_NAME);
-                if (!entityPlayerLocal.Buffs.HasBuff(BUFF_FRAGILE_MEMORY_NAME))
+                entityPlayerLocal.Buffs.RemoveBuff(Values.BuffTryBuyTreatment);
+                if (!entityPlayerLocal.Buffs.HasBuff(Values.BuffFragileMemory))
                 {
-                    _log.Trace($"player {entityPlayerLocal.GetDebugName()} doesn't have {BUFF_FRAGILE_MEMORY_NAME}");
+                    _log.Trace($"player {entityPlayerLocal.GetDebugName()} doesn't have {Values.BuffFragileMemory}");
                     _log.Debug("TODO: {tipTreatmentNotNecessary}: You have no need of Treatment since [00ff80]your memory is already healthy[-]. Please visit again if you acquire a [ff8000]Fragile Memory[-].");
                     // TODO: play sad/cancel sound
                 }
                 else if (DialogShop.TryPurchase(entityPlayerLocal, DialogShop.GetCost(entityPlayerLocal.Progression.Level, Product.Treatment)))
                 {
                     _log.Trace("success");
-                    entityPlayerLocal.Buffs.RemoveBuff(BUFF_FRAGILE_MEMORY_NAME);
+                    entityPlayerLocal.Buffs.RemoveBuff(Values.BuffFragileMemory);
                     _log.Debug("TODO: {tipTreatmentComplete}: [00ff80]Your treatment is now complete[-] and your memory has returned to a health state. Please come again!");
                     // TODO: play trader sound ui_trader_purchase in head?
                 }
@@ -67,17 +65,17 @@ namespace Amnesia.Patches
 
             if (PlayerHelper.TryGetClientInfoAndEntityPlayer(entity.world, entity.entityId, out var clientInfo, out var player))
             {
-                player.Buffs.RemoveBuff(BUFF_TRY_BUY_TREATMENT_NAME);
-                if (!player.Buffs.HasBuff(BUFF_FRAGILE_MEMORY_NAME))
+                player.Buffs.RemoveBuff(Values.BuffTryBuyTreatment);
+                if (!player.Buffs.HasBuff(Values.BuffFragileMemory))
                 {
-                    _log.Trace($"player {player.GetDebugName()} doesn't have {BUFF_FRAGILE_MEMORY_NAME}");
+                    _log.Trace($"player {player.GetDebugName()} doesn't have {Values.BuffFragileMemory}");
                     _log.Debug("TODO: {tipTreatmentNotNecessary}: You have no need of Treatment since [00ff80]your memory is already healthy[-]. Please visit again if you acquire a [ff8000]Fragile Memory[-].");
                     // TODO: play sad/cancel sound
                 }
                 else if (DialogShop.TryPurchase(clientInfo, player, DialogShop.GetCost(player.Progression.Level, Product.Treatment)))
                 {
                     _log.Trace("success");
-                    player.Buffs.RemoveBuff(BUFF_FRAGILE_MEMORY_NAME);
+                    player.Buffs.RemoveBuff(Values.BuffFragileMemory);
                     _log.Debug("TODO: {tipTreatmentComplete}: [00ff80]Your treatment is now complete[-] and your memory has returned to a health state. Please come again!");
                     // TODO: play trader sound ui_trader_purchase in head?
                 }
@@ -95,14 +93,14 @@ namespace Amnesia.Patches
             if (!entity.isEntityRemote)
             {
                 var entityPlayerLocal = entity.world.GetPrimaryPlayer();
-                entityPlayerLocal.Buffs.RemoveBuff(BUFF_REQUEST_CHANGE_CALLBACK_NAME);
+                entityPlayerLocal.Buffs.RemoveBuff(Values.BuffRequestChangeCallback);
                 DialogShop.GiveChange(entityPlayerLocal);
                 return;
             }
 
             if (PlayerHelper.TryGetClientInfoAndEntityPlayer(entity.world, entity.entityId, out var clientInfo, out var player))
             {
-                player.Buffs.RemoveBuff(BUFF_REQUEST_CHANGE_CALLBACK_NAME);
+                player.Buffs.RemoveBuff(Values.BuffRequestChangeCallback);
                 DialogShop.GiveChange(clientInfo, player);
             }
         }
@@ -122,7 +120,7 @@ namespace Amnesia.Patches
         {
             try
             {
-                if (!DialogShop.GAME_EVENT_REQUEST_CHANGE.EqualsCaseInsensitive(_name)
+                if (!Values.GameEventRequestChg.EqualsCaseInsensitive(_name)
                     || _value != 1
                     || !__instance.parent.world.Players.dict.TryGetValue(__instance.parent.entityId, out var player))
                 {

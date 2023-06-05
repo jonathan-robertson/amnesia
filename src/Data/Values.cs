@@ -5,43 +5,51 @@ namespace Amnesia.Data
 {
     internal class Values
     {
-
         // cvars
-        public const string CVarLongTermMemoryLevel = "amnesiaLongTermMemoryLevel";
-        public const string CVarPositiveOutlookMaxTime = "amnesiaPositiveOutlookMaxTime";
-        public const string CVarPositiveOutlookRemTime = "amnesiaPositiveOutlookRemTime";
+        public static string CVarLongTermMemoryLevel { get; private set; } = "amnesiaLongTermMemoryLevel";
+        public static string CVarPositiveOutlookMaxTime { get; private set; } = "amnesiaPositiveOutlookMaxTime";
+        public static string CVarPositiveOutlookRemTime { get; private set; } = "amnesiaPositiveOutlookRemTime";
+        public static string CVarTreatmentPrice { get; private set; } = "amnesiaTreatmentPrice";
+        public static string CVarTherapyPrice { get; private set; } = "amnesiaTherapyPrice";
 
         // buffs
-        public const string BuffPositiveOutlook = "buffAmnesiaPositiveOutlook";
-        public const string BuffBloodmoonLifeProtection = "buffAmnesiaBloodmoonLifeProtection";
-        public const string BuffPostBloodmoonLifeProtection = "buffAmnesiaPostBloodmoonLifeProtection";
-        public const string BuffFragileMemory = "buffAmnesiaFragileMemory";
-        public const string BuffMemoryLoss = "buffAmnesiaMemoryLoss";
-        public const string BuffNewbieCoat = "buffNewbieCoat";
-        public const string BuffNearDeathTrauma = "buffNearDeathTrauma";
+        public static string BuffPositiveOutlook { get; private set; } = "buffAmnesiaPositiveOutlook";
+        public static string BuffBloodmoonLifeProtection { get; private set; } = "buffAmnesiaBloodmoonLifeProtection";
+        public static string BuffPostBloodmoonLifeProtection { get; private set; } = "buffAmnesiaPostBloodmoonLifeProtection";
+        public static string BuffFragileMemory { get; private set; } = "buffAmnesiaFragileMemory";
+        public static string BuffMemoryLoss { get; private set; } = "buffAmnesiaMemoryLoss";
+        public static string BuffNewbieCoat { get; private set; } = "buffNewbieCoat";
+        public static string BuffNearDeathTrauma { get; private set; } = "buffNearDeathTrauma";
+        public static string BuffTryBuyTreatment { get; private set; } = "buffAmnesiaTryBuyTreatment";
+        public static string BuffRequestChangeCallback { get; private set; } = "buffAmnesiaRequestChangeCallback";
+
+        // game_events
+        public static string GameEventPayFromBag { get; private set; } = "amnesia_pay_from_bag";
+        public static string GameEventPayFromBlt { get; private set; } = "amnesia_pay_from_blt";
+        public static string GameEventRequestChg { get; private set; } = "amnesia_request_change";
 
         // items
-        public const string NameMemoryBoosters = "drugAmnesiaMemoryBoosters";
+        public static string NameMemoryBoosters { get; private set; } = "drugAmnesiaMemoryBoosters";
 
         // names
-        public const string NameLongTermMemoryLevel = "LongTermMemoryLevel";
-        public const string NamePositiveOutlookMaxTime = "PositiveOutlookMaxTime";
-        public const string NamePositiveOutlookTimeOnFirstJoin = "PositiveOutlookTimeOnFirstJoin";
-        public const string NamePositiveOutlookTimeOnMemoryLoss = "PositiveOutlookTimeOnMemoryLoss";
-        public const string NamePositiveOutlookTimeOnKill = "PositiveOutlookTimeOnKill";
-        public const string NameProtectMemoryDuringBloodmoon = "ProtectMemoryDuringBloodmoon";
-        public const string NameProtectMemoryDuringPvp = "ProtectMemoryDuringPvp";
-        public const string NameForgetLevelsAndSkills = "ForgetLevelsAndSkills";
-        public const string NameForgetBooks = "ForgetBooks";
-        public const string NameForgetSchematics = "ForgetSchematics";
-        public const string NameForgetKdr = "ForgetKdr";
-        public const string NameForgetActiveQuests = "ForgetActiveQuests";
-        public const string NameForgetInactiveQuests = "ForgetInactiveQuests";
-        public const string NameForgetIntroQuests = "ForgetIntroQuests";
+        public static string NameLongTermMemoryLevel { get; private set; } = "LongTermMemoryLevel";
+        public static string NamePositiveOutlookMaxTime { get; private set; } = "PositiveOutlookMaxTime";
+        public static string NamePositiveOutlookTimeOnFirstJoin { get; private set; } = "PositiveOutlookTimeOnFirstJoin";
+        public static string NamePositiveOutlookTimeOnMemoryLoss { get; private set; } = "PositiveOutlookTimeOnMemoryLoss";
+        public static string NamePositiveOutlookTimeOnKill { get; private set; } = "PositiveOutlookTimeOnKill";
+        public static string NameProtectMemoryDuringBloodmoon { get; private set; } = "ProtectMemoryDuringBloodmoon";
+        public static string NameProtectMemoryDuringPvp { get; private set; } = "ProtectMemoryDuringPvp";
+        public static string NameForgetLevelsAndSkills { get; private set; } = "ForgetLevelsAndSkills";
+        public static string NameForgetBooks { get; private set; } = "ForgetBooks";
+        public static string NameForgetSchematics { get; private set; } = "ForgetSchematics";
+        public static string NameForgetKdr { get; private set; } = "ForgetKdr";
+        public static string NameForgetActiveQuests { get; private set; } = "ForgetActiveQuests";
+        public static string NameForgetInactiveQuests { get; private set; } = "ForgetInactiveQuests";
+        public static string NameForgetIntroQuests { get; private set; } = "ForgetIntroQuests";
 
         private const string DisconnectionWarning = "\n      - [!] SYSTEM WILL DISCONNECT PLAYER ON FINAL DEATH IF ENABLED!";
         private const string ExperimentalWarning = "\n      - [!] EXPERIMENTAL FEATURE - USE AT YOUR OWN RISK...";
-        public static readonly Dictionary<string, string> SingleValueNamesAndDescriptionsDict = new Dictionary<string, string> {
+        public static Dictionary<string, string> SingleValueNamesAndDescriptionsDict { get; private set; } = new Dictionary<string, string> {
             { NameLongTermMemoryLevel, "the level players will be reset to on memory loss and the level at which losing memory on death starts" },
 
             { NamePositiveOutlookMaxTime, "maximum length of time allowed for buff that boost xp growth" },
