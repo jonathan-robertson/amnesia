@@ -23,11 +23,6 @@ buffAmnesiaBloodmoonLifeProtectionDesc,buffs,Buffs,"You feel something in the ai
 buffAmnesiaBloodmoonLifeProtectionTooltip,buffs,Buffs,"You [00ff80]CANNOT[-] lose memory if you die during this event"
 buffAmnesiaBloodmoonLifeProtectionEndTooltip,buffs,Buffs,"Blood Moon Memory Protection [ff007f]HAS ENDED[-]"
 
-drugAmnesiaMemoryBoosters,items,Medical,"Trader Jen's Memory Boosters"
-drugAmnesiaMemoryBoostersDesc,items,Medical,"Ingesting this special drug/vitamin cocktail loaded with omega-3 fatty acids will stabilize a [ff8000]Fragile Memory[-].\n\n[007fff]Don't Forget, Get BOOSTED![-]\n - Trader Jen's Experimental Pharmaceuticals"
-
-statStopsFragileMemory,ui_display,Item stat,"Cure Fragile Memory"
-
 
 dialog_trader_response_memory,Quest,Dialogs,"Can you help with my memory?"
 dialog_trader_statement_memory,Quest,Dialogs,"Sure, what can I do for you? (Listed prices are based on your level)"

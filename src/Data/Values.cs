@@ -31,9 +31,6 @@ namespace Amnesia.Data
         public static string GameEventPayFromBlt { get; private set; } = "amnesia_pay_from_blt";
         public static string GameEventRequestChg { get; private set; } = "amnesia_request_change";
 
-        // items
-        public static string NameMemoryBoosters { get; private set; } = "drugAmnesiaMemoryBoosters";
-
         // names
         public static string NameLongTermMemoryLevel { get; private set; } = "LongTermMemoryLevel";
         public static string NamePositiveOutlookMaxTime { get; private set; } = "PositiveOutlookMaxTime";

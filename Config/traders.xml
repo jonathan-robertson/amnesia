@@ -1,5 +1,3 @@
 ﻿<config>
-    <insertAfter xpath="/traders/trader_info/tier_items/item[@name='drinkJarGrandpasForgettingElixir']">
-        <item name="drugAmnesiaMemoryBoosters" count="1" />
-    </insertAfter>
+    <!-- TODO: remove forgetting elixir -->
 </config>

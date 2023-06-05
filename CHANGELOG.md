@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - add dialog purchasing system for treatments
 - add success/unnecessary/unaffordable responses
 - remove deprecated buff
+- remove memory pills
 - update therapy prices on login and level-up
 
 ## [1.2.1] - 2023-06-04

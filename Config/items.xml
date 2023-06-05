@@ -1,39 +1,3 @@
 ﻿<config>
     <append xpath="/items/item[@name='casinoCoin']/property[@name='Tags']/@value">,amnesiaCurrency</append>
-
-    <append xpath="/items">
-        <item name="drugAmnesiaMemoryBoosters">
-            <property name="Tags" value="medical" />
-
-            <property name="DisplayType" value="drugAmnesiaMemoryBoosters" />
-            <property name="DescriptionKey" value="drugAmnesiaMemoryBoostersDesc" />
-            <property name="CustomIcon" value="drugPainkillers" />
-            <property name="CustomIconTint" value="0,127,255" />
-            <property name="TintColor" value="0,127,255" />
-            <property name="Stacknumber" value="1" />
-            <property name="EconomicValue" value="20000" />
-            <property name="Weight" value="0" />
-            <property name="DegradationBreaksAfter" value="false" />
-            <property name="NoScrapping" value="true" />
-            <property name="SellableToTrader" value="false" />
-
-            <property name="HoldType" value="16" />
-            <property name="Meshfile" value="#Other/Items?Health/painkillersPrefab.prefab" />
-            <property name="DropMeshfile" value="#Other/Items?Misc/sack_droppedPrefab.prefab" />
-            <property name="Material" value="Morganic" />
-            <property name="Group" value="Science,CFChemicals,Medical" />
-            <property class="Action0">
-                <property name="Class" value="Eat" />
-                <property name="Delay" value="1.0" />
-                <property name="Use_time" value="..." />
-                <property name="Sound_start" value="player_painkillers" />
-                <requirement name="HasBuff" buff="buffAmnesiaFragileMemory" />
-            </property>
-            <effect_group tiered="false">
-                <triggered_effect trigger="onSelfPrimaryActionEnd" action="PlaySound" sound="spawnInStinger" />
-                <triggered_effect trigger="onSelfPrimaryActionEnd" action="RemoveBuff" buff="buffAmnesiaFragileMemory" />
-                <display_value name="dStopsFragileMemory" value="1" />
-            </effect_group>
-        </item>
-    </append>
 </config>
