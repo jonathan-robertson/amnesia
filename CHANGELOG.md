@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.1] - 2023-06-04
+
+- add admin command to give/heal fragile memory
+- fix bug allowing bypass of pvp protection
+- fix/update admin command players
+
 ## [1.2.0] - 2023-05-31
 
 - add clarification for blood moon protection buff
