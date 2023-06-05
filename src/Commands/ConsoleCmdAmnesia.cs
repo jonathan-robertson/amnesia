@@ -22,6 +22,7 @@ namespace Amnesia.Commands
                 { "debug", "toggle debug logging mode" },
                 { "players", "show players and their amnesia-related info" },
                 { "grant <user id / player name / entity id> <timeInSeconds>", "grant player some bonus xp time" },
+                { "fragile <user id / player name / entity id> <true/false>", "give or remove fragile memory debuff" },
                 { "config", "show current amnesia configuration" },
                 { "set", "show the single-value fields you can adjust" },
                 { "set <field>", "describe how you can update this field" },
@@ -81,6 +82,13 @@ namespace Amnesia.Commands
                         }
                         HandleGrant(_params);
                         return;
+                    case "fragile":
+                        if (_params.Count != 3)
+                        {
+                            break;
+                        }
+                        HandleFragile(_params);
+                        return;
                     case "config":
                         SdtdConsole.Instance.Output(Config.AsString());
                         return;
@@ -109,9 +117,9 @@ namespace Amnesia.Commands
             {
                 SdtdConsole.Instance.Output("No players are currently online.");
             }
-            foreach (var player in players)
+            for (var i = 0; i < players.Count; i++)
             {
-                SdtdConsole.Instance.Output($"{player.entityId}. {Values.BuffHardenedMemory}: {player.Buffs.HasBuff(Values.BuffHardenedMemory)}, {Values.CVarPositiveOutlookRemTime}: {player.GetCVar(Values.CVarPositiveOutlookRemTime)} ({player.GetDebugName()})");
+                SdtdConsole.Instance.Output($"{players[i].entityId,8} | {players[i].GetDebugName()} | level {players[i].Progression.Level} | {Values.BuffFragileMemory}: {players[i].Buffs.HasBuff(Values.BuffFragileMemory)} | {Values.CVarPositiveOutlookRemTime}: {players[i].GetCVar(Values.CVarPositiveOutlookRemTime)}");
             }
         }
 
@@ -148,6 +156,29 @@ namespace Amnesia.Commands
             }
             var newValue = PlayerHelper.AddPositiveOutlookTime(player, valueToAdd);
             SdtdConsole.Instance.Output($"Added {valueToAdd} seconds of bonus xp time to {player.GetDebugName()} for a new value of {newValue}.");
+        }
+
+        private void HandleFragile(List<string> @params)
+        {
+            if (!bool.TryParse(@params[2], out var shouldAdd))
+            {
+                SdtdConsole.Instance.Output("Unable to parse valueToAdd: must be of type bool");
+                return;
+            }
+            var clientInfo = ConsoleHelper.ParseParamIdOrName(@params[1], true, false);
+            if (clientInfo == null || !GameManager.Instance.World.Players.dict.TryGetValue(clientInfo.entityId, out var player))
+            {
+                SdtdConsole.Instance.Output("Unable to find this player; note: player must be online");
+                return;
+            }
+            if (shouldAdd)
+            {
+                _ = player.Buffs.AddBuff(Values.BuffFragileMemory);
+                SdtdConsole.Instance.Output($"Successfully added {Values.BuffFragileMemory} to {player.GetDebugName()}.");
+                return;
+            }
+            player.Buffs.RemoveBuff(Values.BuffFragileMemory);
+            SdtdConsole.Instance.Output($"Successfully removed {Values.BuffFragileMemory} from {player.GetDebugName()}.");
         }
 
         private void RouteListRequest(List<string> @params)
