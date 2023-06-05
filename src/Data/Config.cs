@@ -115,7 +115,7 @@ namespace Amnesia.Data
                     {
                         _ = player.Buffs.AddBuff(Values.BuffNewbieCoat);
                     }
-                    if (player.Buffs.HasBuff(Values.BuffHardenedMemory))
+                    if (player.Buffs.HasBuff(Values.BuffHardenedMemory)) // TODO: deprecated; remove in 2.0.0
                     {
                         player.Buffs.RemoveBuff(Values.BuffHardenedMemory);
                         PlayerHelper.GiveItem(player, Values.NameMemoryBoosters);

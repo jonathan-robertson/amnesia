@@ -15,7 +15,7 @@ namespace Amnesia.Data
         public const string BuffPositiveOutlook = "buffAmnesiaPositiveOutlook";
         public const string BuffBloodmoonLifeProtection = "buffAmnesiaBloodmoonLifeProtection";
         public const string BuffPostBloodmoonLifeProtection = "buffAmnesiaPostBloodmoonLifeProtection";
-        public const string BuffHardenedMemory = "buffAmnesiaHardenedMemory";
+        public const string BuffHardenedMemory = "buffAmnesiaHardenedMemory"; // TODO: deprecated; remove in 2.0.0
         public const string BuffFragileMemory = "buffAmnesiaFragileMemory";
         public const string BuffMemoryLoss = "buffAmnesiaMemoryLoss";
         public const string BuffNewbieCoat = "buffNewbieCoat";
