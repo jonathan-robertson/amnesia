@@ -34,17 +34,16 @@ namespace Amnesia.Handlers
                     log.Trace($"{clientIdentifier} died and did not have bloodmoon memory protection.");
                 }
 
-                if (Config.ProtectMemoryDuringPvp && !mainName.Equals(secondaryName))
+                if (Config.ProtectMemoryDuringPvp && mainName != secondaryName)
                 {
                     // TODO: this is nice, but damage/kill handling needs to also be redone to include the killing player in game message even if that player is offline
                     //  and probably also to give that player offline credit for the kill(s).
-                    foreach (var kvp in GameManager.Instance.persistentPlayers.Players)
+
+                    var killerClient = ConnectionManager.Instance.Clients.GetForNameOrId(secondaryName);
+                    if (killerClient != null)
                     {
-                        if (secondaryName.Equals(kvp.Value.PlayerName))
-                        {
-                            log.Trace($"{clientIdentifier} was killed by {secondaryName} but this server has pvp deaths set to not harm memory.");
-                            return true; // being killed in pvp doesn't count against player
-                        }
+                        log.Trace($"{clientIdentifier} was killed by {killerClient.InternalId.CombinedString} ({secondaryName}) but this server has pvp deaths set to not harm memory.");
+                        return true; // being killed in pvp doesn't count against player
                     }
                 }
 
