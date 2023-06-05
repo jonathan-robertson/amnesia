@@ -38,8 +38,8 @@ namespace Amnesia.Handlers
                 {
                     // TODO: this is nice, but damage/kill handling needs to also be redone to include the killing player in game message even if that player is offline
                     //  and probably also to give that player offline credit for the kill(s).
-
-                    var killerClient = ConnectionManager.Instance.Clients.GetForNameOrId(secondaryName);
+                    
+                    var killerClient = ConnectionManager.Instance.Clients.GetForPlayerName(secondaryName);
                     if (killerClient != null)
                     {
                         log.Trace($"{clientIdentifier} was killed by {killerClient.InternalId.CombinedString} ({secondaryName}) but this server has pvp deaths set to not harm memory.");
