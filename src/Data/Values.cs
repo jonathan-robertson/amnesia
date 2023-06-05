@@ -22,6 +22,9 @@ namespace Amnesia.Data
         public static string BuffNearDeathTrauma { get; private set; } = "buffNearDeathTrauma";
         public static string BuffTryBuyTreatment { get; private set; } = "buffAmnesiaTryBuyTreatment";
         public static string BuffRequestChangeCallback { get; private set; } = "buffAmnesiaRequestChangeCallback";
+        public static string BuffTreatmentComplete { get; private set; } = "buffAmnesiaTreatmentComplete";
+        public static string BuffTreatmentUnnecessary { get; private set; } = "buffAmnesiaTreatmentUnnecessary";
+        public static string BuffTreatmentUnaffordable { get; private set; } = "buffAmnesiaTreatmentUnaffordable";
 
         // game_events
         public static string GameEventPayFromBag { get; private set; } = "amnesia_pay_from_bag";

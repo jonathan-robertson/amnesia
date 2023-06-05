@@ -9,7 +9,6 @@ buffNewbieCoatName,buffs,Buff,"Death XP Penalty Protection"
 buffAmnesiaFragileMemoryName,buffs,Buffs,"Fragile Memory"
 buffAmnesiaFragileMemoryDesc,buffs,Buffs,"You now have a [ff8000]Fragile Memory[-] due to being incapacitated. \n\nIf you become incapacitated again, you will experience [ff007f]Memory Loss[-].\n\n[007fff]Trader Jen's Memory Boosters[-] can be purchased from any trader to cure your [ff8000]Fragile Memory[-], which will provide a buffer against [ff007f]Memory Loss[-]."
 buffAmnesiaFragileMemoryStartTooltip,buffs,Buffs,"You now have a [ff8000]Fragile Memory[-] due to being incapacitated"
-buffAmnesiaFragileMemoryRemoveTooltip,buffs,Buffs,"You no longer have a [ff8000]Fragile Memory[-], thanks to [007fff]Trader Jen's Memory Boosters[-]"
 
 buffAmnesiaMemoryLossName,buffs,Buffs,"Memory Loss"
 buffAmnesiaMemoryLossDesc,buffs,Buffs,"You feel a sense that mistakes were made, but perhaps can find a more effective method of survival this time around.\n\n[007fff]Trader Jen's Memory Boosters[-] can be purchased from any trader to cure your [ff8000]Fragile Memory[-], which will provide a buffer against [ff007f]Memory Loss[-]."
@@ -35,8 +34,8 @@ dialog_trader_statement_memory,Quest,Dialogs,"Sure, what can I do for you? (List
 dialog_trader_response_treatment,Quest,Dialogs,"Please treat my fragile memory. [[007fff]${cvar(amnesiaTreatmentPrice)}[-]]"
 dialog_trader_response_therapy,Quest,Dialogs,"Please help me to rethink my skills. [[007fff]${cvar(amnesiaTherapyPrice)}[-]]"
 
-tipCannotAfford,buffs,Buffs,"[ff8000]You do not have the necessary funds[-] for this procedure. Please return when you do."
-tipTreatmentNotNecessary,buffs,Buffs,"You have no need of Treatment since [00ff80]your memory is already healthy[-]. Please visit again if you acquire a [ff8000]Fragile Memory[-]."
+tipTreatmentUnaffordable,buffs,Buffs,"[ff8000]You do not have the necessary funds[-] for this procedure. Please return when you do."
+tipTreatmentUnnecessary,buffs,Buffs,"You have no need of Treatment since [00ff80]your memory is already healthy[-]. Please visit again if you acquire a [ff8000]Fragile Memory[-]."
 tipTreatmentComplete,buffs,Buffs,"[00ff80]Your treatment is now complete[-] and your memory has returned to a health state. Please come again!"
 tipTherapyComplete,buffs,Buffs,"[00ff80]Your therapy is now complete[-] and your skillpoints can be reassigned. Please come again!"
 

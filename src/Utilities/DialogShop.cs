@@ -42,6 +42,7 @@ namespace Amnesia.Utilities
                 _log.Error($"Client requested change for {clientInfo.entityId}, but there is no change cached to return; this is unexpected");
                 return;
             }
+            Change.Remove(player.entityId);
             AddCoins(clientInfo, player.position, value);
             _log.Trace($"change returned to {player.GetDebugName()} ({player.entityId}) in the amount of {value}");
         }
@@ -53,6 +54,7 @@ namespace Amnesia.Utilities
                 _log.Error($"Client requested change for {player.entityId}, but there is no change cached to return; this is unexpected");
                 return;
             }
+            Change.Remove(player.entityId);
             AddCoins(player, value);
         }
 
@@ -173,10 +175,10 @@ namespace Amnesia.Utilities
                 }
                 var itemValue = stack[i].itemValue;
                 if (itemValue == null) { continue; } // TODO: this sanity check is probably not necessary
-                _log.Trace($"{itemValue.GetItemId()}");
+                //_log.Trace($"{itemValue.GetItemId()}");
                 var itemClass = itemValue.ItemClass;
                 if (itemClass == null) { continue; } // TODO: this sanity check is probably not necessary
-                _log.Trace($"name: {itemClass.Name}");
+                //_log.Trace($"name: {itemClass.Name}");
                 if (itemClass.HasAnyTags(moneyTag))
                 {
                     _count += stack[i].count;

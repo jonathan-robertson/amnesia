@@ -37,53 +37,49 @@ namespace Amnesia.Patches
 
         private static void TryBuy(EntityAlive entity)
         {
+            // TODO: test local
             if (!entity.isEntityRemote)
             {
                 var entityPlayerLocal = entity.world.GetPrimaryPlayer();
                 entityPlayerLocal.Buffs.RemoveBuff(Values.BuffTryBuyTreatment);
                 if (!entityPlayerLocal.Buffs.HasBuff(Values.BuffFragileMemory))
                 {
-                    _log.Trace($"player {entityPlayerLocal.GetDebugName()} doesn't have {Values.BuffFragileMemory}");
-                    _log.Debug("TODO: {tipTreatmentNotNecessary}: You have no need of Treatment since [00ff80]your memory is already healthy[-]. Please visit again if you acquire a [ff8000]Fragile Memory[-].");
-                    // TODO: play sad/cancel sound
+                    _log.Trace($"player {entityPlayerLocal.GetDebugName()} requested Treatment from trader but doesn't have {Values.BuffFragileMemory}.");
+                    _ = entityPlayerLocal.Buffs.AddBuff(Values.BuffTreatmentUnnecessary);
                 }
                 else if (DialogShop.TryPurchase(entityPlayerLocal, DialogShop.GetCost(entityPlayerLocal.Progression.Level, Product.Treatment)))
                 {
-                    _log.Trace("success");
+                    _log.Trace($"player {entityPlayerLocal.GetDebugName()} purchased Treatment from trader.");
                     entityPlayerLocal.Buffs.RemoveBuff(Values.BuffFragileMemory);
-                    _log.Debug("TODO: {tipTreatmentComplete}: [00ff80]Your treatment is now complete[-] and your memory has returned to a health state. Please come again!");
-                    // TODO: play trader sound ui_trader_purchase in head?
+                    _ = entityPlayerLocal.Buffs.AddBuff(Values.BuffTreatmentComplete);
                 }
                 else
                 {
-                    _log.Trace("failure");
-                    _log.Debug("TODO: {tipCannotAfford}: [ff8000]You do not have the necessary funds[-] for this procedure. Please return when you do.");
-                    // TODO: play sad/cancel sound
+                    _log.Trace($"player {entityPlayerLocal.GetDebugName()} requested Treatment from trader but doesn't have enough money.");
+                    _ = entityPlayerLocal.Buffs.AddBuff(Values.BuffTreatmentUnaffordable);
                 }
                 return;
             }
 
+            // TODO: test remote
             if (PlayerHelper.TryGetClientInfoAndEntityPlayer(entity.world, entity.entityId, out var clientInfo, out var player))
             {
                 player.Buffs.RemoveBuff(Values.BuffTryBuyTreatment);
                 if (!player.Buffs.HasBuff(Values.BuffFragileMemory))
                 {
-                    _log.Trace($"player {player.GetDebugName()} doesn't have {Values.BuffFragileMemory}");
-                    _log.Debug("TODO: {tipTreatmentNotNecessary}: You have no need of Treatment since [00ff80]your memory is already healthy[-]. Please visit again if you acquire a [ff8000]Fragile Memory[-].");
-                    // TODO: play sad/cancel sound
+                    _log.Trace($"player {player.GetDebugName()} requested Treatment from trader but doesn't have the necessary money {Values.BuffFragileMemory}.");
+                    _ = player.Buffs.AddBuff(Values.BuffTreatmentUnnecessary);
                 }
                 else if (DialogShop.TryPurchase(clientInfo, player, DialogShop.GetCost(player.Progression.Level, Product.Treatment)))
                 {
-                    _log.Trace("success");
+                    _log.Trace($"player {player.GetDebugName()} purchased Treatment from trader.");
                     player.Buffs.RemoveBuff(Values.BuffFragileMemory);
-                    _log.Debug("TODO: {tipTreatmentComplete}: [00ff80]Your treatment is now complete[-] and your memory has returned to a health state. Please come again!");
-                    // TODO: play trader sound ui_trader_purchase in head?
+                    _ = player.Buffs.AddBuff(Values.BuffTreatmentComplete);
                 }
                 else
                 {
-                    _log.Trace("failure");
-                    _log.Debug("TODO: {tipCannotAfford}: [ff8000]You do not have the necessary funds[-] for this procedure. Please return when you do.");
-                    // TODO: play sad/cancel sound
+                    _log.Trace($"player {player.GetDebugName()} requested Treatment from trader but doesn't have enough money.");
+                    _ = player.Buffs.AddBuff(Values.BuffTreatmentUnaffordable);
                 }
             }
         }

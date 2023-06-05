@@ -17,7 +17,6 @@
 
             <effect_group>
                 <triggered_effect trigger="onSelfBuffStart" action="ShowToolbeltMessage" message_key="buffAmnesiaFragileMemoryStartTooltip" />
-                <triggered_effect trigger="onSelfBuffRemove" action="ShowToolbeltMessage" message_key="buffAmnesiaFragileMemoryRemoveTooltip" />
                 <passive_effect name="BuffBlink" operation="base_set" value="2" duration="0,3" tags="buffAmnesiaFragileMemory" />
             </effect_group>
         </buff>
@@ -107,6 +106,30 @@
             <stack_type value="ignore" />
             <duration value="0" />
             <!-- wait for server to process and remove this, along with buffAmnesiaFragileMemory -->
+        </buff>
+        <buff name="buffAmnesiaTreatmentComplete" hidden="true" remove_on_death="false">
+            <stack_type value="ignore" />
+            <duration value="0" />
+            <effect_group>
+                <triggered_effect trigger="onSelfBuffStart" action="ShowToolbeltMessage" message_key="tipTreatmentComplete" sound="ui_trader_purchase" />
+                <triggered_effect trigger="onSelfBuffStart" action="RemoveBuff" buff="buffAmnesiaTreatmentComplete" />
+            </effect_group>
+        </buff>
+        <buff name="buffAmnesiaTreatmentUnnecessary" hidden="true" remove_on_death="false">
+            <stack_type value="ignore" />
+            <duration value="0" />
+            <effect_group>
+                <triggered_effect trigger="onSelfBuffStart" action="ShowToolbeltMessage" message_key="tipTreatmentUnnecessary" sound="bow_fire_cancel" />
+                <triggered_effect trigger="onSelfBuffStart" action="RemoveBuff" buff="buffAmnesiaTreatmentUnnecessary" />
+            </effect_group>
+        </buff>
+        <buff name="buffAmnesiaTreatmentUnaffordable" hidden="true" remove_on_death="false">
+            <stack_type value="ignore" />
+            <duration value="0" />
+            <effect_group>
+                <triggered_effect trigger="onSelfBuffStart" action="ShowToolbeltMessage" message_key="tipTreatmentUnaffordable" sound="bow_fire_abort" />
+                <triggered_effect trigger="onSelfBuffStart" action="RemoveBuff" buff="buffAmnesiaTreatmentUnaffordable" />
+            </effect_group>
         </buff>
     </append>
     <!-- TODO: explore how onCombatEntered works: perhaps a screen effect could be added when on last life onCombatEntered as a reminder -->
