@@ -101,34 +101,37 @@
             <stack_type value="ignore" />
             <duration value="0" />
             <!-- wait for server to process and remove this, along with buffAmnesiaFragileMemory -->
+            <effect_group>
+                <triggered_effect trigger="onSelfEnteredGame" action="RemoveBuff" buff="buffAmnesiaTryBuyTreatment" />
+            </effect_group>
         </buff>
         <buff name="buffAmnesiaRequestChangeCallback" hidden="true" remove_on_death="false">
             <stack_type value="ignore" />
             <duration value="0" />
             <!-- wait for server to process and remove this, along with buffAmnesiaFragileMemory -->
+            <effect_group>
+                <triggered_effect trigger="onSelfEnteredGame" action="RemoveBuff" buff="buffAmnesiaRequestChangeCallback" />
+            </effect_group>
         </buff>
         <buff name="buffAmnesiaTreatmentComplete" hidden="true" remove_on_death="false">
             <stack_type value="ignore" />
-            <duration value="0" />
+            <duration value="1" />
             <effect_group>
                 <triggered_effect trigger="onSelfBuffStart" action="ShowToolbeltMessage" message_key="tipTreatmentComplete" sound="ui_trader_purchase" />
-                <triggered_effect trigger="onSelfBuffStart" action="RemoveBuff" buff="buffAmnesiaTreatmentComplete" />
             </effect_group>
         </buff>
         <buff name="buffAmnesiaTreatmentUnnecessary" hidden="true" remove_on_death="false">
             <stack_type value="ignore" />
-            <duration value="0" />
+            <duration value="1" />
             <effect_group>
                 <triggered_effect trigger="onSelfBuffStart" action="ShowToolbeltMessage" message_key="tipTreatmentUnnecessary" sound="bow_fire_cancel" />
-                <triggered_effect trigger="onSelfBuffStart" action="RemoveBuff" buff="buffAmnesiaTreatmentUnnecessary" />
             </effect_group>
         </buff>
         <buff name="buffAmnesiaTreatmentUnaffordable" hidden="true" remove_on_death="false">
             <stack_type value="ignore" />
-            <duration value="0" />
+            <duration value="1" />
             <effect_group>
                 <triggered_effect trigger="onSelfBuffStart" action="ShowToolbeltMessage" message_key="tipTreatmentUnaffordable" sound="bow_fire_abort" />
-                <triggered_effect trigger="onSelfBuffStart" action="RemoveBuff" buff="buffAmnesiaTreatmentUnaffordable" />
             </effect_group>
         </buff>
     </append>
