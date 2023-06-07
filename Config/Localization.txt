@@ -26,13 +26,13 @@ buffAmnesiaBloodmoonLifeProtectionEndTooltip,buffs,Buffs,"Blood Moon Memory Prot
 
 dialog_trader_response_memory,Quest,Dialogs,"Can you help with my memory?"
 dialog_trader_statement_memory,Quest,Dialogs,"Sure, what can I do for you? (Listed prices are based on your level)"
-dialog_trader_response_treatment,Quest,Dialogs,"Please treat my fragile memory. [[007fff]${cvar(amnesiaTreatmentPrice)}[-]]"
-dialog_trader_response_therapy,Quest,Dialogs,"Please help me to rethink my skills. [[007fff]${cvar(amnesiaTherapyPrice)}[-]]"
+dialog_trader_response_treatment,Quest,Dialogs,"Please treat my fragile memory. ([decea3]${cvar(amnesiaTreatmentPrice)}[-])"
+dialog_trader_response_therapy,Quest,Dialogs,"Please help me to rethink my skills. ([decea3]${cvar(amnesiaTherapyPrice)}[-])"
 
-tipTreatmentUnaffordable,buffs,Buffs,"[ff8000]You do not have the necessary funds[-] for this procedure. Please return when you do."
-tipTreatmentUnnecessary,buffs,Buffs,"You have no need of Treatment since [00ff80]your memory is already healthy[-]. Please visit again if you acquire a [ff8000]Fragile Memory[-]."
-tipTreatmentComplete,buffs,Buffs,"[00ff80]Your treatment is now complete[-] and your memory has returned to a health state. Please come again!"
-tipTherapyComplete,buffs,Buffs,"[00ff80]Your therapy is now complete[-] and your skillpoints can be reassigned. Please come again!"
+tipTreatmentUnaffordable,buffs,Buffs,"You [decea3]do not have the necessary funds[-] for this procedure. Please return when you do."
+tipTreatmentUnnecessary,buffs,Buffs,"You have no need of Treatment since [decea3]your memory is already healthy[-]. Please visit again."
+tipTreatmentComplete,buffs,Buffs,"Your treatment is now complete and [decea3]your memory has returned to a health state[-]. Please come again!"
+tipTherapyComplete,buffs,Buffs,"Your therapy is now complete and [decea3]your skillpoints can be reassigned[-]. Please come again!"
 
 dialog_trader_statement_treatment,Quest,Dialogs,"All better!"
 dialog_trader_statement_therapy,Quest,Dialogs,"You got it!"
