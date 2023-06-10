@@ -7,7 +7,7 @@ namespace Amnesia.Patches
     /// <summary>
     /// Detect level and other stat changes.
     /// </summary>
-    /// <remarks>Supports: remote </remarks>
+    /// <remarks>Supports: remote</remarks>
     [HarmonyPatch(typeof(NetPackagePlayerStats), "ProcessPackage")]
     internal class NetPackagePlayerStats_ProcessPackage_Patches
     {

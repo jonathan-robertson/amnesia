@@ -51,10 +51,7 @@ namespace Amnesia.Patches
                 // TOOD: calculate and push amnesia treatment and therapy costs as levels change...? Or perhaps as skill points change?
                 DialogShop.UpdatePrices(player);
 
-                //WeightManager.UpdatePlayerWeight(player, player.inventory.GetSlots(), player.bag.GetSlots(), player.equipment);
                 // TODO: add behavior
-
-                // TODO: (in another hook) as each skill point is applied, record that added skill point in permanent memory and write to drive
             }
             catch (Exception e)
             {

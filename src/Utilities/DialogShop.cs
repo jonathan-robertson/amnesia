@@ -42,7 +42,7 @@ namespace Amnesia.Utilities
                 _log.Error($"Client requested change for {clientInfo.entityId}, but there is no change cached to return; this is unexpected");
                 return;
             }
-            Change.Remove(player.entityId);
+            _ = Change.Remove(player.entityId);
             AddCoins(clientInfo, player.position, value);
             _log.Trace($"change returned to {player.GetDebugName()} ({player.entityId}) in the amount of {value}");
         }
@@ -54,7 +54,7 @@ namespace Amnesia.Utilities
                 _log.Error($"Client requested change for {player.entityId}, but there is no change cached to return; this is unexpected");
                 return;
             }
-            Change.Remove(player.entityId);
+            _ = Change.Remove(player.entityId);
             AddCoins(player, value);
         }
 
