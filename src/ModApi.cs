@@ -21,6 +21,7 @@ namespace Amnesia
             ModEvents.GameMessage.RegisterHandler(GameMessage.Handle);
             ModEvents.SavePlayerData.RegisterHandler(SavePlayerData.Handle);
             ModEvents.EntityKilled.RegisterHandler(EntityKilled.Handle);
+            ModEvents.PlayerDisconnected.RegisterHandler(PlayerDisconnected.Handle);
         }
     }
 }

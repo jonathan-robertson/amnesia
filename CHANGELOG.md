@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [UNRELEASED]
 
 - add dialog purchasing system for treatments
+- add player skill/perk tracking
 - add success/unnecessary/unaffordable responses
 - remove deprecated buff
 - remove memory pills
