@@ -22,12 +22,29 @@ namespace Amnesia.Utilities
 
         public static void UpdateMoneyTracker(int entityId, ItemStack[] ___toolbelt = null, ItemStack[] ___bag = null)
         {
-            if (___toolbelt != null) { BltMoney[entityId] = CountCoins(___toolbelt); }
-            if (___bag != null) { BagMoney[entityId] = CountCoins(___bag); }
+            if (!BltMoney.TryGetValue(entityId, out var blt)
+                || !BagMoney.TryGetValue(entityId, out var bag))
+            {
+                return;
+            }
 
-            _ = BltMoney.TryGetValue(entityId, out var blt);
-            _ = BagMoney.TryGetValue(entityId, out var bag);
-            _log.Debug($"blt: {blt}, bag: {bag}, total: {blt + bag}");
+            var changed = false;
+            if (___toolbelt != null)
+            {
+                var bltMoney = CountCoins(___toolbelt);
+                changed = changed || bltMoney != blt;
+                BltMoney[entityId] = bltMoney;
+            }
+            if (___bag != null)
+            {
+                var bagMoney = CountCoins(___bag);
+                changed = changed || bagMoney != bag;
+                BagMoney[entityId] = bagMoney;
+            }
+            if (changed)
+            {
+                _log.Debug($"blt: {blt}, bag: {bag}, total: {blt + bag}");
+            }
         }
 
         public static void UpdatePrices(EntityPlayer player)
