@@ -33,7 +33,7 @@ namespace Amnesia.Commands
                 { "list <complex-field> rem <key>", "add or update a complex field" },
                 { "list <complex-field> clear", "add or update a complex field" },
                 { "test", "admin command which triggers reset on self for testing purposes" },
-                { "change", "debugging command to check any pending change owed to a player" },
+                { "owed", "debugging command to check any pending change owed to a player" },
             };
 
             var i = 1; var j = 1;
@@ -99,10 +99,10 @@ namespace Amnesia.Commands
                     case "set":
                         RouteSetRequest(_params);
                         return;
-                    case "change":
+                    case "owed":
                         if (DialogShop.Change.Count == 0)
                         {
-                            SdtdConsole.Instance.Output("[no change pending for any player]");
+                            SdtdConsole.Instance.Output("[no change owed to any player]");
                             return;
                         }
                         foreach (var kvp in DialogShop.Change)
