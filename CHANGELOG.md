@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - test login on local to ensure it triggers therapy cost adjustment
 - update localization for amnesia buffs (instruct player to seek treatment from traders, maybe even show treatment cost)
 
+## WIP
+
+- update reset pattern to roll back to a given level, first consuming unspent points, then consuming spent points
+
 ## [UNRELEASED]
 
 - add console command to view skill tracker

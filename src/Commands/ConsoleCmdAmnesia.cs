@@ -23,7 +23,7 @@ namespace Amnesia.Commands
                 { "players", "show players and their amnesia-related info" },
                 { "grant <user id / player name / entity id> <timeInSeconds>", "grant player some bonus xp time" },
                 { "fragile <user id / player name / entity id> <true/false>", "give or remove fragile memory debuff" },
-                { "records <user id / player name / entity id>", "show skill/perk records in order they were purchased by the given player" },
+                { "skills <user id / player name / entity id>", "show skill/perk records in order they were purchased by the given player" },
                 { "config", "show current amnesia configuration" },
                 { "set", "show the single-value fields you can adjust" },
                 { "set <field>", "describe how you can update this field" },
@@ -91,8 +91,8 @@ namespace Amnesia.Commands
                         }
                         HandleFragile(_params);
                         return;
-                    case "records":
-                        HandleRecords(_params);
+                    case "skills":
+                        HandleSkills(_params);
                         return;
                     case "config":
                         SdtdConsole.Instance.Output(Config.AsString());
@@ -197,7 +197,7 @@ namespace Amnesia.Commands
             SdtdConsole.Instance.Output($"Successfully removed {Values.BuffFragileMemory} from {player.GetDebugName()}.");
         }
 
-        private void HandleRecords(List<string> @params)
+        private void HandleSkills(List<string> @params)
         {
             var clientInfo = ConsoleHelper.ParseParamIdOrName(@params[1], true, false);
             if (clientInfo == null || !GameManager.Instance.World.Players.dict.TryGetValue(clientInfo.entityId, out var player))
@@ -210,15 +210,15 @@ namespace Amnesia.Commands
                 SdtdConsole.Instance.Output($"Unable to find an active record for player {clientInfo.entityId}");
                 return;
             }
+            for (var i = 0; i < playerRecord.Changes.Count; i++)
+            {
+                SdtdConsole.Instance.Output($"{i + 1,3}. {playerRecord.Changes[i].Item1}: {playerRecord.Changes[i].Item2}");
+            }
             if (playerRecord.Changes.Count == 0)
             {
-                SdtdConsole.Instance.Output($"Player {clientInfo.entityId} had no recorded changes.");
-                return;
+                SdtdConsole.Instance.Output("========= no recorded changes =========");
             }
-            for (int i = 0; i < playerRecord.Changes.Count; i++)
-            {
-                SdtdConsole.Instance.Output($"{i+1,3}. {playerRecord.Changes[i].Item1} >> {playerRecord.Changes[i].Item2}");
-            }
+            SdtdConsole.Instance.Output($"=======================================\n{player.Progression.SkillPoints,3} skill point{(player.Progression.SkillPoints != 0 ? "s" : "")} currently unassigned.\n{player.Progression.Level,3} current level.");
         }
 
         private void RouteListRequest(List<string> @params)

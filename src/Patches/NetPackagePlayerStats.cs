@@ -13,7 +13,7 @@ namespace Amnesia.Patches
     {
         private static readonly ModLog<NetPackagePlayerStats_ProcessPackage_Patches> _log = new ModLog<NetPackagePlayerStats_ProcessPackage_Patches>();
 
-        public static void Prefix(World _world, int ___entityId, int ___level, out bool __state)
+        public static void Prefix(World _world, int ___entityId, int ___level, bool ___hasProgression, out bool __state)
         {
             __state = false; // default to ignore
             try
@@ -29,6 +29,11 @@ namespace Amnesia.Patches
                     _log.Trace($"refreshing price for player {player.GetDebugName()} due to change in level: {player.Progression.Level} -> {___level}");
                     __state = true;
                 }
+
+                if (___hasProgression)
+                {
+                    _log.Debug($"PROGRESSION PREFIX - skillPoints: {player.Progression.SkillPoints}");
+                }
             }
             catch (Exception e)
             {
@@ -36,18 +41,36 @@ namespace Amnesia.Patches
             }
         }
 
-        public static void Postfix(World _world, int ___entityId, bool __state)
+        public static void Postfix(World _world, int ___entityId, bool __state, bool ___hasProgression)
         {
             try
             {
                 if (!ConnectionManager.Instance.IsServer
-                    || !__state
                     || !_world.Players.dict.TryGetValue(___entityId, out var player))
                 {
                     return;
                 }
 
-                DialogShop.UpdatePrices(player);
+                if (__state)
+                {
+                    DialogShop.UpdatePrices(player);
+                }
+
+                if (___hasProgression)
+                {
+                    // So... progression is
+                    // o sent when you learn a book
+                    // x not sent when you learn a perk/skill
+                    // x not sent when you level up
+                    // - when you complete a quest
+                    _log.Debug($"PROGRESSION POSTFIX - skillPoints: {player.Progression.SkillPoints}");
+                    // Ideas
+                    // x omg I can toggle spectator mode to cause this to refresh????
+                    // x adding/removing a buff seems to trigger this as well
+                    // - NetPackageStatChange (from server to client) would also cause this
+                    // - remove 1 xp and add 1 xp back might be a decent, clean/safe way to go about this as well
+                    // - add/remove skill point???
+                }
             }
             catch (Exception e)
             {
