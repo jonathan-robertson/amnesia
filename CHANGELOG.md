@@ -24,6 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - remove deprecated buff
 - remove memory pills
 - update therapy prices on login and level-up
+- update to a21 mod-info file format
 
 ## [1.2.1] - 2023-06-04
 

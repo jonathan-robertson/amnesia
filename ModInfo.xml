@@ -1,9 +1,8 @@
 ﻿<xml>
-    <ModInfo>
-        <Name value="Amnesia" />
-        <Description value="Reset player progress after dying under a configurable set of circumstances" />
-        <Author value="Jonathan Robertson (Kanaverum)" />
-        <Version value="1.2.1" />
-        <Website value="https://github.com/jonathan-robertson/amnesia" />
-    </ModInfo>
+    <Name value="kanaverum-amnesia" />
+    <DisplayName value="Amnesia" />
+    <Version value="2.0.0" />
+    <Description value="Reset player progress after dying under a configurable set of circumstances" />
+    <Author value="Jonathan Robertson (Kanaverum)" />
+    <Website value="https://github.com/jonathan-robertson/amnesia" />
 </xml>
