@@ -6,7 +6,7 @@ namespace Amnesia.Handlers
 {
     internal class PlayerSpawnedInWorld
     {
-        private static readonly ModLog<PlayerSpawnedInWorld> log = new ModLog<PlayerSpawnedInWorld>();
+        private static readonly ModLog<PlayerSpawnedInWorld> _log = new ModLog<PlayerSpawnedInWorld>();
 
         /// <summary>
         /// Handle player spawning into world.
@@ -53,7 +53,7 @@ namespace Amnesia.Handlers
             }
             catch (Exception e)
             {
-                log.Error("Failed to handle PlayerSpawnedInWorld event.", e);
+                _log.Error("Failed to handle PlayerSpawnedInWorld event.", e);
             }
         }
 

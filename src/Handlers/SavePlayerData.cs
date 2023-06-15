@@ -8,7 +8,7 @@ namespace Amnesia.Handlers
 {
     internal class SavePlayerData
     {
-        private static readonly ModLog<SavePlayerData> log = new ModLog<SavePlayerData>();
+        private static readonly ModLog<SavePlayerData> _log = new ModLog<SavePlayerData>();
 
         public static void Handle(ClientInfo clientInfo, PlayerDataFile playerDataFile)
         {
@@ -23,14 +23,14 @@ namespace Amnesia.Handlers
 
                 if (clientInfo == null || !GameManager.Instance.World.Players.dict.TryGetValue(clientInfo.entityId, out var player))
                 {
-                    log.Warn("EntityWasKilled event sent from a non-player client... may want to investigate");
+                    _log.Warn("EntityWasKilled event sent from a non-player client... may want to investigate");
                     return; // exit early, do not interrupt other mods from processing event
                 }
 
                 if (!player.Buffs.HasBuff(Values.BuffFragileMemory))
                 {
                     _ = player.Buffs.AddBuff(Values.BuffFragileMemory);
-                    log.Info($"{clientInfo.InternalId.CombinedString} ({player.GetDebugName()}) died and will not be reset, but now has a Fragile Memory.");
+                    _log.Info($"{clientInfo.InternalId.CombinedString} ({player.GetDebugName()}) died and will not be reset, but now has a Fragile Memory.");
                     return; // let player know it's time for memory boosters
                 }
 
@@ -54,12 +54,12 @@ namespace Amnesia.Handlers
                 }
 
                 // Reset Player
-                log.Info($"{clientInfo.InternalId.CombinedString} ({player.GetDebugName()}) died and has suffered memory loss.");
+                _log.Info($"{clientInfo.InternalId.CombinedString} ({player.GetDebugName()}) died and has suffered memory loss.");
                 PlayerHelper.ResetPlayer(player);
             }
             catch (Exception e)
             {
-                log.Error("Failed to handle OnSavePlayerData", e);
+                _log.Error("Failed to handle OnSavePlayerData", e);
             }
         }
 
@@ -88,7 +88,6 @@ namespace Amnesia.Handlers
                     new MapChunkDatabase.DirectoryPlayerId(GameIO.GetPlayerDataDir(),
                     clientInfo.InternalId.CombinedString),
                     null,
-                    false,
                     true);
             }
         }

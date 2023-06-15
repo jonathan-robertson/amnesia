@@ -22,11 +22,8 @@ namespace Amnesia.Utilities
 
         public static void UpdateMoneyTracker(int entityId, ItemStack[] ___toolbelt = null, ItemStack[] ___bag = null)
         {
-            if (!BltMoney.TryGetValue(entityId, out var blt)
-                || !BagMoney.TryGetValue(entityId, out var bag))
-            {
-                return;
-            }
+            _ = BltMoney.TryGetValue(entityId, out var blt);
+            _ = BagMoney.TryGetValue(entityId, out var bag);
 
             var changed = false;
             if (___toolbelt != null)
@@ -34,12 +31,14 @@ namespace Amnesia.Utilities
                 var bltMoney = CountCoins(___toolbelt);
                 changed = changed || bltMoney != blt;
                 BltMoney[entityId] = bltMoney;
+                blt = bltMoney;
             }
             if (___bag != null)
             {
                 var bagMoney = CountCoins(___bag);
                 changed = changed || bagMoney != bag;
                 BagMoney[entityId] = bagMoney;
+                bag = bagMoney;
             }
             if (changed)
             {
@@ -121,14 +120,8 @@ namespace Amnesia.Utilities
                 {
                     if (bag > cost)
                     {
-                        //AddCoins(clientInfo, player.position, bag - cost);
-                        //BagMoney[player.entityId] = bag - cost;
                         Change.Add(player.entityId, bag - cost);
                         TriggerGameEvent(clientInfo, player, Values.GameEventRequestChg);
-                    }
-                    else
-                    {
-                        //BagMoney[player.entityId] = 0;
                     }
                     return;
                 }
@@ -139,23 +132,16 @@ namespace Amnesia.Utilities
                 TriggerGameEvent(clientInfo, player, Values.GameEventPayFromBlt);
                 if (blt > cost)
                 {
-                    //AddCoins(clientInfo, player.position, blt - cost);
-                    //BltMoney[player.entityId] = blt - cost;
                     Change.Add(player.entityId, blt - cost);
                     TriggerGameEvent(clientInfo, player, Values.GameEventRequestChg);
-                }
-                else
-                {
-                    //BltMoney[player.entityId] = 0;
                 }
             }
         }
 
         private static void TriggerGameEvent(ClientInfo clientInfo, EntityPlayer player, string eventName)
         {
-            // TODO: handle return value? (false may mean failure)
             _ = GameEventManager.Current.HandleAction(eventName, null, player, false);
-            clientInfo.SendPackage(NetPackageManager.GetPackage<NetPackageGameEventResponse>().Setup(eventName, clientInfo.playerName, "", "", NetPackageGameEventResponse.ResponseTypes.Approved));
+            clientInfo.SendPackage(NetPackageManager.GetPackage<NetPackageGameEventResponse>().Setup(eventName, clientInfo.entityId, "", "", NetPackageGameEventResponse.ResponseTypes.Approved));
         }
 
         private static void AddCoins(ClientInfo clientInfo, Vector3 pos, int amount)

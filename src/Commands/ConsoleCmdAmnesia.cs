@@ -41,12 +41,12 @@ namespace Amnesia.Commands
             help = $"Usage:\n  {string.Join("\n  ", dict.Keys.Select(command => $"{i++}. {GetCommands()[0]} {command}").ToList())}\nDescription Overview\n{string.Join("\n", dict.Values.Select(description => $"{j++}. {description}").ToList())}";
         }
 
-        public override string[] GetCommands()
+        protected override string[] getCommands()
         {
             return Commands;
         }
 
-        public override string GetDescription()
+        protected override string getDescription()
         {
             return "Configure or adjust settings for the Amnesia mod.";
         }
@@ -199,7 +199,7 @@ namespace Amnesia.Commands
 
         private void HandleSkills(List<string> @params)
         {
-            var clientInfo = ConsoleHelper.ParseParamIdOrName(@params[1], true, false);
+            var clientInfo = ConsoleHelper.ParseParamIdOrName(@params[1], true, false); // TODO: fix index out of range exception
             if (clientInfo == null || !GameManager.Instance.World.Players.dict.TryGetValue(clientInfo.entityId, out var player))
             {
                 SdtdConsole.Instance.Output("Unable to find this player; note: player must be online");
@@ -218,7 +218,7 @@ namespace Amnesia.Commands
             {
                 SdtdConsole.Instance.Output("========= no recorded changes =========");
             }
-            SdtdConsole.Instance.Output($"=======================================\n{player.Progression.SkillPoints,3} skill point{(player.Progression.SkillPoints != 0 ? "s" : "")} currently unassigned.\n{player.Progression.Level,3} current level.");
+            SdtdConsole.Instance.Output($"====================================\n{player.Progression.SkillPoints,3} skill point{(player.Progression.SkillPoints != 0 ? "s" : "")} currently unassigned.\n{player.Progression.Level,3} current level.");
         }
 
         private void RouteListRequest(List<string> @params)

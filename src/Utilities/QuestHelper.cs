@@ -7,7 +7,7 @@ namespace Amnesia.Utilities
 {
     internal class QuestHelper
     {
-        private static readonly ModLog<QuestHelper> log = new ModLog<QuestHelper>();
+        private static readonly ModLog<QuestHelper> _log = new ModLog<QuestHelper>();
 
         /// <summary>
         /// Remove all quests from the given player based on admin configuration.
@@ -23,21 +23,21 @@ namespace Amnesia.Utilities
                 {
                     changed = changed || RemoveQuest(player, player.QuestJournal.quests[i]);
                 }
-                log.Trace($"Quests Changed after RemoveQuests? {changed}");
+                _log.Trace($"Quests Changed after RemoveQuests? {changed}");
                 changed = changed || GiveStarterQuestIfMissing(player);
-                log.Trace($"Quests Changed after GiveStarterQuestIfMissing? {changed}");
+                _log.Trace($"Quests Changed after GiveStarterQuestIfMissing? {changed}");
                 return changed;
             }
             catch (Exception e)
             {
-                log.Error("Failed to reset quests.", e);
+                _log.Error("Failed to reset quests.", e);
                 return true; // tell server to disconnect player
             }
         }
 
         private static bool RemoveQuest(EntityPlayer player, Quest quest)
         {
-            log.Trace($"{quest.ID}\n  - CurrentState: {quest.CurrentState}\n  - Active: {quest.Active}\n  - IsIntroQuest: {IsIntroQuest(quest)}\n  - QuestClass: {quest.QuestClass}\n  - Tracked: {quest.Tracked}\n!quest.ID.EqualsCaseInsensitive('quest_BasicSurvival1') {!quest.ID.EqualsCaseInsensitive("quest_BasicSurvival1")}");
+            _log.Trace($"{quest.ID}\n  - CurrentState: {quest.CurrentState}\n  - Active: {quest.Active}\n  - IsIntroQuest: {IsIntroQuest(quest)}\n  - QuestClass: {quest.QuestClass}\n  - Tracked: {quest.Tracked}\n!quest.ID.EqualsCaseInsensitive('quest_BasicSurvival1') {!quest.ID.EqualsCaseInsensitive("quest_BasicSurvival1")}");
 
             var questIsActive = quest.Active; // cache calculated value
 
@@ -60,7 +60,7 @@ namespace Amnesia.Utilities
 
         private static bool RemoveActiveQuest(EntityPlayer player, Quest quest)
         {
-            log.Trace($"Removing {quest.ID}");
+            _log.Trace($"Removing {quest.ID}");
             quest.CurrentState = QuestState.Failed;
             HandleUnlockPOI(player.entityId, quest);
             if (quest.SharedOwnerID != -1)
@@ -71,11 +71,11 @@ namespace Amnesia.Utilities
             try
             {
                 quest.RemoveMapObject(); // TODO: test this
-                log.Debug($"success: removed map object for {quest.ID}");
+                _log.Debug($"success: removed map object for {quest.ID}");
             }
             catch (Exception e)
             {
-                log.Debug($"fail: remove map object for {quest.ID}: {e.Message}");
+                _log.Debug($"fail: remove map object for {quest.ID}: {e.Message}");
             }
             PreProcessTrickyQuestObjectives(player, quest);
             player.QuestJournal.ForceRemoveQuest(quest.ID); // NOTE: removes quest from journal, triggers UnhookQuest, and triggers quest removal delegate
@@ -161,7 +161,7 @@ namespace Amnesia.Utilities
                     }
                     catch (Exception e)
                     {
-                        log.Error($@"Failed to process tricky quest objectives:
+                        _log.Error($@"Failed to process tricky quest objectives:
 ID: {quest.Objectives[i].ID}
 Owner Class: {quest.Objectives[i].OwnerQuestClass}
 Objective Type: {quest.Objectives[i].GetType().Name}", e);
@@ -218,12 +218,12 @@ Objective Type: {quest.Objectives[i].GetType().Name}", e);
             {
                 if (player.QuestJournal.quests[i].ID.EqualsCaseInsensitive("quest_BasicSurvival1"))
                 {
-                    log.Trace("quest_BasicSurvival1 was present");
+                    _log.Trace("quest_BasicSurvival1 was present");
                     return false;
                 }
             }
 
-            log.Trace("quest_BasicSurvival1 is missing; trying to add");
+            _log.Trace("quest_BasicSurvival1 is missing; trying to add");
 
             var quest = QuestClass.CreateQuest("quest_BasicSurvival1");
             quest.CurrentState = QuestState.InProgress;

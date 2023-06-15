@@ -10,12 +10,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - test level up on local to ensure it triggers therapy cost adjustment
 - test login on local to ensure it triggers therapy cost adjustment
 - update localization for amnesia buffs (instruct player to seek treatment from traders, maybe even show treatment cost)
+- fix positive outlook xp time format (showing as 3472 [seconds])
 
 ## WIP
 
 - update reset pattern to roll back to a given level, first consuming unspent points, then consuming spent points
 
-## [UNRELEASED]
+## [2.0.0]
 
 - add console command to view skill tracker
 - add dialog purchasing system for treatments
@@ -25,6 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - remove memory pills
 - update therapy prices on login and level-up
 - update to a21 mod-info file format
+- update to a21 references
 
 ## [1.2.1] - 2023-06-04
 

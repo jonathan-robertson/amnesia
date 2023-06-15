@@ -3,26 +3,19 @@
         <action_sequence name="amnesia_pay_from_bag">
             <action class="RemoveItems">
                 <property name="items_location" value="Backpack" />
-                <property name="remove_item_tag" value="amnesiaCurrency" />
+                <property name="items_tags" value="amnesiaCurrency" />
             </action>
         </action_sequence>
         <action_sequence name="amnesia_pay_from_blt">
             <action class="RemoveItems">
                 <property name="items_location" value="Toolbelt" />
-                <property name="remove_item_tag" value="amnesiaCurrency" />
+                <property name="items_tags" value="amnesiaCurrency" />
             </action>
         </action_sequence>
         <action_sequence name="amnesia_request_change">
             <action class="AddBuff">
                 <property name="buff_name" value="buffAmnesiaRequestChangeCallback" />
                 <property name="check_already_exists" value="false" />
-            </action>
-        </action_sequence>
-        <!-- TODO: remove, so long as everything else continues to work -->
-        <action_sequence name="amnesia_request_change_cvar">
-            <action class="SetCVar">
-                <property name="cvar" value="amnesiaRequestChangeCallback" />
-                <property name="value" value="1" />
             </action>
         </action_sequence>
     </append>

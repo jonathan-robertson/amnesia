@@ -9,7 +9,7 @@ namespace Amnesia.Data
 {
     internal class Config
     {
-        private static readonly ModLog<Config> log = new ModLog<Config>();
+        private static readonly ModLog<Config> _log = new ModLog<Config>();
         private static readonly string filename = Path.Combine(GameIO.GetSaveGameDir(), "amnesia.xml");
 
         public static string QuestResetKickReason { get; private set; } = "This server is configured to erase some settings from your player file when you die for the final time. Please reconnect whenever you're ready.";
@@ -417,12 +417,12 @@ namespace Amnesia.Data
                     new XElement(Values.NameForgetInactiveQuests, ForgetInactiveQuests),
                     new XElement(Values.NameForgetIntroQuests, ForgetIntroQuests)
                 ).Save(filename);
-                log.Info($"Successfully saved {filename}");
+                _log.Info($"Successfully saved {filename}");
                 return true;
             }
             catch (Exception e)
             {
-                log.Error($"Failed to save {filename}", e);
+                _log.Error($"Failed to save {filename}", e);
                 return false;
             }
         }
@@ -443,7 +443,7 @@ namespace Amnesia.Data
                 {
                     if (!int.TryParse(entry.Attribute("value").Value, out var intValue))
                     {
-                        log.Error($"Unable to parse value; expecting int");
+                        _log.Error($"Unable to parse value; expecting int");
                         return;
                     }
                     PositiveOutlookTimeOnKill.Add(entry.Attribute("name").Value, new TimeOnKill
@@ -465,17 +465,17 @@ namespace Amnesia.Data
                 ForgetActiveQuests = ParseBool(config, Values.NameForgetActiveQuests, ForgetActiveQuests);
                 ForgetInactiveQuests = ParseBool(config, Values.NameForgetInactiveQuests, ForgetInactiveQuests);
                 ForgetIntroQuests = ParseBool(config, Values.NameForgetIntroQuests, ForgetIntroQuests);
-                log.Info($"Successfully loaded {filename}");
+                _log.Info($"Successfully loaded {filename}");
                 Loaded = true;
             }
             catch (FileNotFoundException)
             {
-                log.Info($"No file detected, creating a config with defaults under {filename}");
+                _log.Info($"No file detected, creating a config with defaults under {filename}");
                 Loaded = Save();
             }
             catch (Exception e)
             {
-                log.Error($"Failed to load {filename}; Amnesia will remain disabled until server restart - fix file (possibly delete or try updating settings) then try restarting server.", e);
+                _log.Error($"Failed to load {filename}; Amnesia will remain disabled until server restart - fix file (possibly delete or try updating settings) then try restarting server.", e);
                 Loaded = false;
             }
         }
@@ -490,7 +490,7 @@ namespace Amnesia.Data
                 }
             }
             catch (Exception) { }
-            log.Warn($"Unable to parse {name} from {filename}.\nFalling back to a default value of {fallback}.\nTry updating any setting to write the default option to this file.");
+            _log.Warn($"Unable to parse {name} from {filename}.\nFalling back to a default value of {fallback}.\nTry updating any setting to write the default option to this file.");
             return fallback;
         }
 
@@ -504,7 +504,7 @@ namespace Amnesia.Data
                 }
             }
             catch (Exception) { }
-            log.Warn($"Unable to parse {name} from {filename}.\nFalling back to a default value of {fallback}.\nTry updating any setting to write the default option to this file.");
+            _log.Warn($"Unable to parse {name} from {filename}.\nFalling back to a default value of {fallback}.\nTry updating any setting to write the default option to this file.");
             return fallback;
         }
     }

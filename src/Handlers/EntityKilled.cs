@@ -6,7 +6,7 @@ namespace Amnesia.Handlers
 {
     internal class EntityKilled
     {
-        private static readonly ModLog<EntityKilled> log = new ModLog<EntityKilled>();
+        private static readonly ModLog<EntityKilled> _log = new ModLog<EntityKilled>();
 
         internal static void Handle(Entity killedEntity, Entity killerEntity)
         {
@@ -28,7 +28,7 @@ namespace Amnesia.Handlers
             }
             catch (Exception e)
             {
-                log.Error("HandleEntityKilled", e);
+                _log.Error("HandleEntityKilled", e);
             }
         }
     }

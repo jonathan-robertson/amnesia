@@ -13,15 +13,15 @@ namespace Amnesia.Patches
     {
         private static readonly ModLog<Progression_AddLevelExp_Patches> _log = new ModLog<Progression_AddLevelExp_Patches>();
 
-        public static void Prefix(Progression __instance, int ___Level, out int __state)
+        public static void Prefix(EntityAlive ___parent, int ___Level, out int __state)
         {
             __state = -1; // default to ignore
             try
             {
                 // TODO: do these checks in many more parts of the code to support remote having local mod (disable remote clients)
                 if (!ConnectionManager.Instance.IsServer
-                    || __instance.parent.isEntityRemote // only track local entity
-                    || !(__instance.parent is EntityPlayerLocal)) // only track EntityPlayerLocal
+                    || ___parent.isEntityRemote // only track local entity
+                    || !(___parent is EntityPlayerLocal)) // only track EntityPlayerLocal
                 {
                     return;
                 }
@@ -34,14 +34,14 @@ namespace Amnesia.Patches
             }
         }
 
-        public static void Postfix(Progression __instance, int ___Level, int __state)
+        public static void Postfix(EntityAlive ___parent, int ___Level, int __state)
         {
             try
             {
                 if (!ConnectionManager.Instance.IsServer
                     || __state == -1
                     || __state == ___Level
-                    || !(__instance.parent is EntityPlayerLocal player))
+                    || !(___parent is EntityPlayerLocal player))
                 {
                     return;
                 }
