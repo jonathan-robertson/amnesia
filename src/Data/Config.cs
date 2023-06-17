@@ -57,13 +57,8 @@ namespace Amnesia.Data
         public static bool ForgetSchematics { get; private set; } = false;
         /// <summary>Whether players/zombies killed and times died should be forgotten on memory loss.</summary>
         public static bool ForgetKdr { get; private set; } = false;
-
-        /// <summary>Whether ongoing quests should be forgotten on memory loss.</summary>
-        public static bool ForgetActiveQuests { get; private set; } = false;
-        /// <summary>Whether completed quests (AND TRADER TIER LEVELS) should be forgotten on memory loss.</summary>
-        public static bool ForgetInactiveQuests { get; private set; } = false;
-        /// <summary>Whether the intro quests should be forgotten/reset on memory loss.</summary>
-        public static bool ForgetIntroQuests { get; private set; } = false;
+        /// <summary>Whether to forget shareable quests (and trader tier levels) on memory loss.</summary>
+        public static bool ForgetShareableQuests { get; private set; } = false;
 
         public static string PrintPositiveOutlookTimeOnMemoryLoss()
         {
@@ -87,11 +82,7 @@ namespace Amnesia.Data
 {Values.NameForgetBooks}: {ForgetBooks}
 {Values.NameForgetSchematics}: {ForgetSchematics}
 {Values.NameForgetKdr}: {ForgetKdr}
-
-== Experimental Features (require player disconnection on final death) ==
-{Values.NameForgetActiveQuests}: {ForgetActiveQuests}
-{Values.NameForgetInactiveQuests}: {ForgetInactiveQuests}
-{Values.NameForgetIntroQuests}: {ForgetIntroQuests}";
+{Values.NameForgetShareableQuests}: {ForgetShareableQuests}";
         }
 
         /// <summary>
@@ -343,45 +334,16 @@ namespace Amnesia.Data
         }
 
         /// <summary>
-        /// Enable or disable ForgetActiveQuests on memory loss.
+        /// Enable or disable ForgetShareableQuests on memory loss.
         /// </summary>
-        /// <param key="value">New value to use.</param>
-        public static void SetForgetActiveQuests(bool value)
+        /// <param name="value">New value to use.</param>
+        public static void SetForgetShareableQuests(bool value)
         {
-            if (ForgetActiveQuests == value)
+            if (ForgetShareableQuests != value)
             {
-                return;
+                ForgetShareableQuests = value;
+                _ = Save();
             }
-            ForgetActiveQuests = value;
-            _ = Save();
-        }
-
-        /// <summary>
-        /// Enable or disable ForgetIntroQuests on memory loss.
-        /// </summary>
-        /// <param key="value">New value to use.</param>
-        public static void SetForgetIntroQuests(bool value)
-        {
-            if (ForgetIntroQuests == value)
-            {
-                return;
-            }
-            ForgetIntroQuests = value;
-            _ = Save();
-        }
-
-        /// <summary>
-        /// Enable or disable ForgetInactiveQuests on memory loss.
-        /// </summary>
-        /// <param key="value">New value to use.</param>
-        public static void SetForgetInactiveQuests(bool value)
-        {
-            if (ForgetInactiveQuests == value)
-            {
-                return;
-            }
-            ForgetInactiveQuests = value;
-            _ = Save();
         }
 
         public static bool Save()
@@ -413,9 +375,7 @@ namespace Amnesia.Data
                     new XElement(Values.NameForgetSchematics, ForgetSchematics),
                     new XElement(Values.NameForgetKdr, ForgetKdr),
 
-                    new XElement(Values.NameForgetActiveQuests, ForgetActiveQuests),
-                    new XElement(Values.NameForgetInactiveQuests, ForgetInactiveQuests),
-                    new XElement(Values.NameForgetIntroQuests, ForgetIntroQuests)
+                    new XElement(Values.NameForgetShareableQuests, ForgetShareableQuests)
                 ).Save(filename);
                 _log.Info($"Successfully saved {filename}");
                 return true;
@@ -462,9 +422,7 @@ namespace Amnesia.Data
                 ForgetSchematics = ParseBool(config, Values.NameForgetSchematics, ForgetSchematics);
                 ForgetKdr = ParseBool(config, Values.NameForgetKdr, ForgetKdr);
 
-                ForgetActiveQuests = ParseBool(config, Values.NameForgetActiveQuests, ForgetActiveQuests);
-                ForgetInactiveQuests = ParseBool(config, Values.NameForgetInactiveQuests, ForgetInactiveQuests);
-                ForgetIntroQuests = ParseBool(config, Values.NameForgetIntroQuests, ForgetIntroQuests);
+                ForgetShareableQuests = ParseBool(config, Values.NameForgetShareableQuests, ForgetShareableQuests);
                 _log.Info($"Successfully loaded {filename}");
                 Loaded = true;
             }

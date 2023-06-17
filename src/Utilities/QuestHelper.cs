@@ -1,5 +1,5 @@
-﻿using Amnesia.Data;
-using System;
+﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using static Quest;
 
@@ -10,47 +10,71 @@ namespace Amnesia.Utilities
         private static readonly ModLog<QuestHelper> _log = new ModLog<QuestHelper>();
 
         /// <summary>
-        /// Remove all quests from the given player based on admin configuration.
+        /// Remove quests without having to disconnect the player.
         /// </summary>
-        /// <param name="player">The player to remove quests for.</param>
-        /// <returns>Whether any quests were removed.</returns>
-        public static bool ResetQuests(EntityPlayer player)
+        /// <param name="player">Player to remove quests for.</param>
+        /// <param name="clientInfo">Connection to send removal requests through.</param>
+        public static void RemoveShareableQuests(EntityPlayer player, ClientInfo clientInfo)
         {
-            try
+            var questIds = new List<string>();
+            for (var i = 0; i < player.QuestJournal.quests.Count; i++)
             {
-                var changed = false;
-                for (var i = 0; i < player.QuestJournal.quests.Count; i++)
+                if (player.QuestJournal.quests[i].IsShareable)
                 {
-                    changed = changed || RemoveQuest(player, player.QuestJournal.quests[i]);
+                    var id = player.QuestJournal.quests[i].ID;
+                    _log.Trace($"RemoveShareableQuests: adding {id} to the list...");
+                    questIds.Add(id);
                 }
-                _log.Trace($"Quests Changed after RemoveQuests? {changed}");
-                changed = changed || GiveStarterQuestIfMissing(player);
-                _log.Trace($"Quests Changed after GiveStarterQuestIfMissing? {changed}");
-                return changed;
             }
-            catch (Exception e)
+            for (var i = 0; i < questIds.Count; i++)
             {
-                _log.Error("Failed to reset quests.", e);
-                return true; // tell server to disconnect player
+                clientInfo.SendPackage(NetPackageManager.GetPackage<NetPackageConsoleCmdClient>().Setup($"removequest {questIds[i]}", true));
+                // TODO: remove quest from server-side journal as well?
             }
         }
 
-        private static bool RemoveQuest(EntityPlayer player, Quest quest)
-        {
-            _log.Trace($"{quest.ID}\n  - CurrentState: {quest.CurrentState}\n  - Active: {quest.Active}\n  - IsIntroQuest: {IsIntroQuest(quest)}\n  - QuestClass: {quest.QuestClass}\n  - Tracked: {quest.Tracked}\n!quest.ID.EqualsCaseInsensitive('quest_BasicSurvival1') {!quest.ID.EqualsCaseInsensitive("quest_BasicSurvival1")}");
+        ///// <summary>
+        ///// Remove all quests from the given player based on admin configuration.
+        ///// </summary>
+        ///// <param name="player">The player to remove quests for.</param>
+        ///// <returns>Whether any quests were removed.</returns>
+        //public static bool ResetQuests(EntityPlayer player)
+        //{
+        //    try
+        //    {
+        //        var changed = false;
+        //        for (var i = 0; i < player.QuestJournal.quests.Count; i++)
+        //        {
+        //            changed = changed || RemoveQuest(player, player.QuestJournal.quests[i]);
+        //        }
+        //        _log.Trace($"Quests Changed after RemoveQuests? {changed}");
+        //        changed = changed || GiveStarterQuestIfMissing(player);
+        //        _log.Trace($"Quests Changed after GiveStarterQuestIfMissing? {changed}");
+        //        return changed;
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        _log.Error("Failed to reset quests.", e);
+        //        return true; // tell server to disconnect player
+        //    }
+        //}
 
-            var questIsActive = quest.Active; // cache calculated value
+        //        private static bool RemoveQuest(EntityPlayer player, Quest quest)
+        //        {
+        //            _log.Trace($"{quest.ID}\n  - CurrentState: {quest.CurrentState}\n  - Active: {quest.Active}\n  - IsIntroQuest: {IsIntroQuest(quest)}\n  - QuestClass: {quest.QuestClass}\n  - Tracked: {quest.Tracked}\n!quest.ID.EqualsCaseInsensitive('quest_BasicSurvival1') {!quest.ID.EqualsCaseInsensitive("quest_BasicSurvival1")}");
 
-            return IsIntroQuest(quest)
-                ? Config.ForgetIntroQuests
-&& (!quest.ID.EqualsCaseInsensitive("quest_BasicSurvival1") || !questIsActive)
-&& (questIsActive
-                        ? RemoveActiveQuest(player, quest)
-                        : RemoveInactiveQuest(player, quest))
-                : questIsActive
-                ? Config.ForgetActiveQuests && RemoveActiveQuest(player, quest)
-                : Config.ForgetInactiveQuests && RemoveInactiveQuest(player, quest);
-        }
+        //            var questIsActive = quest.Active; // cache calculated value
+
+        //            return IsIntroQuest(quest)
+        //                ? Config.ForgetIntroQuests
+        //&& (!quest.ID.EqualsCaseInsensitive("quest_BasicSurvival1") || !questIsActive)
+        //&& (questIsActive
+        //                        ? RemoveActiveQuest(player, quest)
+        //                        : RemoveInactiveQuest(player, quest))
+        //                : questIsActive
+        //                ? Config.ForgetActiveQuests && RemoveActiveQuest(player, quest)
+        //                : Config.ForgetInactiveQuests && RemoveInactiveQuest(player, quest);
+        //        }
 
         private static bool IsIntroQuest(Quest quest)
         {

@@ -43,12 +43,8 @@ namespace Amnesia.Data
         public static string NameForgetBooks { get; private set; } = "ForgetBooks";
         public static string NameForgetSchematics { get; private set; } = "ForgetSchematics";
         public static string NameForgetKdr { get; private set; } = "ForgetKdr";
-        public static string NameForgetActiveQuests { get; private set; } = "ForgetActiveQuests";
-        public static string NameForgetInactiveQuests { get; private set; } = "ForgetInactiveQuests";
-        public static string NameForgetIntroQuests { get; private set; } = "ForgetIntroQuests";
+        public static string NameForgetShareableQuests { get; private set; } = "ForgetShareableQuests";
 
-        private const string DisconnectionWarning = "\n      - [!] SYSTEM WILL DISCONNECT PLAYER ON FINAL DEATH IF ENABLED!";
-        private const string ExperimentalWarning = "\n      - [!] EXPERIMENTAL FEATURE - USE AT YOUR OWN RISK...";
         public static Dictionary<string, string> SingleValueNamesAndDescriptionsDict { get; private set; } = new Dictionary<string, string> {
             { NameLongTermMemoryLevel, "the level players will be reset to on memory loss and the level at which losing memory on death starts" },
 
@@ -64,9 +60,7 @@ namespace Amnesia.Data
             { NameForgetSchematics, "whether schematics should be forgotten on memory loss" },
             { NameForgetKdr, "whether players/zombies killed and times died should be forgotten on memory loss" },
 
-            { NameForgetActiveQuests, $"whether ongoing quests should be forgotten on memory loss{DisconnectionWarning}{ExperimentalWarning}" },
-            { NameForgetInactiveQuests, $"whether completed quests (AND TRADER TIER LEVELS) should be forgotten on memory loss{DisconnectionWarning}{ExperimentalWarning}" },
-            { NameForgetIntroQuests, $"whether the intro quests should be forgotten/reset on memory loss{DisconnectionWarning}{ExperimentalWarning}" }
+            { NameForgetShareableQuests, "whether to forget shareable quests (and trader tier levels) on memory loss" },
         };
         public static List<string> SingleValueFieldNames { get; private set; } = SingleValueNamesAndDescriptionsDict.Keys.ToList();
         public static string SingleValueFieldNamesAndDescriptions { get; private set; } = "    - " + string.Join("\n    - ", SingleValueNamesAndDescriptionsDict.Select(kvp => kvp.Key + ": " + kvp.Value));

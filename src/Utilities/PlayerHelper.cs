@@ -36,13 +36,75 @@ namespace Amnesia.Utilities
             return true;
         }
 
-        /// <remarks>Most of the following core logic was lifted from ActionResetPlayerData.PerformTargetAction</remarks>
-        public static void ResetPlayer(EntityPlayer player)
+        /// <summary>
+        /// Attempt to extract Progression from a PlayerDataFile
+        /// </summary>
+        /// <param name="playerDataFile">PlayerDataFile to extract from.</param>
+        /// <param name="progression">Progression data to extract.</param>
+        /// <returns>Whether extraction was successful.</returns>
+        public static bool TryExtractProgressionData(PlayerDataFile playerDataFile, out Progression progression)
         {
+            if (playerDataFile.progressionData.Length == 0L)
+            {
+                progression = default;
+                return false;
+            }
+
+            var playerStub = new EntityPlayer();
+            using (var pooledBinaryReader = MemoryPools.poolBinaryReader.AllocSync(false))
+            {
+                pooledBinaryReader.SetBaseStream(playerDataFile.progressionData);
+                progression = Progression.Read(pooledBinaryReader, playerStub);
+                return true;
+            }
+        }
+
+        public static void Respec(EntityPlayer player)
+        {
+            if (!PlayerRecord.Entries.TryGetValue(player.entityId, out var record))
+            {
+                _log.Error($"Unable to find player record under {player.entityId} for Respec Request.");
+                return;
+            }
+            record.Respec(player);
+        }
+
+        /// <remarks>Most of the following core logic was lifted from ActionResetPlayerData.PerformTargetAction</remarks>
+        public static void Rewind(EntityPlayer player, PlayerRecord record, int levelsToRewind)
+        {
+            if (Config.ForgetShareableQuests)
+            {
+                if (TryGetClientInfo(player.entityId, out var clientInfo))
+                {
+                    QuestHelper.RemoveShareableQuests(player, clientInfo);
+                }
+                else
+                {
+                    //player = GameManager.Instance.World.GetPrimaryPlayer();
+                    //if (player == null)
+                    //{
+                    //    SdtdConsole.Instance.Output("No remote or local player could be found.");
+                    //    return;
+                    //}
+                    // TODO: add support for local
+                    _log.Error($"Unable to find clientInfo for player {player.entityId} (is player online?).");
+                    return;
+                }
+            }
+
             var needsSave = false;
+
+            if (Config.ForgetKdr)
+            {
+                needsSave = true;
+                player.Died = 0;
+                player.KilledPlayers = 0;
+                player.KilledZombies = 0;
+            }
 
             if (Config.ForgetSchematics)
             {
+                needsSave = true;
                 var recipes = CraftingManager.GetRecipes();
                 for (var i = 0; i < recipes.Count; i++)
                 {
@@ -53,50 +115,21 @@ namespace Amnesia.Utilities
                 }
             }
 
-            // Zero out Player KD Stats
-            if (Config.ForgetKdr)
-            {
-                player.Died = 0;
-                player.KilledPlayers = 0;
-                player.KilledZombies = 0;
-                needsSave = true;
-            }
-
             if (Config.ForgetLevelsAndSkills)
             {
-                // TODO: come up with a new solution for books?
-                //  player.Progression.ResetProgression(Config.ForgetBooks);
-                //  player.Progression.Level = Config.LongTermMemoryLevel;
-                //  player.Progression.ExpToNextLevel = player.Progression.GetExpForNextLevel();
-                //  player.Progression.SkillPoints = Config.LongTermMemoryLevel - 1;
+                needsSave = true;
+                var targetLevel = Math.Max(Config.LongTermMemoryLevel, player.Progression.Level - levelsToRewind);
 
-                RewindLevelSkillProgression(player, (player.Progression.Level - Config.LongTermMemoryLevel) * Progression.SkillPointsPerLevel);
+                // Reset skills
+                //  NOTE: this flushes all skill points and reapplies points from quests (self-healing from mistakes)
+                //        if we want to support dynamic/unlimited skill points in the future, we should refactor how reset works.
+                player.Progression.ResetProgression(true, Config.ForgetBooks); // TODO: , Config.ResetCrafting);
+                record.ReapplySkills(player);
 
-                // Return all skill points rewarded from completed quest; should cover vanilla quest_BasicSurvival8, for example
-                if (!Config.ForgetIntroQuests)
-                {
-                    try
-                    {
-                        for (var i = 0; i < player.QuestJournal.quests.Count; i++)
-                        {
-                            if (player.QuestJournal.quests[i].CurrentState == Quest.QuestState.Completed)
-                            {
-                                var rewards = player.QuestJournal.quests[i].Rewards;
-                                for (var j = 0; j < rewards.Count; j++)
-                                {
-                                    if (rewards[j] is RewardSkillPoints)
-                                    {
-                                        player.Progression.SkillPoints += Convert.ToInt32((rewards[j] as RewardSkillPoints).Value);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        _log.Error("Failed to scan for completed skillpoints.", e);
-                    }
-                }
+                // Update levels
+                record.SetLevel(targetLevel);
+                player.Progression.Level = targetLevel;
+                player.Progression.ExpToNextLevel = player.Progression.GetExpForNextLevel();
 
                 // Inform client cycles of level adjustment for health/stamina/food/water max values
                 player.SetCVar("$LastPlayerLevel", player.Progression.Level);
@@ -108,8 +141,6 @@ namespace Amnesia.Utilities
                 player.SetCVar("$xpFromLootLast", 0);
                 player.SetCVar("$xpFromHarvestingLast", 0);
                 player.SetCVar("$xpFromKillLast", 0);
-
-                needsSave = true;
             }
 
             if (needsSave)
@@ -186,46 +217,6 @@ namespace Amnesia.Utilities
             }));
             clientInfo.SendPackage(NetPackageManager.GetPackage<NetPackageEntityCollect>().Setup(entityId, clientInfo.entityId));
             _ = GameManager.Instance.World.RemoveEntity(entityId, EnumRemoveEntityReason.Despawned);
-        }
-
-        private static void RewindLevelSkillProgression(EntityPlayer player, int count)
-        {
-            _log.Trace($"RewindLevelSkillProgression({player.entityId}, {count})");
-            if (player.Progression.SkillPoints >= count)
-            {
-                _log.Trace($"player.Progression.SkillPoints >= {count})");
-                player.Progression.SkillPoints -= count;
-                player.Progression.Level -= count;
-                player.Progression.ExpToNextLevel = player.Progression.GetExpForNextLevel();
-                return;
-            }
-            _log.Trace($"player.Progression.SkillPoints < {count})");
-            var leftToReap = count - player.Progression.SkillPoints;
-
-            if (!PlayerRecord.Entries.TryGetValue(player.entityId, out var playerRecord))
-            {
-                _log.Error($"Could not rewind progression by {leftToReap} for player {player.entityId} {player.GetDebugName()}!");
-                return;
-            }
-            if (playerRecord.Changes.Count < leftToReap)
-            {
-                // TODO: handle this situation
-                // TODO: this should not hit in test... log output?
-                _log.Error($"count: {count} | leftToReap: {leftToReap} | skillPoints: {player.Progression.SkillPoints} | level: {player.Progression.Level}");
-                throw new NotImplementedException("TODO");
-            }
-
-            _log.Trace($"about to reverse {leftToReap} perks");
-            for (var i = playerRecord.Changes.Count - 1; i <= playerRecord.Changes.Count - 1 - leftToReap; i--)
-            {
-                _log.Trace($"reversing {playerRecord.Changes[i].Item1} level {playerRecord.Changes[i].Item2})");
-                player.Progression.GetProgressionValue(playerRecord.Changes[i].Item1).Level = playerRecord.Changes[i].Item2 - 1;
-            }
-            playerRecord.Changes.RemoveRange(playerRecord.Changes.Count - 1 - leftToReap, leftToReap);
-            player.Progression.SkillPoints = 0;
-            player.Progression.Level -= leftToReap;
-            player.Progression.ExpToNextLevel = player.Progression.GetExpForNextLevel();
-            playerRecord.Save();
         }
     }
 }

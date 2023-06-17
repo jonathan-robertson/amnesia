@@ -15,6 +15,19 @@ namespace Amnesia.Handlers
             if (!Config.Loaded) { return; }
             try
             {
+                DialogShop.UpdateMoneyTracker(playerDataFile.id, playerDataFile.inventory, playerDataFile.bag);
+
+                if (!PlayerRecord.Entries.TryGetValue(playerDataFile.id, out var record))
+                {
+                    _log.Error($"Unable to retrieve player record for entityId {playerDataFile.id}");
+                    return;
+                }
+                if (PlayerHelper.TryExtractProgressionData(playerDataFile, out var progression))
+                {
+                    record.SetUnspentSkillPoints(progression.SkillPoints);
+                    record.SetLevel(progression.Level);
+                }
+
                 if (!ModApi.Obituary.ContainsKey(clientInfo.entityId))
                 {
                     return;
@@ -34,28 +47,10 @@ namespace Amnesia.Handlers
                     return; // let player know it's time for memory boosters
                 }
 
-                if ((Config.ForgetActiveQuests || Config.ForgetInactiveQuests) && QuestHelper.ResetQuests(player))
-                {
-                    // TODO: actually just redesign quest resets to issue remote admin call for client to run locally (an amazing feature!)
-                    // =================================================
-
-                    // TODO: fix NRE that client experiences after getting kicked
-                    // TODO: delay for a bit?
-
-                    // Safe disconnection that allows the client to affirm the disconnection? - still experiences NRE on disconnection :P
-                    //clientInfo.SendPackage(NetPackageManager.GetPackage<NetPackagePlayerDenied>()
-                    //    .Setup(new GameUtils.KickPlayerData(GameUtils.EKickReason.ManualKick, 0, default(DateTime), API.QuestResetKickReason)));
-
-                    //ConnectionManager.Instance.DisconnectClient(clientInfo);
-
-                    GameUtils.KickPlayerForClientInfo(clientInfo, new GameUtils.KickPlayerData(GameUtils.EKickReason.ManualKick, 0, default, Config.QuestResetKickReason));
-                    _ = ThreadManager.StartCoroutine(SaveLater(2.0f, clientInfo, player));
-                    return;
-                }
-
                 // Reset Player
                 _log.Info($"{clientInfo.InternalId.CombinedString} ({player.GetDebugName()}) died and has suffered memory loss.");
-                PlayerHelper.ResetPlayer(player);
+                // TODO: add support for variable reset
+                PlayerHelper.Rewind(player, record, record.Level - Config.LongTermMemoryLevel);
             }
             catch (Exception e)
             {

@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## WIP
 
 - update reset pattern to roll back to a given level, first consuming unspent points, then consuming spent points
+- check out how forgetting elixir does its popup
 
 ## [2.0.0]
 
@@ -27,6 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - update therapy prices on login and level-up
 - update to a21 mod-info file format
 - update to a21 references
+- update to remove quests without disconnect
 
 ## [1.2.1] - 2023-06-04
 

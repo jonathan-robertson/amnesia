@@ -141,20 +141,28 @@ namespace Amnesia.Commands
 
         private void HandleTest(List<string> @params, CommandSenderInfo senderInfo)
         {
-            if (@params.Count == 2 && @params[1].EqualsCaseInsensitive("confirm"))
+            if (senderInfo.RemoteClientInfo == null
+                || !GameManager.Instance.World.Players.dict.TryGetValue(senderInfo.RemoteClientInfo.entityId, out var player)
+                || !PlayerRecord.Entries.TryGetValue(player.entityId, out var record))
             {
-                if (senderInfo.RemoteClientInfo == null || !GameManager.Instance.World.Players.dict.TryGetValue(senderInfo.RemoteClientInfo.entityId, out var playerToReset))
-                {
-                    SdtdConsole.Instance.Output("RemoteClientInfo and/or player is null; if using telnet, you need to actually be inside the game instead.");
-                    return;
-                }
-                PlayerHelper.ResetPlayer(playerToReset);
-                SdtdConsole.Instance.Output("Your player was reset. Some UI elements might not have updated; schematics on your toolbelt, for example, may need to be moved to another slot to indicate they now need to be learned.");
+                SdtdConsole.Instance.Output("RemoteClientInfo and/or player is null; if using telnet, you need to actually be inside the game instead.");
+                return;
             }
-            else
+
+            if (!int.TryParse(@params[1], out var levelsToRewind))
             {
-                SdtdConsole.Instance.Output($"Running this command will allow you to test your amnesia configurations by wiping YOUR OWN character.\nThis ONLY TESTS non-experimental features and will not trigger a disconnection.\nIf you're sure you want to do this, run \"{GetCommands()[0]} test confirm\"");
+                SdtdConsole.Instance.Output("ERROR: Expecting second parameter to be of type int.");
+                return;
             }
+
+            if (@params.Count < 3 || !@params[2].EqualsCaseInsensitive("confirm"))
+            {
+                SdtdConsole.Instance.Output($"Running this command will allow you to test your amnesia configurations by wiping YOUR OWN character.\nDue to the nature of how the game updates, it's recommended to only test this right after logging out/in.\nIf you're sure you want to do this, run \"{GetCommands()[0]} test {levelsToRewind} confirm\"");
+                return;
+            }
+
+            PlayerHelper.Rewind(player, record, levelsToRewind);
+            SdtdConsole.Instance.Output("Your player was reset. Some UI elements might not have updated; schematics on your toolbelt, for example, may need to be moved to another slot to indicate they now need to be learned.");
         }
 
         private void HandleGrant(List<string> @params)
@@ -200,25 +208,25 @@ namespace Amnesia.Commands
         private void HandleSkills(List<string> @params)
         {
             var clientInfo = ConsoleHelper.ParseParamIdOrName(@params[1], true, false); // TODO: fix index out of range exception
-            if (clientInfo == null || !GameManager.Instance.World.Players.dict.TryGetValue(clientInfo.entityId, out var player))
+            if (clientInfo == null || !GameManager.Instance.World.Players.dict.TryGetValue(clientInfo.entityId, out _))
             {
                 SdtdConsole.Instance.Output("Unable to find this player; note: player must be online");
                 return;
             }
-            if (!PlayerRecord.Entries.TryGetValue(clientInfo.entityId, out var playerRecord))
+            if (!PlayerRecord.Entries.TryGetValue(clientInfo.entityId, out var record))
             {
                 SdtdConsole.Instance.Output($"Unable to find an active record for player {clientInfo.entityId}");
                 return;
             }
-            for (var i = 0; i < playerRecord.Changes.Count; i++)
+            for (var i = 0; i < record.Changes.Count; i++)
             {
-                SdtdConsole.Instance.Output($"{i + 1,3}. {playerRecord.Changes[i].Item1}: {playerRecord.Changes[i].Item2}");
+                SdtdConsole.Instance.Output($"{i + 1,3}. {record.Changes[i].Item1}: {record.Changes[i].Item2}");
             }
-            if (playerRecord.Changes.Count == 0)
+            if (record.Changes.Count == 0)
             {
                 SdtdConsole.Instance.Output("========= no recorded changes =========");
             }
-            SdtdConsole.Instance.Output($"====================================\n{player.Progression.SkillPoints,3} skill point{(player.Progression.SkillPoints != 0 ? "s" : "")} currently unassigned.\n{player.Progression.Level,3} current level.");
+            SdtdConsole.Instance.Output($"====================================\n{record.UnspentSkillPoints,3} skill point{(record.UnspentSkillPoints != 0 ? "s" : "")} currently unassigned.\n{record.Level,3} current level.");
         }
 
         private void RouteListRequest(List<string> @params)
@@ -352,19 +360,9 @@ namespace Amnesia.Commands
                 UpdateForgetKdr(@params);
                 return;
             }
-            if (Values.NameForgetActiveQuests.EqualsCaseInsensitive(@params[1]))
+            if (Values.NameForgetShareableQuests.EqualsCaseInsensitive(@params[1]))
             {
-                UpdateForgetActiveQuests(@params);
-                return;
-            }
-            if (Values.NameForgetInactiveQuests.EqualsCaseInsensitive(@params[1]))
-            {
-                UpdateForgetInactiveQuests(@params);
-                return;
-            }
-            if (Values.NameForgetIntroQuests.EqualsCaseInsensitive(@params[1]))
-            {
-                UpdateForgetIntroQuests(@params);
+                UpdateForgetShareableQuests(@params);
                 return;
             }
             SdtdConsole.Instance.Output($"Invald request; run '{Commands[0]} set' to see a list of options.");
@@ -530,12 +528,12 @@ namespace Amnesia.Commands
             Config.SetForgetKdr(value);
         }
 
-        private void UpdateForgetActiveQuests(List<string> @params)
+        private void UpdateForgetShareableQuests(List<string> @params)
         {
             if (@params.Count == 2)
             {
-                SdtdConsole.Instance.Output($@"{Values.SingleValueNamesAndDescriptionsDict[Values.NameForgetActiveQuests]}
-{Commands[0]} set {Values.NameForgetActiveQuests} <true|false>");
+                SdtdConsole.Instance.Output($@"{Values.SingleValueNamesAndDescriptionsDict[Values.NameForgetShareableQuests]}
+{Commands[0]} set {Values.NameForgetShareableQuests} <true|false>");
                 return;
             }
             if (!bool.TryParse(@params[2], out var value))
@@ -543,39 +541,7 @@ namespace Amnesia.Commands
                 SdtdConsole.Instance.Output($"Unable to parse value; expecting bool");
                 return;
             }
-            Config.SetForgetActiveQuests(value);
-        }
-
-        private void UpdateForgetInactiveQuests(List<string> @params)
-        {
-            if (@params.Count == 2)
-            {
-                SdtdConsole.Instance.Output($@"{Values.SingleValueNamesAndDescriptionsDict[Values.NameForgetInactiveQuests]}
-{Commands[0]} set {Values.NameForgetInactiveQuests} <true|false>");
-                return;
-            }
-            if (!bool.TryParse(@params[2], out var value))
-            {
-                SdtdConsole.Instance.Output($"Unable to parse value; expecting bool");
-                return;
-            }
-            Config.SetForgetInactiveQuests(value);
-        }
-
-        private void UpdateForgetIntroQuests(List<string> @params)
-        {
-            if (@params.Count == 2)
-            {
-                SdtdConsole.Instance.Output($@"{Values.SingleValueNamesAndDescriptionsDict[Values.NameForgetIntroQuests]}
-{Commands[0]} set {Values.NameForgetInactiveQuests} <true|false>");
-                return;
-            }
-            if (!bool.TryParse(@params[2], out var value))
-            {
-                SdtdConsole.Instance.Output($"Unable to parse value; expecting bool");
-                return;
-            }
-            Config.SetForgetIntroQuests(value);
+            Config.SetForgetShareableQuests(value);
         }
     }
 }

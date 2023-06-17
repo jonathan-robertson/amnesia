@@ -19,7 +19,7 @@ namespace Amnesia.Patches
             try
             {
                 _log.Trace($"___entityId: {___entityId}, ___skill: {___skill}, ___level: {___level}");
-                if (!PlayerRecord.Entries.TryGetValue(___entityId, out var playerStats))
+                if (!PlayerRecord.Entries.TryGetValue(___entityId, out var record))
                 {
                     _log.Error($"Unable to retrieve player record for entityId {___entityId}");
                     return;
@@ -33,11 +33,11 @@ namespace Amnesia.Patches
                 var progressionClass = player.Progression.GetProgressionValue(___skill).ProgressionClass;
                 if (progressionClass.IsAttribute || progressionClass.IsPerk) // don't track action skills or books
                 {
-                    playerStats.Changes.Add((___skill, ___level));
-                    playerStats.Save();
-                    // TODO: tell client to refresh server's skillPoints value now
-                    __instance.Sender.SendPackage(NetPackageManager.GetPackage<NetPackageConsoleCmdClient>().Setup("sm", true));
-                    __instance.Sender.SendPackage(NetPackageManager.GetPackage<NetPackageConsoleCmdClient>().Setup("sm", true));
+                    record.PurchaseSkill(___skill, ___level, progressionClass.CalculatedCostForLevel(___level));
+
+                    // TODO: tell client to refresh server's skillPoints value now?
+                    //__instance.Sender.SendPackage(NetPackageManager.GetPackage<NetPackageConsoleCmdClient>().Setup("sm", true));
+                    //__instance.Sender.SendPackage(NetPackageManager.GetPackage<NetPackageConsoleCmdClient>().Setup("sm", true));
                 }
             }
             catch (Exception e)
