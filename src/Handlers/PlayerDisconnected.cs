@@ -12,7 +12,10 @@ namespace Amnesia.Handlers
         {
             try
             {
-                PlayerRecord.Unload(clientInfo);
+                if (!forShutdown)
+                {
+                    PlayerRecord.Unload(clientInfo);
+                }
             }
             catch (Exception e)
             {
