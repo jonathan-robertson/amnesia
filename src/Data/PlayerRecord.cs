@@ -221,7 +221,7 @@ namespace Amnesia.Data
             }
 
             UnspentSkillPoints = player.Progression.SkillPoints;
-            Changes = Changes.GetRange(0, i);
+            Changes = Changes.GetRange(0, i); // forget remaining entries we couldn't afford
         }
 
         /// <summary>

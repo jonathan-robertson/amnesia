@@ -54,6 +54,7 @@ namespace Amnesia.Utilities
                 if (TryGetClientInfo(player.entityId, out var clientInfo))
                 {
                     QuestHelper.RemoveShareableQuests(player, clientInfo);
+                    // TODO: send net package?
                 }
                 else
                 {
@@ -100,14 +101,20 @@ namespace Amnesia.Utilities
                 // Reset skills
                 //  NOTE: this flushes all skill points and reapplies points from quests (self-healing from mistakes)
                 //        if we want to support dynamic/unlimited skill points in the future, we should refactor how reset works.
-                player.Progression.ResetProgression(true, Config.ForgetBooks); // TODO: , Config.ResetCrafting);
-                record.ReapplySkills(player);
 
-                // Update levels
-                record.SetLevel(targetLevel);
+                // Reset spent skill points
+                player.Progression.ResetProgression(true, Config.ForgetBooks); // TODO: , Config.ResetCrafting);
+
+                // Update level
                 player.Progression.Level = targetLevel;
                 player.Progression.ExpToNextLevel = player.Progression.GetExpForNextLevel();
+                record.SetLevel(player.Progression.Level);
 
+                // Update skills and skill points
+                player.Progression.SkillPoints = player.QuestJournal.GetRewardedSkillPoints();
+                player.Progression.SkillPoints += Progression.SkillPointsPerLevel * (targetLevel-1);
+                record.ReapplySkills(player);
+                
                 // Inform client cycles of level adjustment for health/stamina/food/water max values
                 player.SetCVar("$LastPlayerLevel", player.Progression.Level);
 
