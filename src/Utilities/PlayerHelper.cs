@@ -49,29 +49,6 @@ namespace Amnesia.Utilities
         /// <remarks>Most of the following core logic was lifted from ActionResetPlayerData.PerformTargetAction</remarks>
         public static void Rewind(EntityPlayer player, PlayerRecord record, int levelsToRewind)
         {
-            if (Config.ForgetNonIntroQuests)
-            {
-                if (TryGetClientInfo(player.entityId, out var clientInfo))
-                {
-                    QuestHelper.RemoveNonIntroQuests(player, clientInfo);
-                    // TODO: send net package?
-                    //clientInfo.SendPackage(NetPackageManager.GetPackage<NetPackagePlayerData>().Setup(player));
-                    //clientInfo.SendPackage(NetPackageManager.GetPackage<NetPackagePlayerId>().Setup(player.entityId, player.TeamNumber, clientInfo.latestPlayerData, 4));
-                }
-                else
-                {
-                    //player = GameManager.Instance.World.GetPrimaryPlayer();
-                    //if (player == null)
-                    //{
-                    //    SdtdConsole.Instance.Output("No remote or local player could be found.");
-                    //    return;
-                    //}
-                    // TODO: add support for local
-                    _log.Error($"Unable to find clientInfo for player {player.entityId} (is player online?).");
-                    return;
-                }
-            }
-
             var needsSave = false;
 
             if (Config.ForgetKdr)

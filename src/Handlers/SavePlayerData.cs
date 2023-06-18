@@ -40,12 +40,37 @@ namespace Amnesia.Handlers
                 }
                 _ = ModApi.Obituary.Remove(clientInfo.entityId);
 
+                // Check/Give Fragile Memory 
                 if (!player.Buffs.HasBuff(Values.BuffFragileMemory))
                 {
                     _ = player.Buffs.AddBuff(Values.BuffFragileMemory);
                     _log.Info($"{clientInfo.InternalId.CombinedString} ({player.GetDebugName()}) died and will not be reset, but now has a Fragile Memory.");
                     return; // let player know it's time for memory boosters
                 }
+
+                // Reset Quests
+                // TODO: discontinuing for now since it doesn't work properly: disconnection and wiping doesn't work together
+                //  Instead, maybe revisit this and refer back to how Amnesia 1.x.x handled things to see if it can be reproduced
+                //// TODO: auto-kick for quest relationship refresh would happen here
+                //if (Config.ForgetNonIntroQuests)
+                //{
+                //    var changed = QuestHelper.RemoveNonIntroQuests(clientInfo, playerDataFile);
+                //    // TODO: send net package? Unfortunately, these approaches don't work :[
+                //    //clientInfo.SendPackage(NetPackageManager.GetPackage<NetPackagePlayerData>().Setup(player));
+                //    //clientInfo.SendPackage(NetPackageManager.GetPackage<NetPackagePlayerId>().Setup(player.entityId, player.TeamNumber, clientInfo.latestPlayerData, 4));
+                //    if (changed)
+                //    {
+                //        GameUtils.KickPlayerForClientInfo(clientInfo, new GameUtils.KickPlayerData(GameUtils.EKickReason.ManualKick, 0, default, Config.QuestResetKickReason));
+
+                //        playerDataFile.bModifiedSinceLastSave = true;
+                //        playerDataFile.bDead = true;
+                //        playerDataFile.Save(GameIO.GetPlayerDataDir(), clientInfo.InternalId.CombinedString);
+
+                //        //_ = ThreadManager.StartCoroutine(SaveLater(2.0f, clientInfo, player));
+                //        // TODO: send packet to open URL in browser for auto re-login?
+                //        return;
+                //    }
+                //}
 
                 // Reset Player
                 _log.Info($"{clientInfo.InternalId.CombinedString} ({player.GetDebugName()}) died and has suffered memory loss.");

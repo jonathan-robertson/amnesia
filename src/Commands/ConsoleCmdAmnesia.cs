@@ -33,7 +33,7 @@ namespace Amnesia.Commands
                 { "list <complex-field> add <key> <name> <value>", "add or update a complex field" },
                 { "list <complex-field> rem <key>", "add or update a complex field" },
                 { "list <complex-field> clear", "add or update a complex field" },
-                { "test", "admin command which triggers reset on self for testing purposes" },
+                { "test <levels-to-rewind>", "admin command which triggers rewind on self for testing purposes" },
                 { "owed", "debugging command to check any pending change owed to a player" },
             };
 
@@ -78,19 +78,19 @@ namespace Amnesia.Commands
                         HandleTest(_params, _senderInfo);
                         return;
                     case "grant":
-                        if (_params.Count != 3)
+                        if (_params.Count == 3)
                         {
-                            break;
+                            HandleGrant(_params);
+                            return;
                         }
-                        HandleGrant(_params);
-                        return;
+                        break;
                     case "fragile":
-                        if (_params.Count != 3)
+                        if (_params.Count == 3)
                         {
-                            break;
+                            HandleFragile(_params);
+                            return;
                         }
-                        HandleFragile(_params);
-                        return;
+                        break;
                     case "skills":
                         HandleSkills(_params);
                         return;
@@ -360,9 +360,9 @@ namespace Amnesia.Commands
                 UpdateForgetKdr(@params);
                 return;
             }
-            if (Values.NameForgetShareableQuests.EqualsCaseInsensitive(@params[1]))
+            if (Values.NameForgetNonIntroQuests.EqualsCaseInsensitive(@params[1]))
             {
-                UpdateForgetShareableQuests(@params);
+                UpdateForgetNonIntroQuests(@params);
                 return;
             }
             SdtdConsole.Instance.Output($"Invald request; run '{Commands[0]} set' to see a list of options.");
@@ -528,12 +528,12 @@ namespace Amnesia.Commands
             Config.SetForgetKdr(value);
         }
 
-        private void UpdateForgetShareableQuests(List<string> @params)
+        private void UpdateForgetNonIntroQuests(List<string> @params)
         {
             if (@params.Count == 2)
             {
-                SdtdConsole.Instance.Output($@"{Values.SingleValueNamesAndDescriptionsDict[Values.NameForgetShareableQuests]}
-{Commands[0]} set {Values.NameForgetShareableQuests} <true|false>");
+                SdtdConsole.Instance.Output($@"{Values.SingleValueNamesAndDescriptionsDict[Values.NameForgetNonIntroQuests]}
+{Commands[0]} set {Values.NameForgetNonIntroQuests} <true|false>");
                 return;
             }
             if (!bool.TryParse(@params[2], out var value))
@@ -541,7 +541,7 @@ namespace Amnesia.Commands
                 SdtdConsole.Instance.Output($"Unable to parse value; expecting bool");
                 return;
             }
-            Config.SetForgetShareableQuests(value);
+            Config.SetForgetNonIntroQuests(value);
         }
     }
 }

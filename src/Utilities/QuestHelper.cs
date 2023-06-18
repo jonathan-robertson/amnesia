@@ -14,19 +14,22 @@ namespace Amnesia.Utilities
         /// <summary>
         /// Remove quests without having to disconnect the player.
         /// </summary>
-        /// <param name="player">Player to remove quests for.</param>
         /// <param name="clientInfo">Connection to send removal requests through.</param>
-        public static void RemoveNonIntroQuests(EntityPlayer player, ClientInfo clientInfo)
+        /// <param name="playerDataFile">PlayerDataFile to remove quests for.</param>
+        public static bool RemoveNonIntroQuests(ClientInfo clientInfo, PlayerDataFile playerDataFile)
         {
-            for (var i = 0; i < player.QuestJournal.quests.Count; i++)
+            var journalChanged = false;
+            for (var i = 0; i < playerDataFile.questJournal.quests.Count; i++)
             {
-                var quest = player.QuestJournal.quests[i];
+                var quest = playerDataFile.questJournal.quests[i];
                 if (!IsStarterQuest(quest))
                 {
-                    _log.Trace($"Forgetting quest {quest.ID} ({quest.QuestClass.Name}) from player {player.entityId}");
+                    _log.Trace($"Forgetting quest {quest.ID} ({quest.QuestClass.Name}) from player {clientInfo.entityId}");
                     clientInfo.SendPackage(NetPackageManager.GetPackage<NetPackageConsoleCmdClient>().Setup($"removequest {quest.ID}", true));
+                    journalChanged = true;
                 }
             }
+            return journalChanged;
         }
 
         private static bool IsStarterQuest(Quest quest)

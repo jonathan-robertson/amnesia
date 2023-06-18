@@ -60,7 +60,7 @@ namespace Amnesia.Data
             { NameForgetSchematics, "whether schematics should be forgotten on memory loss" },
             { NameForgetKdr, "whether players/zombies killed and times died should be forgotten on memory loss" },
 
-            { NameForgetNonIntroQuests, "whether to forget shareable quests (and trader tier levels) on memory loss" },
+            { NameForgetNonIntroQuests, "[DISABLED FOR NOW] whether to forget non-intro quests (and trader tier levels) on memory loss" },
         };
         public static List<string> SingleValueFieldNames { get; private set; } = SingleValueNamesAndDescriptionsDict.Keys.ToList();
         public static string SingleValueFieldNamesAndDescriptions { get; private set; } = "    - " + string.Join("\n    - ", SingleValueNamesAndDescriptionsDict.Select(kvp => kvp.Key + ": " + kvp.Value));
