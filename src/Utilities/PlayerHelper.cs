@@ -36,29 +36,6 @@ namespace Amnesia.Utilities
             return true;
         }
 
-        /// <summary>
-        /// Attempt to extract Progression from a PlayerDataFile
-        /// </summary>
-        /// <param name="playerDataFile">PlayerDataFile to extract from.</param>
-        /// <param name="progression">Progression data to extract.</param>
-        /// <returns>Whether extraction was successful.</returns>
-        public static bool TryExtractProgressionData(PlayerDataFile playerDataFile, out Progression progression)
-        {
-            if (playerDataFile.progressionData.Length == 0L)
-            {
-                progression = default;
-                return false;
-            }
-
-            var playerStub = new EntityPlayer();
-            using (var pooledBinaryReader = MemoryPools.poolBinaryReader.AllocSync(false))
-            {
-                pooledBinaryReader.SetBaseStream(playerDataFile.progressionData);
-                progression = Progression.Read(pooledBinaryReader, playerStub);
-                return true;
-            }
-        }
-
         public static void Respec(EntityPlayer player)
         {
             if (!PlayerRecord.Entries.TryGetValue(player.entityId, out var record))
@@ -157,6 +134,36 @@ namespace Amnesia.Utilities
                 _log.Trace($"{player.GetDebugName()} will receive the Positive Outlook buff.");
                 player.SetCVar(Values.CVarPositiveOutlookRemTime, Config.PositiveOutlookTimeOnMemoryLoss);
                 _ = player.Buffs.AddBuff(Values.BuffPositiveOutlook);
+            }
+        }
+
+        /// <summary>
+        /// Update player progression data with data received during save.
+        /// </summary>
+        /// <param name="playerDataFile">PlayerDataFile containing the latest progression information.</param>
+        /// <param name="player">EntityPlayer containing the active data we'll cache the PlayerDataFile.Progression info into.</param>
+        public static void SyncProgression(PlayerDataFile playerDataFile, EntityPlayer player)
+        {
+            _log.Trace($"Syncing progression for player {player.entityId}");
+            try
+            {
+                if (playerDataFile.progressionData.Length == 0L)
+                {
+                    _log.Trace($"No progression data to sync with {player.entityId}");
+                    return;
+                }
+
+                using (var pooledBinaryReader = MemoryPools.poolBinaryReader.AllocSync(false))
+                {
+                    // TODO: is a sync lock necessary?
+                    pooledBinaryReader.SetBaseStream(playerDataFile.progressionData);
+                    playerDataFile.progressionData.Position = 0L;
+                    player.Progression = Progression.Read(pooledBinaryReader, player);
+                }
+            }
+            catch (Exception e)
+            {
+                _log.Error($"Failed to sync progression data for {player.entityId}", e);
             }
         }
 

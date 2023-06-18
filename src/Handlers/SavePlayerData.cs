@@ -17,28 +17,27 @@ namespace Amnesia.Handlers
             {
                 DialogShop.UpdateMoneyTracker(playerDataFile.id, playerDataFile.inventory, playerDataFile.bag);
 
+                if (clientInfo == null
+                    || !GameManager.Instance.World.Players.dict.TryGetValue(clientInfo.entityId, out var player))
+                {
+                    _log.Error($"SavePlayerData called for player {playerDataFile.id} who was not online; this is not expected!");
+                    return;
+                }
+                PlayerHelper.SyncProgression(playerDataFile, player);
+
                 if (!PlayerRecord.Entries.TryGetValue(playerDataFile.id, out var record))
                 {
                     _log.Error($"Unable to retrieve player record for entityId {playerDataFile.id}");
                     return;
                 }
-                if (PlayerHelper.TryExtractProgressionData(playerDataFile, out var progression))
-                {
-                    record.SetUnspentSkillPoints(progression.SkillPoints);
-                    record.SetLevel(progression.Level);
-                }
+                record.SetUnspentSkillPoints(player.Progression.SkillPoints);
+                record.SetLevel(player.Progression.Level);
 
                 if (!ModApi.Obituary.ContainsKey(clientInfo.entityId))
                 {
                     return;
                 }
                 _ = ModApi.Obituary.Remove(clientInfo.entityId);
-
-                if (clientInfo == null || !GameManager.Instance.World.Players.dict.TryGetValue(clientInfo.entityId, out var player))
-                {
-                    _log.Warn("EntityWasKilled event sent from a non-player client... may want to investigate");
-                    return; // exit early, do not interrupt other mods from processing event
-                }
 
                 if (!player.Buffs.HasBuff(Values.BuffFragileMemory))
                 {

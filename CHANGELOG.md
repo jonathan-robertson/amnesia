@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - add success/unnecessary/unaffordable responses
 - remove deprecated buff
 - remove memory pills
+- sync progression data on save
 - update therapy prices on login and level-up
 - update to a21 mod-info file format
 - update to a21 references
