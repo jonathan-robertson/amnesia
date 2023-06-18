@@ -7,6 +7,9 @@ namespace Amnesia.Utilities
 {
     internal class QuestHelper
     {
+        private const string QUEST_GROUP_BASIC_SURVIVAL = "Basic Survival";
+        private const string QUEST_GROUP_WHITE_RIVER_CITIZEN = "White River Citizen";
+
         private static readonly ModLog<QuestHelper> _log = new ModLog<QuestHelper>();
 
         /// <summary>
@@ -16,21 +19,21 @@ namespace Amnesia.Utilities
         /// <param name="clientInfo">Connection to send removal requests through.</param>
         public static void RemoveShareableQuests(EntityPlayer player, ClientInfo clientInfo)
         {
-            var questIds = new List<string>();
             for (var i = 0; i < player.QuestJournal.quests.Count; i++)
             {
-                if (player.QuestJournal.quests[i].IsShareable)
+                var quest = player.QuestJournal.quests[i];
+                if (!IsStarterQuest(quest))
                 {
-                    var id = player.QuestJournal.quests[i].ID;
-                    _log.Trace($"RemoveShareableQuests: adding {id} to the list...");
-                    questIds.Add(id);
+                    _log.Trace($"Forgetting quest {quest.ID} ({quest.QuestClass.Name}) from player {player.entityId}");
+                    clientInfo.SendPackage(NetPackageManager.GetPackage<NetPackageConsoleCmdClient>().Setup($"removequest {quest.ID}", true));
                 }
             }
-            for (var i = 0; i < questIds.Count; i++)
-            {
-                clientInfo.SendPackage(NetPackageManager.GetPackage<NetPackageConsoleCmdClient>().Setup($"removequest {questIds[i]}", true));
-                // TODO: remove quest from server-side journal as well?
-            }
+        }
+
+        private static bool IsStarterQuest(Quest quest)
+        {
+            return QUEST_GROUP_BASIC_SURVIVAL.Equals(quest.QuestClass.GroupName)
+                || QUEST_GROUP_WHITE_RIVER_CITIZEN.Equals(quest.QuestClass.GroupName);
         }
 
         ///// <summary>

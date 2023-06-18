@@ -32,6 +32,7 @@ namespace Amnesia.Handlers
                 }
                 record.SetUnspentSkillPoints(player.Progression.SkillPoints);
                 record.SetLevel(player.Progression.Level);
+                record.ValidateAndRepairChangeIntegrity(player);
 
                 if (!ModApi.Obituary.ContainsKey(clientInfo.entityId))
                 {
