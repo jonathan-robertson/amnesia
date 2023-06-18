@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
 using static Quest;
 
@@ -17,7 +16,7 @@ namespace Amnesia.Utilities
         /// </summary>
         /// <param name="player">Player to remove quests for.</param>
         /// <param name="clientInfo">Connection to send removal requests through.</param>
-        public static void RemoveShareableQuests(EntityPlayer player, ClientInfo clientInfo)
+        public static void RemoveNonIntroQuests(EntityPlayer player, ClientInfo clientInfo)
         {
             for (var i = 0; i < player.QuestJournal.quests.Count; i++)
             {

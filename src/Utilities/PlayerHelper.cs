@@ -49,12 +49,14 @@ namespace Amnesia.Utilities
         /// <remarks>Most of the following core logic was lifted from ActionResetPlayerData.PerformTargetAction</remarks>
         public static void Rewind(EntityPlayer player, PlayerRecord record, int levelsToRewind)
         {
-            if (Config.ForgetShareableQuests)
+            if (Config.ForgetNonIntroQuests)
             {
                 if (TryGetClientInfo(player.entityId, out var clientInfo))
                 {
-                    QuestHelper.RemoveShareableQuests(player, clientInfo);
+                    QuestHelper.RemoveNonIntroQuests(player, clientInfo);
                     // TODO: send net package?
+                    //clientInfo.SendPackage(NetPackageManager.GetPackage<NetPackagePlayerData>().Setup(player));
+                    //clientInfo.SendPackage(NetPackageManager.GetPackage<NetPackagePlayerId>().Setup(player.entityId, player.TeamNumber, clientInfo.latestPlayerData, 4));
                 }
                 else
                 {
@@ -112,9 +114,9 @@ namespace Amnesia.Utilities
 
                 // Update skills and skill points
                 player.Progression.SkillPoints = player.QuestJournal.GetRewardedSkillPoints();
-                player.Progression.SkillPoints += Progression.SkillPointsPerLevel * (targetLevel-1);
+                player.Progression.SkillPoints += Progression.SkillPointsPerLevel * (targetLevel - 1);
                 record.ReapplySkills(player);
-                
+
                 // Inform client cycles of level adjustment for health/stamina/food/water max values
                 player.SetCVar("$LastPlayerLevel", player.Progression.Level);
 

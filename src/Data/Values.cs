@@ -43,7 +43,7 @@ namespace Amnesia.Data
         public static string NameForgetBooks { get; private set; } = "ForgetBooks";
         public static string NameForgetSchematics { get; private set; } = "ForgetSchematics";
         public static string NameForgetKdr { get; private set; } = "ForgetKdr";
-        public static string NameForgetShareableQuests { get; private set; } = "ForgetShareableQuests";
+        public static string NameForgetNonIntroQuests { get; private set; } = "ForgetNonIntroQuests";
 
         public static Dictionary<string, string> SingleValueNamesAndDescriptionsDict { get; private set; } = new Dictionary<string, string> {
             { NameLongTermMemoryLevel, "the level players will be reset to on memory loss and the level at which losing memory on death starts" },
@@ -60,7 +60,7 @@ namespace Amnesia.Data
             { NameForgetSchematics, "whether schematics should be forgotten on memory loss" },
             { NameForgetKdr, "whether players/zombies killed and times died should be forgotten on memory loss" },
 
-            { NameForgetShareableQuests, "whether to forget shareable quests (and trader tier levels) on memory loss" },
+            { NameForgetNonIntroQuests, "whether to forget shareable quests (and trader tier levels) on memory loss" },
         };
         public static List<string> SingleValueFieldNames { get; private set; } = SingleValueNamesAndDescriptionsDict.Keys.ToList();
         public static string SingleValueFieldNamesAndDescriptions { get; private set; } = "    - " + string.Join("\n    - ", SingleValueNamesAndDescriptionsDict.Select(kvp => kvp.Key + ": " + kvp.Value));
