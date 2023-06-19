@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - fix positive outlook xp time format
 - improve admin console feedback on update
 - remove deprecated buff
+- remove forgetting elixir from loot and traders
 - remove memory pills
 - update therapy prices on login and level-up
 - update to a21 mod-info file format
