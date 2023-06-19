@@ -8,7 +8,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## TODO
 
 - update localization for amnesia buffs (instruct player to seek treatment from traders, maybe even show treatment cost)
-- fix positive outlook xp time format (showing as 3472 [seconds])
 - check out how forgetting elixir does its popup
 - update/replace all text referring to memory boosters
 
@@ -19,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - add player skill/perk tracking
 - add success/unnecessary/unaffordable responses
 - add support for crafting skill reset
+- fix positive outlook xp time format
 - improve admin console feedback on update
 - remove deprecated buff
 - remove memory pills

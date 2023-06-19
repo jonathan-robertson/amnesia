@@ -41,7 +41,7 @@
 
         <buff name="buffAmnesiaPositiveOutlook" name_key="buffAmnesiaPositiveOutlookName" description_key="buffAmnesiaPositiveOutlookDesc" icon="ui_game_symbol_xp" icon_color="0,255,128" remove_on_death="false">
             <duration value="0" />
-            <display_value value="amnesiaPositiveOutlookRemTime" />
+            <display_value value="$amnesiaPositiveOutlookRemTime" />
             <display_value_format value="time" />
 
             <effect_group name="activeEffects">
@@ -51,12 +51,14 @@
             </effect_group>
             <effect_group name="update">
                 <triggered_effect trigger="onSelfBuffUpdate" action="ModifyCVar" cvar="amnesiaPositiveOutlookRemTime" operation="subtract" value="1" />
+                <triggered_effect trigger="onSelfBuffUpdate" action="ModifyCVar" cvar="$amnesiaPositiveOutlookRemTime" operation="set" value="@amnesiaPositiveOutlookRemTime" />
                 <triggered_effect trigger="onSelfBuffUpdate" action="RemoveBuff" buff="buffAmnesiaPositiveOutlook">
                     <requirement name="CVarCompare" cvar="amnesiaPositiveOutlookRemTime" operation="LTE" value="0" />
                 </triggered_effect>
             </effect_group>
             <effect_group name="cleanup">
                 <triggered_effect trigger="onSelfBuffRemove" action="ModifyCVar" cvar="amnesiaPositiveOutlookRemTime" operation="set" value="0" />
+                <triggered_effect trigger="onSelfBuffRemove" action="ModifyCVar" cvar="$amnesiaPositiveOutlookRemTime" operation="set" value="0" />
             </effect_group>
         </buff>
 
