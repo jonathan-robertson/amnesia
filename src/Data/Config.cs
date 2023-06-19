@@ -92,11 +92,11 @@ namespace Amnesia.Data
         /// Update the long term memory level. This will determine when Amnesia activates and the level players will be reset to on death.
         /// </summary>
         /// <param key="value">The new level to use for long term memory.</param>
-        public static void SetLongTermMemoryLevel(int value)
+        public static bool SetLongTermMemoryLevel(int value)
         {
             if (LongTermMemoryLevel == value)
             {
-                return;
+                return false;
             }
             LongTermMemoryLevel = Math.Max(1, value);
             _ = Save();
@@ -111,17 +111,18 @@ namespace Amnesia.Data
                     }
                 }
             }
+            return true;
         }
 
         /// <summary>
         /// Generously update max time for the positive outlook buff.
         /// </summary>
         /// <param key="timeInSeconds">The new value to limit max time to (generally represented as timeInSeconds).</param>
-        public static void SetPositiveOutlookMaxTime(int timeInSeconds)
+        public static bool SetPositiveOutlookMaxTime(int timeInSeconds)
         {
             if (PositiveOutlookMaxTime == timeInSeconds)
             {
-                return;
+                return false;
             }
             PositiveOutlookMaxTime = Math.Max(0, timeInSeconds);
             _ = Save();
@@ -142,6 +143,7 @@ namespace Amnesia.Data
                 }
                 player.SetCVar(Values.CVarPositiveOutlookMaxTime, PositiveOutlookMaxTime);
             }
+            return true;
         }
 
         /// <summary>
@@ -149,14 +151,15 @@ namespace Amnesia.Data
         /// </summary>
         /// <param key="timeInSeconds">The number of seconds to grant.</param>
         /// <remarks>Set to <= zero to disable.</remarks>
-        public static void SetPositiveOutlookTimeOnFirstJoin(int timeInSeconds)
+        public static bool SetPositiveOutlookTimeOnFirstJoin(int timeInSeconds)
         {
             if (PositiveOutlookTimeOnFirstJoin == timeInSeconds)
             {
-                return;
+                return false;
             }
             PositiveOutlookTimeOnFirstJoin = Math.Min(PositiveOutlookMaxTime, Math.Max(0, timeInSeconds));
             _ = Save();
+            return true;
         }
 
         /// <summary>
@@ -164,14 +167,15 @@ namespace Amnesia.Data
         /// </summary>
         /// <param key="timeInSeconds">The number of seconds to grant.</param>
         /// <remarks>Set to <= zero to disable.</remarks>
-        public static void SetPositiveOutlookTimeOnMemoryLoss(int timeInSeconds)
+        public static bool SetPositiveOutlookTimeOnMemoryLoss(int timeInSeconds)
         {
             if (PositiveOutlookTimeOnMemoryLoss == timeInSeconds)
             {
-                return;
+                return false;
             }
             PositiveOutlookTimeOnMemoryLoss = Math.Min(PositiveOutlookMaxTime, Math.Max(0, timeInSeconds));
             _ = Save();
+            return true;
         }
 
         /// <summary>
@@ -241,11 +245,11 @@ namespace Amnesia.Data
         /// Enable or disable whether memory can be lost during Blood Moon.
         /// </summary>
         /// <param key="value">New value to use.</param>
-        public static void SetProtectMemoryDuringBloodmoon(bool value)
+        public static bool SetProtectMemoryDuringBloodmoon(bool value)
         {
             if (ProtectMemoryDuringBloodmoon == value)
             {
-                return;
+                return false;
             }
             ProtectMemoryDuringBloodmoon = value;
             _ = Save();
@@ -264,103 +268,112 @@ namespace Amnesia.Data
                     player.Buffs.RemoveBuff(Values.BuffPostBloodmoonLifeProtection);
                 }
             }
+            return true;
         }
 
         /// <summary>
         /// Enable or disable whether memory can be lost to PVP.
         /// </summary>
         /// <param key="value">New value to use.</param>
-        public static void SetProtectMemoryDuringPvp(bool value)
+        public static bool SetProtectMemoryDuringPvp(bool value)
         {
             if (ProtectMemoryDuringPvp == value)
             {
-                return;
+                return false;
             }
             ProtectMemoryDuringPvp = value;
             _ = Save();
+            return true;
         }
 
         /// <summary>
         /// Enable or disable ForgetLevelsAndSkills on memory loss.
         /// </summary>
         /// <param key="value">New value to use.</param>
-        public static void SetForgetLevelsAndSkills(bool value)
+        public static bool SetForgetLevelsAndSkills(bool value)
         {
             if (ForgetLevelsAndSkills == value)
             {
-                return;
+                return false;
             }
             ForgetLevelsAndSkills = value;
             _ = Save();
+            return true;
         }
 
         /// <summary>
         /// Enable or disable ForgetBooks on memory loss.
         /// </summary>
         /// <param key="value">New value to use.</param>
-        public static void SetForgetBooks(bool value)
+        public static bool SetForgetBooks(bool value)
         {
             if (ForgetBooks == value)
             {
-                return;
+                return false;
             }
             ForgetBooks = value;
             _ = Save();
+            return true;
         }
 
         /// <summary>
         /// Enable or disable ForgetCrafting on memory loss.
         /// </summary>
         /// <param key="value">New value to use.</param>
-        public static void SetForgetCrafting(bool value)
+        public static bool SetForgetCrafting(bool value)
         {
             if (ForgetCrafting == value)
             {
-                return;
+                return false;
             }
             ForgetCrafting = value;
             _ = Save();
+            return true;
         }
 
         /// <summary>
         /// Enable or disable ForgetSchematics on memory loss.
         /// </summary>
         /// <param key="value">New value to use.</param>
-        public static void SetForgetSchematics(bool value)
+        public static bool SetForgetSchematics(bool value)
         {
             if (ForgetSchematics == value)
             {
-                return;
+                return false;
             }
             ForgetSchematics = value;
             _ = Save();
+            return true;
         }
 
         /// <summary>
         /// Enable or disable ForgetKdr on memory loss.
         /// </summary>
         /// <param key="value">New value to use.</param>
-        public static void SetForgetKdr(bool value)
+        public static bool SetForgetKdr(bool value)
         {
             if (ForgetKdr == value)
             {
-                return;
+                return false;
             }
             ForgetKdr = value;
             _ = Save();
+            return true;
         }
 
         /// <summary>
         /// Enable or disable ForgetNonIntroQuests on memory loss.
         /// </summary>
         /// <param name="value">New value to use.</param>
-        public static void SetForgetNonIntroQuests(bool value)
+        public static bool SetForgetNonIntroQuests(bool value)
         {
-            if (ForgetNonIntroQuests != value)
+            if (ForgetNonIntroQuests == value)
             {
-                ForgetNonIntroQuests = value;
-                _ = Save();
+                return false;
             }
+            ForgetNonIntroQuests = value;
+            _ = Save();
+            return true;
         }
 
         public static bool Save()

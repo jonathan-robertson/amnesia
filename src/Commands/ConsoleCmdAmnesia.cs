@@ -386,7 +386,15 @@ namespace Amnesia.Commands
                 SdtdConsole.Instance.Output($"Unable to parse value; expecting int");
                 return;
             }
-            Config.SetLongTermMemoryLevel(value);
+            var cur = Config.LongTermMemoryLevel;
+            if (Config.SetLongTermMemoryLevel(value))
+            {
+                SdtdConsole.Instance.Output($"Updated {cur} -> {value}");
+            }
+            else
+            {
+                SdtdConsole.Instance.Output($"Already set to {value}; no change");
+            }
         }
 
         private void UpdatePositiveOutlookMaxTime(List<string> @params)
@@ -402,7 +410,15 @@ namespace Amnesia.Commands
                 SdtdConsole.Instance.Output($"Unable to parse value; expecting int");
                 return;
             }
-            Config.SetPositiveOutlookMaxTime(value);
+            var cur = Config.PositiveOutlookMaxTime;
+            if (Config.SetPositiveOutlookMaxTime(value))
+            {
+                SdtdConsole.Instance.Output($"Updated {cur} -> {value}");
+            }
+            else
+            {
+                SdtdConsole.Instance.Output($"Already set to {value}; no change");
+            }
         }
 
         private void UpdatePositiveOutlookTimeOnFirstJoin(List<string> @params)
@@ -418,7 +434,15 @@ namespace Amnesia.Commands
                 SdtdConsole.Instance.Output($"Unable to parse value; expecting int");
                 return;
             }
-            Config.SetPositiveOutlookTimeOnFirstJoin(value);
+            var cur = Config.PositiveOutlookTimeOnFirstJoin;
+            if (Config.SetPositiveOutlookTimeOnFirstJoin(value))
+            {
+                SdtdConsole.Instance.Output($"Updated {cur} -> {value}");
+            }
+            else
+            {
+                SdtdConsole.Instance.Output($"Already set to {value}; no change");
+            }
         }
 
         private void UpdatePositiveOutlookTimeOnMemoryLoss(List<string> @params)
@@ -434,7 +458,15 @@ namespace Amnesia.Commands
                 SdtdConsole.Instance.Output($"Unable to parse value; expecting int");
                 return;
             }
-            Config.SetPositiveOutlookTimeOnMemoryLoss(value);
+            var cur = Config.PositiveOutlookTimeOnMemoryLoss;
+            if (Config.SetPositiveOutlookTimeOnMemoryLoss(value))
+            {
+                SdtdConsole.Instance.Output($"Updated {cur} -> {value}");
+            }
+            else
+            {
+                SdtdConsole.Instance.Output($"Already set to {value}; no change");
+            }
         }
 
         private void UpdateProtectMemoryDuringBloodmoon(List<string> @params)
@@ -450,7 +482,15 @@ namespace Amnesia.Commands
                 SdtdConsole.Instance.Output($"Unable to parse value; expecting bool");
                 return;
             }
-            Config.SetProtectMemoryDuringBloodmoon(value);
+            var cur = Config.ProtectMemoryDuringBloodmoon;
+            if (Config.SetProtectMemoryDuringBloodmoon(value))
+            {
+                SdtdConsole.Instance.Output($"Updated {cur} -> {value}");
+            }
+            else
+            {
+                SdtdConsole.Instance.Output($"Already set to {value}; no change");
+            }
         }
 
         private void UpdateProtectMemoryDuringPvp(List<string> @params)
@@ -466,7 +506,15 @@ namespace Amnesia.Commands
                 SdtdConsole.Instance.Output($"Unable to parse value; expecting bool");
                 return;
             }
-            Config.SetProtectMemoryDuringPvp(value);
+            var cur = Config.ProtectMemoryDuringPvp;
+            if (Config.SetProtectMemoryDuringPvp(value))
+            {
+                SdtdConsole.Instance.Output($"Updated {cur} -> {value}");
+            }
+            else
+            {
+                SdtdConsole.Instance.Output($"Already set to {value}; no change");
+            }
         }
 
         private void UpdateForgetLevelsAndSkills(List<string> @params)
@@ -482,7 +530,15 @@ namespace Amnesia.Commands
                 SdtdConsole.Instance.Output($"Unable to parse value; expecting bool");
                 return;
             }
-            Config.SetForgetLevelsAndSkills(value);
+            var cur = Config.ForgetLevelsAndSkills;
+            if (Config.SetForgetLevelsAndSkills(value))
+            {
+                SdtdConsole.Instance.Output($"Updated {cur} -> {value}");
+            }
+            else
+            {
+                SdtdConsole.Instance.Output($"Already set to {value}; no change");
+            }
         }
 
         private void UpdateForgetBooks(List<string> @params)
@@ -498,7 +554,15 @@ namespace Amnesia.Commands
                 SdtdConsole.Instance.Output($"Unable to parse value; expecting bool");
                 return;
             }
-            Config.SetForgetBooks(value);
+            var cur = Config.ForgetBooks;
+            if (Config.SetForgetBooks(value))
+            {
+                SdtdConsole.Instance.Output($"Updated {cur} -> {value}");
+            }
+            else
+            {
+                SdtdConsole.Instance.Output($"Already set to {value}; no change");
+            }
         }
 
         private void UpdateForgetCrafting(List<string> @params)
@@ -514,7 +578,15 @@ namespace Amnesia.Commands
                 SdtdConsole.Instance.Output($"Unable to parse value; expecting bool");
                 return;
             }
-            Config.SetForgetCrafting(value);
+            var cur = Config.ForgetCrafting;
+            if (Config.SetForgetCrafting(value))
+            {
+                SdtdConsole.Instance.Output($"Updated {cur} -> {value}");
+            }
+            else
+            {
+                SdtdConsole.Instance.Output($"Already set to {value}; no change");
+            }
         }
 
         private void UpdateForgetSchematics(List<string> @params)
@@ -530,7 +602,15 @@ namespace Amnesia.Commands
                 SdtdConsole.Instance.Output($"Unable to parse value; expecting bool");
                 return;
             }
-            Config.SetForgetSchematics(value);
+            var cur = Config.ForgetSchematics;
+            if (Config.SetForgetSchematics(value))
+            {
+                SdtdConsole.Instance.Output($"Updated {cur} -> {value}");
+            }
+            else
+            {
+                SdtdConsole.Instance.Output($"Already set to {value}; no change");
+            }
         }
 
         private void UpdateForgetKdr(List<string> @params)
@@ -546,7 +626,15 @@ namespace Amnesia.Commands
                 SdtdConsole.Instance.Output($"Unable to parse value; expecting bool");
                 return;
             }
-            Config.SetForgetKdr(value);
+            var cur = Config.ForgetKdr;
+            if (Config.SetForgetKdr(value))
+            {
+                SdtdConsole.Instance.Output($"Updated {cur} -> {value}");
+            }
+            else
+            {
+                SdtdConsole.Instance.Output($"Already set to {value}; no change");
+            }
         }
 
         private void UpdateForgetNonIntroQuests(List<string> @params)
@@ -562,7 +650,15 @@ namespace Amnesia.Commands
                 SdtdConsole.Instance.Output($"Unable to parse value; expecting bool");
                 return;
             }
-            Config.SetForgetNonIntroQuests(value);
+            var cur = Config.ForgetNonIntroQuests;
+            if (Config.SetForgetNonIntroQuests(value))
+            {
+                SdtdConsole.Instance.Output($"Updated {cur} -> {value}");
+            }
+            else
+            {
+                SdtdConsole.Instance.Output($"Already set to {value}; no change");
+            }
         }
     }
 }

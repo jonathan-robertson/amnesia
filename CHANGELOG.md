@@ -12,10 +12,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - check out how forgetting elixir does its popup
 - update/replace all text referring to memory boosters
 
-## WIP
-
-- improve admin console feedback on update
-
 ## [2.0.0]
 
 - add console command to view skill tracker
@@ -23,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - add player skill/perk tracking
 - add success/unnecessary/unaffordable responses
 - add support for crafting skill reset
+- improve admin console feedback on update
 - remove deprecated buff
 - remove memory pills
 - update therapy prices on login and level-up
