@@ -47,7 +47,7 @@
         <response id="therapy" text="dialog_trader_response_therapy">
             <!-- TODO: buff here that auto-transforms into another buff (for capture by server), based on held money -->
             <!-- TODO: use tooltips to give response -->
-            <action type="AddBuff" id="buffAmnesiaTryBuyTreatment" />
+            <action type="AddBuff" id="buffAmnesiaTryBuyTherapy" />
         </response>
         <!-- <statement id="treatment" text="dialog_trader_statement_treatment" nextstatementid="start" />
         <statement id="therapy" text="dialog_trader_statement_therapy" nextstatementid="start" /> -->

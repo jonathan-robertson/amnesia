@@ -43,7 +43,20 @@ namespace Amnesia.Utilities
                 _log.Error($"Unable to find player record under {player.entityId} for Respec Request.");
                 return;
             }
-            record.Respec(player);
+
+            if (!TryGetClientInfo(player.entityId, out var clientInfo))
+            {
+                _log.Error($"Unable to find client info for player {player.entityId}.");
+                return;
+            }
+
+            // TODO: use this soon-ish... doesn't work on servers right now
+            // https://discord.com/channels/243577046616375297/1120457997190189231
+            //TriggerGameEvent(clientInfo, player, "amnesia_respec");
+
+            // TODO: remove when above option is available
+            record.Respec(clientInfo, player);
+            ConnectionManager.Instance.SendPackage(NetPackageManager.GetPackage<NetPackagePlayerStats>().Setup(player), false, player.entityId);
         }
 
         /// <remarks>Most of the following core logic was lifted from ActionResetPlayerData.PerformTargetAction</remarks>
@@ -167,6 +180,12 @@ namespace Amnesia.Utilities
                 _ = player.Buffs.AddBuff(Values.BuffPositiveOutlook);
             }
             return targetValue;
+        }
+
+        public static void TriggerGameEvent(ClientInfo clientInfo, EntityPlayer player, string eventName)
+        {
+            _ = GameEventManager.Current.HandleAction(eventName, null, player, false);
+            clientInfo.SendPackage(NetPackageManager.GetPackage<NetPackageGameEventResponse>().Setup(eventName, clientInfo.entityId, "", "", NetPackageGameEventResponse.ResponseTypes.Approved));
         }
 
         /// <summary>

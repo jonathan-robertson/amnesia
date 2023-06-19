@@ -189,12 +189,18 @@ namespace Amnesia.Data
         /// Respec player, returning/unassigning all skill points but leaving level the same.
         /// </summary>
         /// <param name="player">Player to respec.</param>
-        public void Respec(EntityPlayer player)
+        public void Respec(ClientInfo clientInfo, EntityPlayer player)
         {
+            //PlayerHelper.TriggerGameEvent(clientInfo, player, "amnesia_respec");
             player.Progression.ResetProgression(true);
             UnspentSkillPoints = player.Progression.SkillPoints;
             Changes.Clear();
             Save();
+            player.Progression.bProgressionStatsChanged = true;
+            player.bPlayerStatsChanged = true;
+            // TODO: remove when Game Events issue is fixed
+            ConnectionManager.Instance.SendPackage(NetPackageManager.GetPackage<NetPackagePlayerStats>().Setup(player), false, player.entityId);
+
         }
 
         /// <summary>

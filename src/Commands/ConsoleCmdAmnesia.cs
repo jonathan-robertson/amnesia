@@ -8,6 +8,8 @@ namespace Amnesia.Commands
 {
     internal class ConsoleCmdAmnesia : ConsoleCmdAbstract
     {
+        private static readonly ModLog<ConsoleCmdAmnesia> _log = new ModLog<ConsoleCmdAmnesia>();
+
         private static readonly string[] Commands = new string[]
         {
             "amnesia",
@@ -24,6 +26,9 @@ namespace Amnesia.Commands
                 { "grant <user id / player name / entity id> <timeInSeconds>", "grant player some bonus xp time" },
                 { "fragile <user id / player name / entity id> <true/false>", "give or remove fragile memory debuff" },
                 { "skills <user id / player name / entity id>", "show skill/perk records in order they were purchased by the given player" },
+                { "owed", "debugging command to check any pending change owed to a player" },
+                { "respec", "debugging command to respec self" },
+                { "reset <levels-to-rewind>", "debugging command to reset self" },
                 { "config", "show current amnesia configuration" },
                 { "set", "show the single-value fields you can adjust" },
                 { "set <field>", "describe how you can update this field" },
@@ -33,8 +38,6 @@ namespace Amnesia.Commands
                 { "list <complex-field> add <key> <name> <value>", "add or update a complex field" },
                 { "list <complex-field> rem <key>", "add or update a complex field" },
                 { "list <complex-field> clear", "add or update a complex field" },
-                { "test <levels-to-rewind>", "admin command which triggers rewind on self for testing purposes" },
-                { "owed", "debugging command to check any pending change owed to a player" },
             };
 
             var i = 1; var j = 1;
@@ -74,8 +77,11 @@ namespace Amnesia.Commands
                     case "players":
                         HandleShowPlayers();
                         return;
-                    case "test":
-                        HandleTest(_params, _senderInfo);
+                    case "respec":
+                        HandleRespec(_params, _senderInfo);
+                        return;
+                    case "reset":
+                        HandleReset(_params, _senderInfo);
                         return;
                     case "grant":
                         if (_params.Count == 3)
@@ -139,7 +145,28 @@ namespace Amnesia.Commands
             }
         }
 
-        private void HandleTest(List<string> @params, CommandSenderInfo senderInfo)
+        private void HandleRespec(List<string> @params, CommandSenderInfo senderInfo)
+        {
+            if (senderInfo.RemoteClientInfo == null
+                || !GameManager.Instance.World.Players.dict.TryGetValue(senderInfo.RemoteClientInfo.entityId, out var player)
+                || !PlayerRecord.Entries.TryGetValue(player.entityId, out _))
+            {
+                SdtdConsole.Instance.Output("RemoteClientInfo and/or player is null; if using telnet, you need to actually be inside the game instead.");
+                return;
+            }
+
+            try
+            {
+                PlayerHelper.Respec(player);
+                SdtdConsole.Instance.Output("Your player has been respec'd.");
+            }
+            catch (Exception e)
+            {
+                _log.Error("Failed to reset", e);
+            }
+        }
+
+        private void HandleReset(List<string> @params, CommandSenderInfo senderInfo)
         {
             if (senderInfo.RemoteClientInfo == null
                 || !GameManager.Instance.World.Players.dict.TryGetValue(senderInfo.RemoteClientInfo.entityId, out var player)
@@ -157,12 +184,19 @@ namespace Amnesia.Commands
 
             if (@params.Count < 3 || !@params[2].EqualsCaseInsensitive("confirm"))
             {
-                SdtdConsole.Instance.Output($"Running this command will allow you to test your amnesia configurations by wiping YOUR OWN character.\nDue to the nature of how the game updates, it's recommended to only test this right after logging out/in.\nIf you're sure you want to do this, run \"{GetCommands()[0]} test {levelsToRewind} confirm\"");
+                SdtdConsole.Instance.Output($"Running this command will allow you to test your amnesia configurations by resetting YOUR OWN character.\nDue to the nature of how the game updates, it's recommended to only reset right after logging out/in.\nIf you're sure you want to do this, run \"{GetCommands()[0]} reset {levelsToRewind} confirm\"");
                 return;
             }
 
-            PlayerHelper.Rewind(player, record, levelsToRewind);
-            SdtdConsole.Instance.Output("Your player was reset. Some UI elements might not have updated; schematics on your toolbelt, for example, may need to be moved to another slot to indicate they now need to be learned.");
+            try
+            {
+                PlayerHelper.Rewind(player, record, levelsToRewind);
+                SdtdConsole.Instance.Output("Your player was reset. Some UI elements might not have updated; schematics on your toolbelt, for example, may need to be moved to another slot to indicate they now need to be learned.");
+            }
+            catch (Exception e)
+            {
+                _log.Error("Failed to reset", e);
+            }
         }
 
         private void HandleGrant(List<string> @params)
@@ -220,7 +254,7 @@ namespace Amnesia.Commands
             }
             for (var i = 0; i < record.Changes.Count; i++)
             {
-                SdtdConsole.Instance.Output($"{i + 1,3}. {record.Changes[i].Item1}: {record.Changes[i].Item2}");
+                SdtdConsole.Instance.Output($"{(i + 1),3}. {record.Changes[i].Item1}: {record.Changes[i].Item2}");
             }
             if (record.Changes.Count == 0)
             {

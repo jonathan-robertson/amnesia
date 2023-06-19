@@ -49,6 +49,7 @@ namespace Amnesia.Utilities
         public static void UpdatePrices(EntityPlayer player)
         {
             player.SetCVar(Values.CVarTreatmentPrice, GetCost(player.Progression.Level, Product.Treatment));
+            player.SetCVar(Values.CVarTherapyPrice, GetCost(player.Progression.Level, Product.Therapy));
         }
 
         public static void GiveChange(ClientInfo clientInfo, EntityPlayer player)
@@ -115,13 +116,13 @@ namespace Amnesia.Utilities
             _log.Trace($"player {player.GetDebugName()} charge attempt for {cost}");
             if (BagMoney.TryGetValue(clientInfo.entityId, out var bag))
             {
-                TriggerGameEvent(clientInfo, player, Values.GameEventPayFromBag);
+                PlayerHelper.TriggerGameEvent(clientInfo, player, Values.GameEventPayFromBag);
                 if (bag >= cost)
                 {
                     if (bag > cost)
                     {
                         Change.Add(player.entityId, bag - cost);
-                        TriggerGameEvent(clientInfo, player, Values.GameEventRequestChg);
+                        PlayerHelper.TriggerGameEvent(clientInfo, player, Values.GameEventRequestChg);
                     }
                     return;
                 }
@@ -129,19 +130,13 @@ namespace Amnesia.Utilities
             }
             if (BltMoney.TryGetValue(clientInfo.entityId, out var blt))
             {
-                TriggerGameEvent(clientInfo, player, Values.GameEventPayFromBlt);
+                PlayerHelper.TriggerGameEvent(clientInfo, player, Values.GameEventPayFromBlt);
                 if (blt > cost)
                 {
                     Change.Add(player.entityId, blt - cost);
-                    TriggerGameEvent(clientInfo, player, Values.GameEventRequestChg);
+                    PlayerHelper.TriggerGameEvent(clientInfo, player, Values.GameEventRequestChg);
                 }
             }
-        }
-
-        private static void TriggerGameEvent(ClientInfo clientInfo, EntityPlayer player, string eventName)
-        {
-            _ = GameEventManager.Current.HandleAction(eventName, null, player, false);
-            clientInfo.SendPackage(NetPackageManager.GetPackage<NetPackageGameEventResponse>().Setup(eventName, clientInfo.entityId, "", "", NetPackageGameEventResponse.ResponseTypes.Approved));
         }
 
         private static void AddCoins(ClientInfo clientInfo, Vector3 pos, int amount)

@@ -20,7 +20,12 @@ namespace Amnesia.Patches
             {
                 if (Values.BuffTryBuyTreatment.Equals(_name))
                 {
-                    TryBuy(__instance.parent);
+                    TryBuyTreatment(__instance.parent);
+                    return;
+                }
+                if (Values.BuffTryBuyTherapy.Equals(_name))
+                {
+                    TryBuyTherapy(__instance.parent);
                     return;
                 }
                 if (Values.BuffRequestChangeCallback.Equals(_name))
@@ -35,7 +40,7 @@ namespace Amnesia.Patches
             }
         }
 
-        private static void TryBuy(EntityAlive entity)
+        private static void TryBuyTreatment(EntityAlive entity)
         {
             // TODO: test local
             if (!entity.isEntityRemote)
@@ -79,6 +84,27 @@ namespace Amnesia.Patches
                 else
                 {
                     _log.Trace($"player {player.GetDebugName()} requested Treatment from trader but doesn't have enough money.");
+                    _ = player.Buffs.AddBuff(Values.BuffTreatmentUnaffordable);
+                }
+            }
+        }
+
+        private static void TryBuyTherapy(EntityAlive entity)
+        {
+            // TODO: support local as well
+
+            if (PlayerHelper.TryGetClientInfoAndEntityPlayer(entity.world, entity.entityId, out var clientInfo, out var player))
+            {
+                player.Buffs.RemoveBuff(Values.BuffTryBuyTherapy);
+                if (DialogShop.TryPurchase(clientInfo, player, DialogShop.GetCost(player.Progression.Level, Product.Therapy)))
+                {
+                    _log.Trace($"player {player.GetDebugName()} purchased Therapy from trader.");
+                    PlayerHelper.Respec(player);
+                    player.Buffs.AddBuff(Values.BuffTherapyComplete);
+                }
+                else
+                {
+                    _log.Trace($"player {player.GetDebugName()} requested Therapy from trader but doesn't have enough money.");
                     _ = player.Buffs.AddBuff(Values.BuffTreatmentUnaffordable);
                 }
             }

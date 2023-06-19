@@ -107,6 +107,14 @@
                 <triggered_effect trigger="onSelfEnteredGame" action="RemoveBuff" buff="buffAmnesiaTryBuyTreatment" />
             </effect_group>
         </buff>
+        <buff name="buffAmnesiaTryBuyTherapy" hidden="true" remove_on_death="false">
+            <stack_type value="ignore" />
+            <duration value="0" />
+            <!-- wait for server to process and remove this -->
+            <effect_group>
+                <triggered_effect trigger="onSelfEnteredGame" action="RemoveBuff" buff="buffAmnesiaTryBuyTherapy" />
+            </effect_group>
+        </buff>
         <buff name="buffAmnesiaRequestChangeCallback" hidden="true" remove_on_death="false">
             <stack_type value="ignore" />
             <duration value="0" />
@@ -122,6 +130,13 @@
                 <triggered_effect trigger="onSelfBuffStart" action="ShowToolbeltMessage" message_key="tipTreatmentComplete" sound="ui_trader_purchase" />
             </effect_group>
         </buff>
+        <buff name="buffAmnesiaTherapyComplete" hidden="true" remove_on_death="false">
+            <stack_type value="ignore" />
+            <duration value="1" />
+            <effect_group>
+                <triggered_effect trigger="onSelfBuffStart" action="ShowToolbeltMessage" message_key="tipTherapyComplete" sound="ui_trader_purchase" />
+            </effect_group>
+        </buff>
         <buff name="buffAmnesiaTreatmentUnnecessary" hidden="true" remove_on_death="false">
             <stack_type value="ignore" />
             <duration value="1" />
@@ -133,7 +148,7 @@
             <stack_type value="ignore" />
             <duration value="1" />
             <effect_group>
-                <triggered_effect trigger="onSelfBuffStart" action="ShowToolbeltMessage" message_key="tipTreatmentUnaffordable" sound="bow_fire_abort" />
+                <triggered_effect trigger="onSelfBuffStart" action="ShowToolbeltMessage" message_key="tipPurchaseUnaffordable" sound="bow_fire_abort" />
             </effect_group>
         </buff>
     </append>
