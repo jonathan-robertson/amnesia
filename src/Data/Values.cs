@@ -41,6 +41,7 @@ namespace Amnesia.Data
         public static string NameProtectMemoryDuringPvp { get; private set; } = "ProtectMemoryDuringPvp";
         public static string NameForgetLevelsAndSkills { get; private set; } = "ForgetLevelsAndSkills";
         public static string NameForgetBooks { get; private set; } = "ForgetBooks";
+        public static string NameForgetCrafting { get; private set; } = "ForgetCrafting";
         public static string NameForgetSchematics { get; private set; } = "ForgetSchematics";
         public static string NameForgetKdr { get; private set; } = "ForgetKdr";
         public static string NameForgetNonIntroQuests { get; private set; } = "ForgetNonIntroQuests";
@@ -57,6 +58,7 @@ namespace Amnesia.Data
 
             { NameForgetLevelsAndSkills, $"whether to forget levels, skills, and skill points on memory loss (note that players will reset back to the level configured in {NameLongTermMemoryLevel}" },
             { NameForgetBooks, "whether books should be forgotten on memory loss" },
+            { NameForgetCrafting, "whether crafting magazines should be forgotten on memory loss" },
             { NameForgetSchematics, "whether schematics should be forgotten on memory loss" },
             { NameForgetKdr, "whether players/zombies killed and times died should be forgotten on memory loss" },
 

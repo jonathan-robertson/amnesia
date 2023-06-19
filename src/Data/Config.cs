@@ -53,6 +53,8 @@ namespace Amnesia.Data
         public static bool ForgetLevelsAndSkills { get; private set; } = true;
         /// <summary>Whether books should be forgotten on memory loss.</summary>
         public static bool ForgetBooks { get; private set; } = false;
+        /// <summary>Whether crafting magazine progress should be forgotten on memory loss.</summary>
+        public static bool ForgetCrafting { get; private set; } = false;
         /// <summary>Whether schematics should be forgotten on memory loss.</summary>
         public static bool ForgetSchematics { get; private set; } = false;
         /// <summary>Whether players/zombies killed and times died should be forgotten on memory loss.</summary>
@@ -80,6 +82,7 @@ namespace Amnesia.Data
 
 {Values.NameForgetLevelsAndSkills}: {ForgetLevelsAndSkills}
 {Values.NameForgetBooks}: {ForgetBooks}
+{Values.NameForgetCrafting}: {ForgetCrafting}
 {Values.NameForgetSchematics}: {ForgetSchematics}
 {Values.NameForgetKdr}: {ForgetKdr}
 {Values.NameForgetNonIntroQuests}: {ForgetNonIntroQuests}";
@@ -306,6 +309,20 @@ namespace Amnesia.Data
         }
 
         /// <summary>
+        /// Enable or disable ForgetCrafting on memory loss.
+        /// </summary>
+        /// <param key="value">New value to use.</param>
+        public static void SetForgetCrafting(bool value)
+        {
+            if (ForgetCrafting == value)
+            {
+                return;
+            }
+            ForgetCrafting = value;
+            _ = Save();
+        }
+
+        /// <summary>
         /// Enable or disable ForgetSchematics on memory loss.
         /// </summary>
         /// <param key="value">New value to use.</param>
@@ -372,6 +389,7 @@ namespace Amnesia.Data
 
                     new XElement(Values.NameForgetLevelsAndSkills, ForgetLevelsAndSkills),
                     new XElement(Values.NameForgetBooks, ForgetBooks),
+                    new XElement(Values.NameForgetCrafting, ForgetCrafting),
                     new XElement(Values.NameForgetSchematics, ForgetSchematics),
                     new XElement(Values.NameForgetKdr, ForgetKdr),
 
@@ -419,6 +437,7 @@ namespace Amnesia.Data
 
                 ForgetLevelsAndSkills = ParseBool(config, Values.NameForgetLevelsAndSkills, ForgetLevelsAndSkills);
                 ForgetBooks = ParseBool(config, Values.NameForgetBooks, ForgetBooks);
+                ForgetCrafting = ParseBool(config, Values.NameForgetCrafting, ForgetCrafting);
                 ForgetSchematics = ParseBool(config, Values.NameForgetSchematics, ForgetSchematics);
                 ForgetKdr = ParseBool(config, Values.NameForgetKdr, ForgetKdr);
 

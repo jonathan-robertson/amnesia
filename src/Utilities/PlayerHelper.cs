@@ -82,7 +82,7 @@ namespace Amnesia.Utilities
                 //        if we want to support dynamic/unlimited skill points in the future, we should refactor how reset works.
 
                 // Reset spent skill points
-                player.Progression.ResetProgression(true, Config.ForgetBooks); // TODO: , Config.ResetCrafting);
+                player.Progression.ResetProgression(true, Config.ForgetBooks, Config.ForgetCrafting);
 
                 // Update level
                 player.Progression.Level = targetLevel;

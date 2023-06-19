@@ -350,6 +350,11 @@ namespace Amnesia.Commands
                 UpdateForgetBooks(@params);
                 return;
             }
+            if (Values.NameForgetCrafting.EqualsCaseInsensitive(@params[1]))
+            {
+                UpdateForgetCrafting(@params);
+                return;
+            }
             if (Values.NameForgetSchematics.EqualsCaseInsensitive(@params[1]))
             {
                 UpdateForgetSchematics(@params);
@@ -494,6 +499,22 @@ namespace Amnesia.Commands
                 return;
             }
             Config.SetForgetBooks(value);
+        }
+
+        private void UpdateForgetCrafting(List<string> @params)
+        {
+            if (@params.Count == 2)
+            {
+                SdtdConsole.Instance.Output($@"{Values.SingleValueNamesAndDescriptionsDict[Values.NameForgetCrafting]}
+{Commands[0]} set {Values.NameForgetCrafting} <true|false>");
+                return;
+            }
+            if (!bool.TryParse(@params[2], out var value))
+            {
+                SdtdConsole.Instance.Output($"Unable to parse value; expecting bool");
+                return;
+            }
+            Config.SetForgetCrafting(value);
         }
 
         private void UpdateForgetSchematics(List<string> @params)
