@@ -5,12 +5,6 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## TODO
-
-- check out how forgetting elixir does its popup
-- update localization for amnesia buffs (instruct player to seek treatment from traders, maybe even show treatment cost)
-- update/replace all text referring to memory boosters
-
 ## [2.0.0]
 
 - add console command to view skill tracker
@@ -23,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - remove deprecated buff
 - remove forgetting elixir from loot and traders
 - remove memory pills
+- update localization to reflect new system
 - update therapy prices on login and level-up
 - update to a21 mod-info file format
 - update to a21 references

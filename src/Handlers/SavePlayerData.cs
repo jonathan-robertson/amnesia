@@ -45,7 +45,7 @@ namespace Amnesia.Handlers
                 {
                     _ = player.Buffs.AddBuff(Values.BuffFragileMemory);
                     _log.Info($"{clientInfo.InternalId.CombinedString} ({player.GetDebugName()}) died and will not be reset, but now has a Fragile Memory.");
-                    return; // let player know it's time for memory boosters
+                    return;
                 }
 
                 // Reset Quests

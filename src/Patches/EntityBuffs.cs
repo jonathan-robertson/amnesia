@@ -100,7 +100,7 @@ namespace Amnesia.Patches
                 {
                     _log.Trace($"player {player.GetDebugName()} purchased Therapy from trader.");
                     PlayerHelper.Respec(player);
-                    player.Buffs.AddBuff(Values.BuffTherapyComplete);
+                    _ = player.Buffs.AddBuff(Values.BuffTherapyComplete);
                 }
                 else
                 {

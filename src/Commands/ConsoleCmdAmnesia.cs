@@ -254,7 +254,7 @@ namespace Amnesia.Commands
             }
             for (var i = 0; i < record.Changes.Count; i++)
             {
-                SdtdConsole.Instance.Output($"{(i + 1),3}. {record.Changes[i].Item1}: {record.Changes[i].Item2}");
+                SdtdConsole.Instance.Output($"{i + 1,3}. {record.Changes[i].Item1}: {record.Changes[i].Item2}");
             }
             if (record.Changes.Count == 0)
             {
