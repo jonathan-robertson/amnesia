@@ -9,6 +9,25 @@
     <set xpath="/buffs/buff[@name='buffNewbieCoat']/effect_group/triggered_effect/requirement[@name='PlayerLevel']/@value">@amnesiaLongTermMemoryLevel</set>
 
     <append xpath="/buffs">
+        <buff name="test1">
+            <effect_group>
+                <triggered_effect trigger="onSelfBuffStart" action="ModifyCVar" cvar="amnesiaLongTermMemoryLevel" operation="add" value="1" />
+                <triggered_effect trigger="onSelfBuffStart" action="ModifyCVar" cvar="amnesiaLongTermMemoryLevel" operation="set" value="1">
+                    <requirement name="CVarCompare" cvar="amnesiaLongTermMemoryLevel" operation="GT" value="3" />
+                </triggered_effect>
+                <triggered_effect trigger="onSelfBuffStart" action="RemoveBuff" buff="test1" />
+            </effect_group>
+        </buff>
+        <buff name="test2">
+            <effect_group>
+                <triggered_effect trigger="onSelfBuffStart" action="ModifyCVar" cvar="amnesiaLevelPenalty" operation="add" value="1" />
+                <triggered_effect trigger="onSelfBuffStart" action="ModifyCVar" cvar="amnesiaLevelPenalty" operation="set" value="0">
+                    <requirement name="CVarCompare" cvar="amnesiaLevelPenalty" operation="GT" value="3" />
+                </triggered_effect>
+                <triggered_effect trigger="onSelfBuffStart" action="RemoveBuff" buff="test2" />
+            </effect_group>
+        </buff>
+
         <buff name="buffAmnesiaFragileMemory" name_key="buffAmnesiaFragileMemoryName" description_key="buffAmnesiaFragileMemoryDesc" icon="ui_game_symbol_intellect" icon_color="255,128,0" remove_on_death="false">
             <duration value="0" />
             <stack_type value="ignore" />

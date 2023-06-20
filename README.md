@@ -53,7 +53,7 @@ Players can recover from `Fragile Memory` with the help of the new `Treatment` s
 flowchart LR
     alive[[Alive]]-->incap[[Incapacitated]]
     incap-->|not fragile|fragile[[Fragile Memory]]
-    incap-->|fragile|amnesia[Lose Memory, Reset to LongTermMemoryLevel]
+    incap-->|fragile|amnesia[Lose Memory, Reduce Levels by LevelPenalty or Reset to LongTermMemoryLevel]
 
     amnesia-->fragile
     fragile-->incap
@@ -83,6 +83,7 @@ Every single one of these settings can be adjusted from the admin console *live*
 Option Name | Default | Description
 --- | :---: | ---
 LongTermMemoryLevel | 1 | The number of levels a player must exceed before Memory Loss on death begins. This will also represent the level a player is reset to on death (if Memory Loss is not prevented in some way: PVP, Blood Moon, or Memory Boosters).
+LevelPenalty | 0 | The number of levels to lose on memory loss; if this is set to 0, memory loss will cause player to reset to LongTermMemoryLevel.
 PositiveOutlookMaxTime | 3600 | The maximum number of seconds that can be acquired for the Positive Outlook buff (2x XP boost).
 PositiveOutlookTimeOnFirstJoin | 3600 | How many seconds of Positive Outlook buff to grant a brand new player to the server.
 PositiveOutlookTimeOnMemoryLoss | 3600 | How many seconds of Positive Outlook buff to grant a player who just experienced Memory Loss.
@@ -111,6 +112,7 @@ Here's an example of what I'm trying out on my server. All of these options can 
 ```xml
 <config>
   <LongTermMemoryLevel>50</LongTermMemoryLevel>
+  <LevelPenalty>0</LevelPenalty>
   <PositiveOutlookMaxTime>3600</PositiveOutlookMaxTime>
   <PositiveOutlookTimeOnFirstJoin>0</PositiveOutlookTimeOnFirstJoin>
   <PositiveOutlookTimeOnMemoryLoss>0</PositiveOutlookTimeOnMemoryLoss>

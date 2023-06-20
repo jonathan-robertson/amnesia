@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - add console command to view skill tracker
 - add dialog purchasing system for treatments
+- add LevelPenalty option
 - add player skill/perk tracking
 - add success/unnecessary/unaffordable responses
 - add support for crafting skill reset

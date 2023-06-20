@@ -7,6 +7,7 @@ namespace Amnesia.Data
     {
         // cvars
         public static string CVarLongTermMemoryLevel { get; private set; } = "amnesiaLongTermMemoryLevel";
+        public static string CVarLevelPenalty { get; private set; } = "amnesiaLevelPenalty";
         public static string CVarPositiveOutlookMaxTime { get; private set; } = "amnesiaPositiveOutlookMaxTime";
         public static string CVarPositiveOutlookRemTime { get; private set; } = "amnesiaPositiveOutlookRemTime";
         public static string CVarTreatmentPrice { get; private set; } = "amnesiaTreatmentPrice";
@@ -35,6 +36,7 @@ namespace Amnesia.Data
 
         // names
         public static string NameLongTermMemoryLevel { get; private set; } = "LongTermMemoryLevel";
+        public static string NameLevelPenalty { get; private set; } = "LevelPenalty";
         public static string NamePositiveOutlookMaxTime { get; private set; } = "PositiveOutlookMaxTime";
         public static string NamePositiveOutlookTimeOnFirstJoin { get; private set; } = "PositiveOutlookTimeOnFirstJoin";
         public static string NamePositiveOutlookTimeOnMemoryLoss { get; private set; } = "PositiveOutlookTimeOnMemoryLoss";
@@ -50,6 +52,7 @@ namespace Amnesia.Data
 
         public static Dictionary<string, string> SingleValueNamesAndDescriptionsDict { get; private set; } = new Dictionary<string, string> {
             { NameLongTermMemoryLevel, "the level players will be reset to on memory loss and the level at which losing memory on death starts" },
+            { NameLevelPenalty, $"the number of levels to lose on memory loss; if this is set to 0, memory loss will cause player to reset to {NameLongTermMemoryLevel}" },
 
             { NamePositiveOutlookMaxTime, "maximum length of time allowed for buff that boost xp growth" },
             { NamePositiveOutlookTimeOnFirstJoin, "length of time for buff that boosts xp growth at first-time server join" },

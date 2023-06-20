@@ -349,6 +349,11 @@ namespace Amnesia.Commands
                 UpdateLongTermMemoryLevel(@params);
                 return;
             }
+            if (Values.NameLevelPenalty.EqualsCaseInsensitive(@params[1]))
+            {
+                UpdateLevelPenalty(@params);
+                return;
+            }
             if (Values.NamePositiveOutlookMaxTime.EqualsCaseInsensitive(@params[1]))
             {
                 UpdatePositiveOutlookMaxTime(@params);
@@ -422,6 +427,30 @@ namespace Amnesia.Commands
             }
             var cur = Config.LongTermMemoryLevel;
             if (Config.SetLongTermMemoryLevel(value))
+            {
+                SdtdConsole.Instance.Output($"Updated {cur} -> {value}");
+            }
+            else
+            {
+                SdtdConsole.Instance.Output($"Already set to {value}; no change");
+            }
+        }
+
+        private void UpdateLevelPenalty(List<string> @params)
+        {
+            if (@params.Count == 2)
+            {
+                SdtdConsole.Instance.Output($@"{Values.SingleValueNamesAndDescriptionsDict[Values.NameLevelPenalty]}
+{Commands[0]} set {Values.NameLevelPenalty} <level>");
+                return;
+            }
+            if (!int.TryParse(@params[2], out var value))
+            {
+                SdtdConsole.Instance.Output($"Unable to parse value; expecting int");
+                return;
+            }
+            var cur = Config.LevelPenalty;
+            if (Config.SetLevelPenalty(value))
             {
                 SdtdConsole.Instance.Output($"Updated {cur} -> {value}");
             }

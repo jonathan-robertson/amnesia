@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Xml.Linq;
 
 namespace Amnesia.Data
@@ -16,8 +17,10 @@ namespace Amnesia.Data
 
         public static bool Loaded { get; private set; } = false;
 
-        /// <summary>The level players will be reset to on memory loss and the level at which losing memory on death starts.</summary>
+        /// <summary>The level at which Amnesia mechanics activate and below which the player will never be reset.</summary>
         public static int LongTermMemoryLevel { get; private set; } = 1;
+        /// <summary>The number of levels to lose on memory loss; if this is set to 0, memory loss will cause player to reset to LongTermMemoryLevel.</summary>
+        public static int LevelPenalty { get; private set; } = 0;
 
         /// <summary>Maximum length of time allowed for buff that boost xp growth.</summary>
         public static int PositiveOutlookMaxTime { get; private set; } = 3600; // 1 hr
@@ -71,6 +74,7 @@ namespace Amnesia.Data
         {
             return $@"=== Amnesia Configuration ===
 {Values.NameLongTermMemoryLevel}: {LongTermMemoryLevel}
+{Values.NameLevelPenalty}: {LevelPenalty}
 
 {Values.NamePositiveOutlookMaxTime}: {PositiveOutlookMaxTime}
 {Values.NamePositiveOutlookTimeOnFirstJoin}: {PositiveOutlookTimeOnFirstJoin}
@@ -110,6 +114,25 @@ namespace Amnesia.Data
                         _ = player.Buffs.AddBuff(Values.BuffNewbieCoat);
                     }
                 }
+            }
+            return true;
+        }
+        
+        /// <summary>
+        /// Update the level penalty. This will determine the number of lost levels experience when Memory is lost.
+        /// </summary>
+        /// <param key="value">The new level to use for Level Penalty.</param>
+        public static bool SetLevelPenalty(int value)
+        {
+            if (LevelPenalty == value)
+            {
+                return false;
+            }
+            LevelPenalty = Math.Max(0, value);
+            _ = Save();
+            foreach (var player in GameManager.Instance.World.Players.list)
+            {
+                player.SetCVar(Values.CVarLevelPenalty, LevelPenalty);
             }
             return true;
         }
@@ -391,6 +414,7 @@ namespace Amnesia.Data
 
                 new XElement("config",
                     new XElement(Values.NameLongTermMemoryLevel, LongTermMemoryLevel),
+                    new XElement(Values.NameLevelPenalty, LevelPenalty),
 
                     new XElement(Values.NamePositiveOutlookMaxTime, PositiveOutlookMaxTime),
                     new XElement(Values.NamePositiveOutlookTimeOnFirstJoin, PositiveOutlookTimeOnFirstJoin),
@@ -424,6 +448,7 @@ namespace Amnesia.Data
             {
                 var config = XElement.Load(filename);
                 LongTermMemoryLevel = ParseInt(config, Values.NameLongTermMemoryLevel, LongTermMemoryLevel);
+                LevelPenalty = ParseInt(config, Values.NameLevelPenalty, LevelPenalty);
 
                 PositiveOutlookMaxTime = ParseInt(config, Values.NamePositiveOutlookMaxTime, PositiveOutlookMaxTime);
                 PositiveOutlookTimeOnFirstJoin = ParseInt(config, Values.NamePositiveOutlookTimeOnFirstJoin, PositiveOutlookTimeOnFirstJoin);

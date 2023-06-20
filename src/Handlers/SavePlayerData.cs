@@ -74,8 +74,7 @@ namespace Amnesia.Handlers
 
                 // Reset Player
                 _log.Info($"{clientInfo.InternalId.CombinedString} ({player.GetDebugName()}) died and has suffered memory loss.");
-                // TODO: add support for variable reset
-                PlayerHelper.Rewind(player, record, record.Level - Config.LongTermMemoryLevel);
+                PlayerHelper.Rewind(player, record, Config.LevelPenalty > 0 ? Config.LevelPenalty : record.Level - Config.LongTermMemoryLevel);
             }
             catch (Exception e)
             {

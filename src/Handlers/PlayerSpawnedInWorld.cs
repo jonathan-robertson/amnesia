@@ -70,6 +70,10 @@ namespace Amnesia.Handlers
             {
                 player.SetCVar(Values.CVarLongTermMemoryLevel, Config.LongTermMemoryLevel);
             }
+            if (player.GetCVar(Values.CVarLevelPenalty) != Config.LevelPenalty)
+            {
+                player.SetCVar(Values.CVarLevelPenalty, Config.LevelPenalty);
+            }
 
             // Remove Positive Outlook if admin disabled it since player's last login
             if (Config.PositiveOutlookTimeOnMemoryLoss == 0 && player.Buffs.HasBuff(Values.BuffPositiveOutlook))
