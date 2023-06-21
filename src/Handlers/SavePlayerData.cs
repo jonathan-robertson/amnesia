@@ -23,16 +23,13 @@ namespace Amnesia.Handlers
                     _log.Error($"SavePlayerData called for player {playerDataFile.id} who was not online; this is not expected!");
                     return;
                 }
-                PlayerHelper.SyncProgression(playerDataFile, player);
 
-                if (!PlayerRecord.Entries.TryGetValue(playerDataFile.id, out var record))
+                // note: on first call, record is not expected to be loaded; should be fine after that
+                if (PlayerRecord.Entries.TryGetValue(playerDataFile.id, out var record))
                 {
-                    _log.Error($"Unable to retrieve player record for entityId {playerDataFile.id}");
-                    return;
+                    record.SetLevel(player.Progression.Level);
+                    record.ValidateAndRepairChangeIntegrity(player);
                 }
-                record.SetUnspentSkillPoints(player.Progression.SkillPoints);
-                record.SetLevel(player.Progression.Level);
-                record.ValidateAndRepairChangeIntegrity(player);
 
                 if (!ModApi.Obituary.ContainsKey(clientInfo.entityId))
                 {

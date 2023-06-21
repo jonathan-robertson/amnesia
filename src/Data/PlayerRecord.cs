@@ -26,7 +26,6 @@ namespace Amnesia.Data
         public int EntityId { get; private set; }
         public PlatformUserIdentifierAbs UserIdentifier { get; private set; }
         public int Level { get; private set; } = 0;
-        public int UnspentSkillPoints { get; private set; } = 0;
         public List<(string, int)> Changes { get; private set; } = new List<(string, int)>();
 
         public static void Load(ClientInfo clientInfo)
@@ -98,7 +97,6 @@ namespace Amnesia.Data
             EntityId = entityId;
             UserIdentifier = userIdentifier;
             Level = level;
-            UnspentSkillPoints = unspentSkillPoints;
         }
 
         public void Save()
@@ -118,7 +116,7 @@ namespace Amnesia.Data
                     change.SetAttribute(LEVEL, Changes[i].Item2.ToString());
                 }
                 xml.Save(filename);
-                _log.Info($"Successfully saved {filename}");
+                _log.Trace($"Successfully saved {filename}");
                 // TODO: perhaps also save up to 1 backup?
             }
             catch (Exception e)
@@ -135,9 +133,7 @@ namespace Amnesia.Data
         {
             if (Level != level)
             {
-                var newSkillPointValue = UnspentSkillPoints + ((level - Level) * Progression.SkillPointsPerLevel);
-                _log.Trace($"Player {EntityId}'s level changed: {Level} -> {level}; unspent skill points {UnspentSkillPoints} -> {newSkillPointValue}");
-                UnspentSkillPoints += newSkillPointValue;
+                _log.Trace($"Player {EntityId}'s level changed: {Level} -> {level}");
                 Level = level;
             }
         }
@@ -163,26 +159,9 @@ namespace Amnesia.Data
         /// <param name="cost">cost in skill points for this skill</param>
         public void PurchaseSkill(string name, int level, int cost)
         {
-            _log.Trace($"Player {EntityId} purchased {name} at level {level} for {cost} skill points; unspent skill points {UnspentSkillPoints} -> {UnspentSkillPoints - cost}");
-            UnspentSkillPoints -= cost;
-            if (UnspentSkillPoints < 0)
-            {
-                _log.Error($"Unexpected negative dip in unspent skill points to {UnspentSkillPoints} for {EntityId}. This should auto-correct soon, but could cause negative sideffects if player experiences amnesia in the meantime.");
-            }
+            _log.Trace($"Player {EntityId} purchased {name} at level {level} for {cost} skill {(cost == 1 ? "point" : "points")}");
             Changes.Add((name, level));
             Save();
-        }
-
-        // TODO: capture skill points acquired from quests (but will automatically sync up within 30 seconds)
-        // TODO: capture skill points acquired from game events (but will automatically sync up within 30 seconds)
-        // TODO: capture skill points acquired from console commands (but will automatically sync up within 30 seconds)
-        public void SetUnspentSkillPoints(int skillPoints)
-        {
-            if (UnspentSkillPoints != skillPoints)
-            {
-                _log.Trace($"Player {EntityId}'s unspent skillpoints updated: {UnspentSkillPoints} -> {skillPoints}");
-                UnspentSkillPoints = skillPoints;
-            }
         }
 
         /// <summary>
@@ -192,7 +171,6 @@ namespace Amnesia.Data
         public void Respec(ClientInfo clientInfo, EntityPlayer player)
         {
             player.Progression.ResetProgression(true);
-            UnspentSkillPoints = player.Progression.SkillPoints;
             Changes.Clear();
             Save();
             player.Progression.bProgressionStatsChanged = true;
@@ -224,7 +202,6 @@ namespace Amnesia.Data
                 progressionValue.Level = Changes[i].Item2;
             }
 
-            UnspentSkillPoints = player.Progression.SkillPoints;
             Changes = Changes.GetRange(0, i); // forget remaining entries we couldn't afford
         }
 

@@ -131,36 +131,6 @@ namespace Amnesia.Utilities
             }
         }
 
-        /// <summary>
-        /// Update player progression data with data received during save.
-        /// </summary>
-        /// <param name="playerDataFile">PlayerDataFile containing the latest progression information.</param>
-        /// <param name="player">EntityPlayer containing the active data we'll cache the PlayerDataFile.Progression info into.</param>
-        public static void SyncProgression(PlayerDataFile playerDataFile, EntityPlayer player)
-        {
-            _log.Trace($"Syncing progression for player {player.entityId}");
-            try
-            {
-                if (playerDataFile.progressionData.Length == 0L)
-                {
-                    _log.Trace($"No progression data to sync with {player.entityId}");
-                    return;
-                }
-
-                using (var pooledBinaryReader = MemoryPools.poolBinaryReader.AllocSync(false))
-                {
-                    // TODO: is a sync lock necessary?
-                    pooledBinaryReader.SetBaseStream(playerDataFile.progressionData);
-                    playerDataFile.progressionData.Position = 0L;
-                    player.Progression = Progression.Read(pooledBinaryReader, player);
-                }
-            }
-            catch (Exception e)
-            {
-                _log.Error($"Failed to sync progression data for {player.entityId}", e);
-            }
-        }
-
         public static float AddPositiveOutlookTime(EntityPlayer player, int valueToAdd)
         {
             if (valueToAdd == 0)

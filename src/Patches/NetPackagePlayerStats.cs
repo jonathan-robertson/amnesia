@@ -1,5 +1,4 @@
-﻿using Amnesia.Data;
-using Amnesia.Utilities;
+﻿using Amnesia.Utilities;
 using HarmonyLib;
 using System;
 
@@ -14,7 +13,7 @@ namespace Amnesia.Patches
     {
         private static readonly ModLog<NetPackagePlayerStats_ProcessPackage_Patches> _log = new ModLog<NetPackagePlayerStats_ProcessPackage_Patches>();
 
-        public static void Prefix(World _world, int ___entityId, int ___level, bool ___hasProgression, out int __state)
+        public static void Prefix(World _world, int ___entityId, out int __state)
         {
             __state = -1; // default to ignore
             try
@@ -33,7 +32,7 @@ namespace Amnesia.Patches
             }
         }
 
-        public static void Postfix(World _world, int ___entityId, int __state, int ___level, bool ___hasProgression)
+        public static void Postfix(World _world, int ___entityId, int __state, int ___level)
         {
             try
             {
@@ -46,14 +45,6 @@ namespace Amnesia.Patches
                 if (__state != ___level)
                 {
                     DialogShop.UpdatePrices(player);
-                }
-
-                if (___hasProgression
-                    && PlayerRecord.Entries.TryGetValue(___entityId, out var record))
-                {
-                    // NOTE: skill points will rarely be broadcasted though this method...
-                    //  but in the event they are shared, it's nice to record them.
-                    record.SetUnspentSkillPoints(player.Progression.SkillPoints);
                 }
             }
             catch (Exception e)
