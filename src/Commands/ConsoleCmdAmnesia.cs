@@ -26,18 +26,18 @@ namespace Amnesia.Commands
                 { "grant <user id / player name / entity id> <timeInSeconds>", "grant player some bonus xp time" },
                 { "fragile <user id / player name / entity id> <true/false>", "give or remove fragile memory debuff" },
                 { "skills <user id / player name / entity id>", "show skill/perk records in order they were purchased by the given player" },
-                { "owed", "debugging command to check any pending change owed to a player" },
+                { "money", "debugging command to list tracked money for all online players and any pending change owed to any players" },
                 { "respec", "debugging command to respec self" },
                 { "reset <levels-to-rewind>", "debugging command to reset self" },
                 { "config", "show current amnesia configuration" },
                 { "set", "show the single-value fields you can adjust" },
                 { "set <field>", "describe how you can update this field" },
                 { "set <field> <valueToAdd>", "update a standard field with a new valueToAdd" },
-                { "list", "show the complex config fields you can adjust" },
+                { "list", "show the complex fields you can adjust" },
                 { "list <complex-field>", "show contents of complex field" },
-                { "list <complex-field> add <key> <name> <value>", "add or update a complex field" },
-                { "list <complex-field> rem <key>", "add or update a complex field" },
-                { "list <complex-field> clear", "add or update a complex field" },
+                { "list <complex-field> add <key> <name> <value>", "add or update an entry for a complex field" },
+                { "list <complex-field> rem <key>", "remove an entry from a complex field" },
+                { "list <complex-field> clear", "clear all entries from a complex field" },
             };
 
             var i = 1; var j = 1;
@@ -104,6 +104,9 @@ namespace Amnesia.Commands
                             return;
                         }
                         break;
+                    case "money":
+                        HandleMoney();
+                        return;
                     case "config":
                         SdtdConsole.Instance.Output(Config.AsString());
                         return;
@@ -112,17 +115,6 @@ namespace Amnesia.Commands
                         return;
                     case "set":
                         RouteSetRequest(_params);
-                        return;
-                    case "owed":
-                        if (DialogShop.Change.Count == 0)
-                        {
-                            SdtdConsole.Instance.Output("[no change owed to any player]");
-                            return;
-                        }
-                        foreach (var kvp in DialogShop.Change)
-                        {
-                            SdtdConsole.Instance.Output($"player {kvp.Key} is owed {kvp.Value}");
-                        }
                         return;
                     default:
                         SdtdConsole.Instance.Output("Invald parameter provided");
@@ -264,7 +256,34 @@ namespace Amnesia.Commands
             {
                 SdtdConsole.Instance.Output("========= no recorded changes =========");
             }
-            SdtdConsole.Instance.Output($"====================================\n{record.UnspentSkillPoints,3} skill point{(record.UnspentSkillPoints != 0 ? "s" : "")} currently unassigned.\n{record.Level,3} current level.");
+            SdtdConsole.Instance.Output($"====================================\nCurrent Level: {record.Level}");
+        }
+
+        private void HandleMoney()
+        {
+            SdtdConsole.Instance.Output($"  ID   | MoneyBlt | MoneyBag | MoneyTot | Player Name");
+            var players = GameManager.Instance.World.Players.list;
+            for (var i = 0; i < players.Count; i++)
+            {
+                _ = DialogShop.BltMoney.TryGetValue(players[i].entityId, out var blt);
+                _ = DialogShop.BagMoney.TryGetValue(players[i].entityId, out var bag);
+                var tot = blt + bag;
+                SdtdConsole.Instance.Output($"{players[i].entityId,6} | {blt,8} | {bag,8} | {tot,8} | {players[i].GetDebugName()}");
+            }
+
+            if (DialogShop.Change.Count == 0)
+            {
+                SdtdConsole.Instance.Output("[no change owed to any player]");
+            }
+            else
+            {
+                var list = new List<string>();
+                foreach (var kvp in DialogShop.Change)
+                {
+                    list.Add($"{kvp.Key}={kvp.Value}");
+                }
+                SdtdConsole.Instance.Output($"Change owed (entityId=amount): [{string.Join(", ", list)}]");
+            }
         }
 
         private void RouteListRequest(List<string> @params)
