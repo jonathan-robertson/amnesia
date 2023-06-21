@@ -9,18 +9,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - add console command to view skill tracker
 - add custom dialog box for shop confirmations
+- add dialog purchasing system for therapy
+  - replaces `Grandpa's Fergit'n Elixir`
 - add dialog purchasing system for treatments
-- add LevelPenalty option
+  - replaces `Trader Jen's Memory Boosters`
+- add `LevelPenalty` config option
+  - instead of resetting to a target level, optionally lose a fixed number of levels
 - add player skill/perk tracking
-- add success/unnecessary/unaffordable responses
-- add support for crafting skill reset
+  - memory loss no longer unassigns skill points that were retained
+- add `ForgetCrafting` config option
+  - support for A21's crafting skill reset
 - fix positive outlook xp time format
+  - the way this worked had changed in A21
 - improve admin console feedback on update
-- remove deprecated buff
+- remove deprecated buffs
 - remove forgetting elixir from loot and traders
 - remove memory pills
-- update localization to reflect new system
-- update therapy prices on login and level-up
+- update buff descriptions to reflect new system
+- update journal to reflect new system
+- update service prices on login and level-up
 - update to a21 mod-info file format
 - update to a21 references
 
