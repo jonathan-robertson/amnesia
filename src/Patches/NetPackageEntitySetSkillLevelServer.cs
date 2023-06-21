@@ -18,7 +18,7 @@ namespace Amnesia.Patches
         {
             try
             {
-                _log.Trace($"___entityId: {___entityId}, ___skill: {___skill}, ___level: {___level}");
+                //_log.Trace($"___entityId: {___entityId}, ___skill: {___skill}, ___level: {___level}");
                 if (!PlayerRecord.Entries.TryGetValue(___entityId, out var record))
                 {
                     _log.Error($"Unable to retrieve player record for entityId {___entityId}");
@@ -29,7 +29,7 @@ namespace Amnesia.Patches
                     _log.Error($"Unable to retrieve player for entityId {___entityId}");
                     return;
                 }
-                _log.Trace($"Player {___entityId} {player.GetDebugName()} increased in level: {___skill} >> {___level}");
+                //_log.Trace($"Player {___entityId} {player.GetDebugName()} increased in level: {___skill} >> {___level}");
                 var progressionClass = player.Progression.GetProgressionValue(___skill).ProgressionClass;
                 if (progressionClass.IsAttribute || progressionClass.IsPerk) // don't track action skills or books
                 {

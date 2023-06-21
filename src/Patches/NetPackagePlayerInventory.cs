@@ -17,7 +17,7 @@ namespace Amnesia.Patches
         {
             try
             {
-                _log.Trace($"Inventory Changes: {(___toolbelt != null ? "o" : "x")} blt | {(___bag != null ? "o" : "x")} bag | {(___equipment != null ? "o" : "x")} eqp | {(___dragAndDropItem != null ? "o" : "x")} drg");
+                //_log.Trace($"Inventory Changes: {(___toolbelt != null ? "o" : "x")} blt | {(___bag != null ? "o" : "x")} bag | {(___equipment != null ? "o" : "x")} eqp | {(___dragAndDropItem != null ? "o" : "x")} drg");
 
                 if (___toolbelt != null || ___bag != null)
                 {
