@@ -254,6 +254,7 @@ namespace Amnesia.Data
                 }
             }
             Changes = list;
+            Save();
         }
     }
 }
