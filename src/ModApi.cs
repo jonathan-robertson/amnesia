@@ -8,7 +8,7 @@ namespace Amnesia
 {
     internal class ModApi : IModApi
     {
-        public static bool DebugMode { get; set; } = true; // TODO: set to false before release
+        public static bool DebugMode { get; set; } = false;
         public static Dictionary<int, bool> Obituary { get; private set; } = new Dictionary<int, bool>();
 
         public void InitMod(Mod _modInstance)

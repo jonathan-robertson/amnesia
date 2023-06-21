@@ -173,9 +173,9 @@ namespace Amnesia.Data
             Save();
         }
 
-        // TODO: capture skill points acquired from quests
-        // TODO: capture skill points acquired from game events
-        // TODO: capture skill points acquired from console commands
+        // TODO: capture skill points acquired from quests (but will automatically sync up within 30 seconds)
+        // TODO: capture skill points acquired from game events (but will automatically sync up within 30 seconds)
+        // TODO: capture skill points acquired from console commands (but will automatically sync up within 30 seconds)
         public void SetUnspentSkillPoints(int skillPoints)
         {
             if (UnspentSkillPoints != skillPoints)
@@ -191,14 +191,12 @@ namespace Amnesia.Data
         /// <param name="player">Player to respec.</param>
         public void Respec(ClientInfo clientInfo, EntityPlayer player)
         {
-            //PlayerHelper.TriggerGameEvent(clientInfo, player, "amnesia_respec");
             player.Progression.ResetProgression(true);
             UnspentSkillPoints = player.Progression.SkillPoints;
             Changes.Clear();
             Save();
             player.Progression.bProgressionStatsChanged = true;
             player.bPlayerStatsChanged = true;
-            // TODO: remove when Game Events issue is fixed
             ConnectionManager.Instance.SendPackage(NetPackageManager.GetPackage<NetPackagePlayerStats>().Setup(player), false, player.entityId);
 
         }

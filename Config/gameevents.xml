@@ -18,20 +18,23 @@
                 <property name="check_already_exists" value="false" />
             </action>
         </action_sequence>
-        <action_sequence name="amnesia_respec">
-            <!-- TODO: possibly use this soon-ish... doesn't work on servers right now -->
-            <!-- https://discord.com/channels/243577046616375297/1120457997190189231 -->
-            <action class="ResetPlayerData">
-                <property name="reset_skills" value="true" />
-                <property name="reset_books" value="false" />
-                <property name="reset_crafting" value="false" />
-                <property name="reset_levels" value="false" />
-                <property name="remove_landclaims" value="false" />
-                <property name="remove_bedroll" value="false" />
+
+        <action_sequence name="amnesia_dialog_shop_cannot_afford">
+            <action class="PlaySound">
+                <property name="sound" value="bow_fire_abort" />
+                <property name="inside_head" value="true" />
             </action>
-            <action class="BeltTooltip">
-                <property name="text_key" value="tipTherapyComplete" />
+        </action_sequence>
+        <action_sequence name="amnesia_dialog_shop_unnecessary">
+            <action class="PlaySound">
+                <property name="sound" value="bow_fire_cancel" />
+                <property name="inside_head" value="true" />
+            </action>
+        </action_sequence>
+        <action_sequence name="amnesia_dialog_shop_purchased">
+            <action class="PlaySound">
                 <property name="sound" value="ui_trader_purchase" />
+                <property name="inside_head" value="true" />
             </action>
         </action_sequence>
     </append>

@@ -1,0 +1,27 @@
+<config>
+    <append xpath="/controls">
+        <tip_header text="">
+            <panel name="header" height="43" depth="1" backgroundspritename="ui_game_panel_header">
+                <sprite depth="2" name="windowIcon" style="icon32px" pos="4,-5" sprite="ui_game_symbol_intellect" />
+                <label style="header.name" text="${text}" width="550" />
+            </panel>
+        </tip_header>
+        <tip_body text="">
+            <rect name="content" pos="0,-46" height="319" depth="1" pivot="center">
+                <sprite depth="8" name="backgroundMain" sprite="menu_empty3px" pos="0,0" width="603" color="[black]" type="sliced" fillcenter="false" />
+                <sprite color="[darkGrey]" type="sliced" />
+                <label depth="3" name="descriptionText" pos="8,-8" text="${text}" width="590" height="265" font_size="30" />
+
+                <rect name="btnContinue" depth="3" pos="0, -277" height="42">
+                    <sprite depth="8" name="backgroundMain" sprite="menu_empty3px" color="[black]" type="sliced" fillcenter="false" />
+                    <sprite depth="2" name="background" pos="3,-3" sprite="menu_empty" width="224" height="32" color="[darkGrey]" type="sliced" />
+                    <rect depth="3" pos="0,0" height="42">
+                        <button name="clickable" sprite="menu_empty" defaultcolor="[mediumGrey]" hoversprite="ui_game_select_row" hovercolor="[white]" type="sliced" hoverscale="1.0" />
+
+                        <label depth="2" name="windowName" pos="0,-1" justify="center" text="CONTINUE" text_key="btnContinue" font_size="36" />
+                    </rect>
+                </rect>
+            </rect>
+        </tip_body>
+    </append>
+</config>

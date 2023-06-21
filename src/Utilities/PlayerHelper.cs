@@ -50,11 +50,6 @@ namespace Amnesia.Utilities
                 return;
             }
 
-            // TODO: use this soon-ish... doesn't work on servers right now
-            // https://discord.com/channels/243577046616375297/1120457997190189231
-            //TriggerGameEvent(clientInfo, player, "amnesia_respec");
-
-            // TODO: remove when above option is available
             record.Respec(clientInfo, player);
             ConnectionManager.Instance.SendPackage(NetPackageManager.GetPackage<NetPackagePlayerStats>().Setup(player), false, player.entityId);
         }
@@ -186,6 +181,11 @@ namespace Amnesia.Utilities
         {
             _ = GameEventManager.Current.HandleAction(eventName, null, player, false);
             clientInfo.SendPackage(NetPackageManager.GetPackage<NetPackageGameEventResponse>().Setup(eventName, clientInfo.entityId, "", "", NetPackageGameEventResponse.ResponseTypes.Approved));
+        }
+
+        public static void OpenWindow(ClientInfo clientInfo, string windowGroupName)
+        {
+            clientInfo.SendPackage(NetPackageManager.GetPackage<NetPackageConsoleCmdClient>().Setup($"xui open {windowGroupName}", true));
         }
 
         /// <summary>

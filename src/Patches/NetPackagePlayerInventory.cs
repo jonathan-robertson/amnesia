@@ -4,6 +4,10 @@ using System;
 
 namespace Amnesia.Patches
 {
+    /// <summary>
+    /// Monitor inventory changes as they happen.
+    /// </summary>
+    /// <remarks>Supports: Remote</remarks>
     [HarmonyPatch(typeof(NetPackagePlayerInventory), "ProcessPackage")]
     internal class NetPackagePlayerInventory_ProcessPackage_Patches
     {

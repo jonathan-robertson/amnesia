@@ -24,15 +24,20 @@ namespace Amnesia.Data
         public static string BuffTryBuyTreatment { get; private set; } = "buffAmnesiaTryBuyTreatment";
         public static string BuffTryBuyTherapy { get; private set; } = "buffAmnesiaTryBuyTherapy";
         public static string BuffRequestChangeCallback { get; private set; } = "buffAmnesiaRequestChangeCallback";
-        public static string BuffTreatmentComplete { get; private set; } = "buffAmnesiaTreatmentComplete";
-        public static string BuffTherapyComplete { get; private set; } = "buffAmnesiaTherapyComplete";
-        public static string BuffTreatmentUnnecessary { get; private set; } = "buffAmnesiaTreatmentUnnecessary";
-        public static string BuffTreatmentUnaffordable { get; private set; } = "buffAmnesiaTreatmentUnaffordable";
 
         // game_events
         public static string GameEventPayFromBag { get; private set; } = "amnesia_pay_from_bag";
         public static string GameEventPayFromBlt { get; private set; } = "amnesia_pay_from_blt";
         public static string GameEventRequestChg { get; private set; } = "amnesia_request_change";
+        public static string GameEventShopCannotAfford { get; private set; } = "amnesia_dialog_shop_cannot_afford";
+        public static string GameEventShopUnnecessary { get; private set; } = "amnesia_dialog_shop_unnecessary";
+        public static string GameEventShopPurchased { get; private set; } = "amnesia_dialog_shop_purchased";
+
+        // xui_windows
+        public static string WindowShopCannotAfford { get; private set; } = "amnesiaDialogShopCannotAffordWindowGroup";
+        public static string WindowShopTreatmentUnnecessary { get; private set; } = "amnesiaDialogShopTreatmentUnnecessaryWindowGroup";
+        public static string WindowShopTreatmentComplete { get; private set; } = "amnesiaDialogShopTreatmentCompleteWindowGroup";
+        public static string WindowShopTherapyComplete { get; private set; } = "amnesiaDialogShopTherapyCompleteWindowGroup";
 
         // names
         public static string NameLongTermMemoryLevel { get; private set; } = "LongTermMemoryLevel";

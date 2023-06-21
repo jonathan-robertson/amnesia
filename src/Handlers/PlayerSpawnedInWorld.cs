@@ -46,8 +46,6 @@ namespace Amnesia.Handlers
                     case RespawnType.Died: // existing player returned from death
                         _ = PlayerHelper.AddPositiveOutlookTime(player, Config.PositiveOutlookTimeOnMemoryLoss);
                         HandleStandardRespawnSteps(player);
-                        // TODO: test without first; it should automatically update upon bag drop or whatnot
-                        //DialogShop.UpdateMoney(player.entityId, player.inventory.GetSlots(), player.bag.GetSlots());
                         break;
                 }
             }

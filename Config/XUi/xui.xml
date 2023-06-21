@@ -1,0 +1,16 @@
+<config>
+    <append xpath="/xui/ruleset">
+        <window_group name="amnesiaDialogShopCannotAffordWindowGroup">
+            <window name="amnesiaDialogShopCannotAfford" />
+        </window_group>
+        <window_group name="amnesiaDialogShopTreatmentUnnecessaryWindowGroup">
+            <window name="amnesiaDialogShopTreatmentUnnecessary" />
+        </window_group>
+        <window_group name="amnesiaDialogShopTreatmentCompleteWindowGroup">
+            <window name="amnesiaDialogShopTreatmentComplete" />
+        </window_group>
+        <window_group name="amnesiaDialogShopTherapyCompleteWindowGroup">
+            <window name="amnesiaDialogShopTherapyComplete" />
+        </window_group>
+    </append>
+</config>

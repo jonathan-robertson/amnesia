@@ -1,5 +1,4 @@
 ﻿using Amnesia.Utilities;
-using HarmonyLib;
 using System;
 
 namespace Amnesia.Patches
@@ -8,7 +7,8 @@ namespace Amnesia.Patches
     /// Detect level change.
     /// </summary>
     /// <remarks>Supports: local </remarks>
-    [HarmonyPatch(typeof(Progression), "AddLevelExp")]
+    //[HarmonyPatch(typeof(Progression), "AddLevelExp")]
+    // TODO: enable for local support
     internal class Progression_AddLevelExp_Patches
     {
         private static readonly ModLog<Progression_AddLevelExp_Patches> _log = new ModLog<Progression_AddLevelExp_Patches>();
@@ -21,7 +21,7 @@ namespace Amnesia.Patches
                 // TODO: do these checks in many more parts of the code to support remote having local mod (disable remote clients)
                 if (!ConnectionManager.Instance.IsServer
                     || ___parent.isEntityRemote // only track local entity
-                    || !(___parent is EntityPlayerLocal)) // only track EntityPlayerLocal
+                    || !(___parent is EntityPlayerLocal player)) // only track EntityPlayerLocal
                 {
                     return;
                 }
@@ -47,11 +47,7 @@ namespace Amnesia.Patches
                 }
 
                 _log.Trace($"change in player level detected: {__state} -> {___Level}");
-
-                // TOOD: calculate and push amnesia treatment and therapy costs as levels change...? Or perhaps as skill points change?
                 DialogShop.UpdatePrices(player);
-
-                // TODO: add behavior
             }
             catch (Exception e)
             {

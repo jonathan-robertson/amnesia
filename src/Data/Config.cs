@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Xml.Linq;
 
 namespace Amnesia.Data
@@ -117,7 +116,7 @@ namespace Amnesia.Data
             }
             return true;
         }
-        
+
         /// <summary>
         /// Update the level penalty. This will determine the number of lost levels experience when Memory is lost.
         /// </summary>

@@ -98,7 +98,10 @@ namespace Amnesia.Commands
                         }
                         break;
                     case "skills":
-                        HandleSkills(_params);
+                        if (_params.Count == 2)
+                        {
+                            HandleSkills(_params);
+                        }
                         return;
                     case "config":
                         SdtdConsole.Instance.Output(Config.AsString());
@@ -241,7 +244,7 @@ namespace Amnesia.Commands
 
         private void HandleSkills(List<string> @params)
         {
-            var clientInfo = ConsoleHelper.ParseParamIdOrName(@params[1], true, false); // TODO: fix index out of range exception
+            var clientInfo = ConsoleHelper.ParseParamIdOrName(@params[1], true, false);
             if (clientInfo == null || !GameManager.Instance.World.Players.dict.TryGetValue(clientInfo.entityId, out _))
             {
                 SdtdConsole.Instance.Output("Unable to find this player; note: player must be online");

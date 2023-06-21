@@ -14,7 +14,7 @@ namespace Amnesia.Patches
     {
         private static readonly ModLog<NetPackageEntitySetSkillLevelServer_ProcessPackage_Patches> _log = new ModLog<NetPackageEntitySetSkillLevelServer_ProcessPackage_Patches>();
 
-        public static void Postfix(NetPackageEntitySetSkillLevelServer __instance, World _world, int ___entityId, string ___skill, int ___level)
+        public static void Postfix(World _world, int ___entityId, string ___skill, int ___level)
         {
             try
             {
@@ -34,10 +34,6 @@ namespace Amnesia.Patches
                 if (progressionClass.IsAttribute || progressionClass.IsPerk) // don't track action skills or books
                 {
                     record.PurchaseSkill(___skill, ___level, progressionClass.CalculatedCostForLevel(___level));
-
-                    // TODO: tell client to refresh server's skillPoints value now?
-                    //__instance.Sender.SendPackage(NetPackageManager.GetPackage<NetPackageConsoleCmdClient>().Setup("sm", true));
-                    //__instance.Sender.SendPackage(NetPackageManager.GetPackage<NetPackageConsoleCmdClient>().Setup("sm", true));
                 }
             }
             catch (Exception e)

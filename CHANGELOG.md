@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [2.0.0]
 
 - add console command to view skill tracker
+- add custom dialog box for shop confirmations
 - add dialog purchasing system for treatments
 - add LevelPenalty option
 - add player skill/perk tracking

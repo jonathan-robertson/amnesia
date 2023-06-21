@@ -1,5 +1,4 @@
 ﻿using Amnesia.Data;
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -52,30 +51,98 @@ namespace Amnesia.Utilities
             player.SetCVar(Values.CVarTherapyPrice, GetCost(player.Progression.Level, Product.Therapy));
         }
 
-        public static void GiveChange(ClientInfo clientInfo, EntityPlayer player)
+        public static void TryBuyTreatment(EntityAlive entity)
         {
-            if (!Change.TryGetValue(clientInfo.entityId, out var value))
+            // TODO: test local
+            //if (!entity.isEntityRemote)
+            //{
+            //    var entityPlayerLocal = entity.world.GetPrimaryPlayer();
+            //    entityPlayerLocal.Buffs.RemoveBuff(Values.BuffTryBuyTreatment);
+            //    if (!entityPlayerLocal.Buffs.HasBuff(Values.BuffFragileMemory))
+            //    {
+            //        _log.Trace($"player {entityPlayerLocal.GetDebugName()} requested Treatment from trader but doesn't have {Values.BuffFragileMemory}.");
+            //        _ = entityPlayerLocal.Buffs.AddBuff(Values.BuffTreatmentUnnecessary);
+            //    }
+            //    else if (DialogShop.TryPurchase(entityPlayerLocal, DialogShop.GetCost(entityPlayerLocal.Progression.Level, Product.Treatment)))
+            //    {
+            //        _log.Trace($"player {entityPlayerLocal.GetDebugName()} purchased Treatment from trader.");
+            //        entityPlayerLocal.Buffs.RemoveBuff(Values.BuffFragileMemory);
+            //        _ = entityPlayerLocal.Buffs.AddBuff(Values.BuffTreatmentComplete);
+            //    }
+            //    else
+            //    {
+            //        _log.Trace($"player {entityPlayerLocal.GetDebugName()} requested Treatment from trader but doesn't have enough money.");
+            //        _ = entityPlayerLocal.Buffs.AddBuff(Values.BuffTreatmentUnaffordable);
+            //    }
+            //    return;
+            //}
+
+            if (PlayerHelper.TryGetClientInfoAndEntityPlayer(entity.world, entity.entityId, out var clientInfo, out var player))
             {
-                _log.Error($"Client requested change for {clientInfo.entityId}, but there is no change cached to return; this is unexpected");
-                return;
+                player.Buffs.RemoveBuff(Values.BuffTryBuyTreatment);
+                if (!player.Buffs.HasBuff(Values.BuffFragileMemory))
+                {
+                    _log.Trace($"player {player.GetDebugName()} requested Treatment from trader but doesn't have the necessary money {Values.BuffFragileMemory}.");
+                    PlayerHelper.OpenWindow(clientInfo, Values.WindowShopTreatmentUnnecessary);
+                    PlayerHelper.TriggerGameEvent(clientInfo, player, Values.GameEventShopUnnecessary);
+                }
+                else if (DialogShop.TryPurchase(clientInfo, player, DialogShop.GetCost(player.Progression.Level, Product.Treatment)))
+                {
+                    _log.Trace($"player {player.GetDebugName()} purchased Treatment from trader.");
+                    player.Buffs.RemoveBuff(Values.BuffFragileMemory);
+                    PlayerHelper.OpenWindow(clientInfo, Values.WindowShopTreatmentComplete);
+                    PlayerHelper.TriggerGameEvent(clientInfo, player, Values.GameEventShopPurchased);
+                }
+                else
+                {
+                    _log.Trace($"player {player.GetDebugName()} requested Treatment from trader but doesn't have enough money.");
+                    PlayerHelper.OpenWindow(clientInfo, Values.WindowShopCannotAfford);
+                    PlayerHelper.TriggerGameEvent(clientInfo, player, Values.GameEventShopCannotAfford);
+                }
             }
-            _ = Change.Remove(player.entityId);
-            AddCoins(clientInfo, player.position, value);
-            _log.Trace($"change returned to {player.GetDebugName()} ({player.entityId}) in the amount of {value}");
         }
 
-        public static void GiveChange(EntityPlayerLocal player)
+        public static void TryBuyTherapy(EntityAlive entity)
         {
-            if (!Change.TryGetValue(player.entityId, out var value))
+            // TODO: support local as well
+
+            if (PlayerHelper.TryGetClientInfoAndEntityPlayer(entity.world, entity.entityId, out var clientInfo, out var player))
             {
-                _log.Error($"Client requested change for {player.entityId}, but there is no change cached to return; this is unexpected");
-                return;
+                player.Buffs.RemoveBuff(Values.BuffTryBuyTherapy);
+                if (DialogShop.TryPurchase(clientInfo, player, DialogShop.GetCost(player.Progression.Level, Product.Therapy)))
+                {
+                    _log.Trace($"player {player.GetDebugName()} purchased Therapy from trader.");
+                    PlayerHelper.Respec(player);
+                    PlayerHelper.OpenWindow(clientInfo, Values.WindowShopTherapyComplete);
+                    PlayerHelper.TriggerGameEvent(clientInfo, player, Values.GameEventShopPurchased);
+                }
+                else
+                {
+                    _log.Trace($"player {player.GetDebugName()} requested Therapy from trader but doesn't have enough money.");
+                    PlayerHelper.OpenWindow(clientInfo, Values.WindowShopCannotAfford);
+                    PlayerHelper.TriggerGameEvent(clientInfo, player, Values.GameEventShopCannotAfford);
+                }
             }
-            _ = Change.Remove(player.entityId);
-            AddCoins(player, value);
         }
 
-        public static int GetCost(int level, Product product)
+        public static void TryGiveChange(EntityAlive entity)
+        {
+            if (!entity.isEntityRemote)
+            {
+                var entityPlayerLocal = entity.world.GetPrimaryPlayer();
+                entityPlayerLocal.Buffs.RemoveBuff(Values.BuffRequestChangeCallback);
+                GiveChange(entityPlayerLocal);
+                return;
+            }
+
+            if (PlayerHelper.TryGetClientInfoAndEntityPlayer(entity.world, entity.entityId, out var clientInfo, out var player))
+            {
+                player.Buffs.RemoveBuff(Values.BuffRequestChangeCallback);
+                GiveChange(clientInfo, player);
+            }
+        }
+
+        private static int GetCost(int level, Product product)
         {
             switch (product)
             {
@@ -87,7 +154,7 @@ namespace Amnesia.Utilities
             return -1;
         }
 
-        public static bool TryPurchase(ClientInfo clientInfo, EntityPlayer player, int cost)
+        private static bool TryPurchase(ClientInfo clientInfo, EntityPlayer player, int cost)
         {
             if (CanAfford(player.entityId, cost))
             {
@@ -99,19 +166,7 @@ namespace Amnesia.Utilities
             return false;
         }
 
-        internal static bool TryPurchase(EntityPlayerLocal player, int cost)
-        {
-            throw new NotImplementedException(); // TODO: complete for local player support
-        }
-
-        private static bool CanAfford(int entityId, int amount)
-        {
-            _ = BagMoney.TryGetValue(entityId, out var bag);
-            _ = BltMoney.TryGetValue(entityId, out var blt);
-            return bag + blt - amount >= 0;
-        }
-
-        public static void Pay(ClientInfo clientInfo, EntityPlayer player, int cost)
+        private static void Pay(ClientInfo clientInfo, EntityPlayer player, int cost)
         {
             _log.Trace($"player {player.GetDebugName()} charge attempt for {cost}");
             if (BagMoney.TryGetValue(clientInfo.entityId, out var bag))
@@ -137,6 +192,36 @@ namespace Amnesia.Utilities
                     PlayerHelper.TriggerGameEvent(clientInfo, player, Values.GameEventRequestChg);
                 }
             }
+        }
+
+        private static bool CanAfford(int entityId, int amount)
+        {
+            _ = BagMoney.TryGetValue(entityId, out var bag);
+            _ = BltMoney.TryGetValue(entityId, out var blt);
+            return bag + blt - amount >= 0;
+        }
+
+        private static void GiveChange(ClientInfo clientInfo, EntityPlayer player)
+        {
+            if (!Change.TryGetValue(clientInfo.entityId, out var value))
+            {
+                _log.Error($"Client requested change for {clientInfo.entityId}, but there is no change cached to return; this is unexpected");
+                return;
+            }
+            _ = Change.Remove(player.entityId);
+            AddCoins(clientInfo, player.position, value);
+            _log.Trace($"change returned to {player.GetDebugName()} ({player.entityId}) in the amount of {value}");
+        }
+
+        private static void GiveChange(EntityPlayerLocal player)
+        {
+            if (!Change.TryGetValue(player.entityId, out var value))
+            {
+                _log.Error($"Client requested change for {player.entityId}, but there is no change cached to return; this is unexpected");
+                return;
+            }
+            _ = Change.Remove(player.entityId);
+            AddCoins(player, value);
         }
 
         private static void AddCoins(ClientInfo clientInfo, Vector3 pos, int amount)
