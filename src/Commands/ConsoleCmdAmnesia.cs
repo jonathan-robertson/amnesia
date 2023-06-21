@@ -101,8 +101,9 @@ namespace Amnesia.Commands
                         if (_params.Count == 2)
                         {
                             HandleSkills(_params);
+                            return;
                         }
-                        return;
+                        break;
                     case "config":
                         SdtdConsole.Instance.Output(Config.AsString());
                         return;
