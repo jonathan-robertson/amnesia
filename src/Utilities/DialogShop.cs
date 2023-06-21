@@ -41,7 +41,19 @@ namespace Amnesia.Utilities
             }
             if (changed)
             {
-                _log.Debug($"blt: {blt}, bag: {bag}, total: {blt + bag}");
+                _log.Debug($"Held Money changed for player {entityId} (blt: {blt}, bag: {bag}, total: {blt + bag})");
+            }
+        }
+
+        public static void ClearMoneyReferences(ClientInfo clientInfo)
+        {
+            if (BltMoney.ContainsKey(clientInfo.entityId))
+            {
+                _ = BltMoney.Remove(clientInfo.entityId);
+            }
+            if (BagMoney.ContainsKey(clientInfo.entityId))
+            {
+                _ = BagMoney.Remove(clientInfo.entityId);
             }
         }
 

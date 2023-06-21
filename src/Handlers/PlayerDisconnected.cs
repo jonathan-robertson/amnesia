@@ -15,6 +15,7 @@ namespace Amnesia.Handlers
                 if (!forShutdown)
                 {
                     PlayerRecord.Unload(clientInfo);
+                    DialogShop.ClearMoneyReferences(clientInfo);
                 }
             }
             catch (Exception e)
