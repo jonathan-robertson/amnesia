@@ -90,6 +90,10 @@ PositiveOutlookTimeOnMemoryLoss | 3600 | How many seconds of Positive Outlook bu
 PositiveOutlookTimeOnKillName | Empty | Names and Values to reward the entire server when any player defeats the given entity. This is best applied to boss zombies such as Vanilla's `zombieDemolition` and modded zombies. *Note that this value is adjusted with the **list** command rather than the **set** command; see admin console for more details.*
 ProtectMemoryDuringBloodmoon | true | Whether deaths during Blood Moon will be PREVENTED from causing Memory Loss.
 ProtectMemoryDuringPvp | true | Whether deaths due to PVP will be PREVENTED from causing Memory Loss.
+TreatmentCostBase | 0 | Base cost of Treatment (used to recover from `FragileMemory` ailment).
+TreatmentCostMultiplier | 1200 | Level Multiplier cost added to Treatment.
+TherapyCostBase | 0 | Base cost of Therapy (used to reset skill points).
+TherapyCostMultiplier | 600 | Level Multiplier cost added to Therapy.
 ForgetLevelsAndSkills | true | Whether to forget levels, skills, and skill points on Memory Loss.
 ForgetBooks | false | Whether books should be forgotten on memory loss. It's recommended to keep this as `false` because A21 is expected to have hundreds of books to collect for crafting purposes.
 ForgetCrafting | false | Whether crafting magazines should be forgotten on memory loss.
@@ -123,6 +127,10 @@ Here's an example of what I'm trying out on my server. All of these options can 
   </PositiveOutlookTimeOnKill>
   <ProtectMemoryDuringBloodmoon>true</ProtectMemoryDuringBloodmoon>
   <ProtectMemoryDuringPvp>true</ProtectMemoryDuringPvp>
+  <TreatmentCostBase>0</TreatmentCostBase>
+  <TreatmentCostMultiplier>1200</TreatmentCostMultiplier>
+  <TherapyCostBase>0</TherapyCostBase>
+  <TherapyCostMultiplier>600</TherapyCostMultiplier>
   <ForgetLevelsAndSkills>true</ForgetLevelsAndSkills>
   <ForgetBooks>false</ForgetBooks>
   <ForgetCrafting>false</ForgetCrafting>

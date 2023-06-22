@@ -48,6 +48,10 @@ namespace Amnesia.Data
         public static string NamePositiveOutlookTimeOnKill { get; private set; } = "PositiveOutlookTimeOnKill";
         public static string NameProtectMemoryDuringBloodmoon { get; private set; } = "ProtectMemoryDuringBloodmoon";
         public static string NameProtectMemoryDuringPvp { get; private set; } = "ProtectMemoryDuringPvp";
+        public static string NameTreatmentCostBase { get; private set; } = "TreatmentCostBase";
+        public static string NameTreatmentCostMultiplier { get; private set; } = "TreatmentCostMultiplier";
+        public static string NameTherapyCostBase { get; private set; } = "TherapyCostBase";
+        public static string NameTherapyCostMultiplier { get; private set; } = "TherapyCostMultiplier";
         public static string NameForgetLevelsAndSkills { get; private set; } = "ForgetLevelsAndSkills";
         public static string NameForgetBooks { get; private set; } = "ForgetBooks";
         public static string NameForgetCrafting { get; private set; } = "ForgetCrafting";

@@ -402,6 +402,26 @@ namespace Amnesia.Commands
                 UpdateProtectMemoryDuringPvp(@params);
                 return;
             }
+            if (Values.NameTreatmentCostBase.EqualsCaseInsensitive(@params[1]))
+            {
+                UpdateTreatmentCostBase(@params);
+                return;
+            }
+            if (Values.NameTreatmentCostMultiplier.EqualsCaseInsensitive(@params[1]))
+            {
+                UpdateTreatmentCostMultiplier(@params);
+                return;
+            }
+            if (Values.NameTherapyCostBase.EqualsCaseInsensitive(@params[1]))
+            {
+                UpdateTherapyCostBase(@params);
+                return;
+            }
+            if (Values.NameTherapyCostMultiplier.EqualsCaseInsensitive(@params[1]))
+            {
+                UpdateTherapyCostMultiplier(@params);
+                return;
+            }
             if (Values.NameForgetLevelsAndSkills.EqualsCaseInsensitive(@params[1]))
             {
                 UpdateForgetLevelsAndSkills(@params);
@@ -474,6 +494,102 @@ namespace Amnesia.Commands
             }
             var cur = Config.LevelPenalty;
             if (Config.SetLevelPenalty(value))
+            {
+                SdtdConsole.Instance.Output($"Updated {cur} -> {value}");
+            }
+            else
+            {
+                SdtdConsole.Instance.Output($"Already set to {value}; no change");
+            }
+        }
+
+        private void UpdateTreatmentCostBase(List<string> @params)
+        {
+            if (@params.Count == 2)
+            {
+                SdtdConsole.Instance.Output($@"{Values.SingleValueNamesAndDescriptionsDict[Values.NameTreatmentCostBase]}
+{Commands[0]} set {Values.NameTreatmentCostBase} <base-cost>");
+                return;
+            }
+            if (!int.TryParse(@params[2], out var value))
+            {
+                SdtdConsole.Instance.Output($"Unable to parse value; expecting int");
+                return;
+            }
+            var cur = Config.TreatmentCostBase;
+            if (Config.SetTreatmentCostBase(value))
+            {
+                SdtdConsole.Instance.Output($"Updated {cur} -> {value}");
+            }
+            else
+            {
+                SdtdConsole.Instance.Output($"Already set to {value}; no change");
+            }
+        }
+
+        private void UpdateTreatmentCostMultiplier(List<string> @params)
+        {
+            if (@params.Count == 2)
+            {
+                SdtdConsole.Instance.Output($@"{Values.SingleValueNamesAndDescriptionsDict[Values.NameTreatmentCostMultiplier]}
+{Commands[0]} set {Values.NameTreatmentCostMultiplier} <cost-multiplier>");
+                return;
+            }
+            if (!int.TryParse(@params[2], out var value))
+            {
+                SdtdConsole.Instance.Output($"Unable to parse value; expecting int");
+                return;
+            }
+            var cur = Config.TreatmentCostMultiplier;
+            if (Config.SetTreatmentCostMultiplier(value))
+            {
+                SdtdConsole.Instance.Output($"Updated {cur} -> {value}");
+            }
+            else
+            {
+                SdtdConsole.Instance.Output($"Already set to {value}; no change");
+            }
+        }
+
+        private void UpdateTherapyCostBase(List<string> @params)
+        {
+            if (@params.Count == 2)
+            {
+                SdtdConsole.Instance.Output($@"{Values.SingleValueNamesAndDescriptionsDict[Values.NameTherapyCostBase]}
+{Commands[0]} set {Values.NameTherapyCostBase} <base-cost>");
+                return;
+            }
+            if (!int.TryParse(@params[2], out var value))
+            {
+                SdtdConsole.Instance.Output($"Unable to parse value; expecting int");
+                return;
+            }
+            var cur = Config.TherapyCostBase;
+            if (Config.SetTherapyCostBase(value))
+            {
+                SdtdConsole.Instance.Output($"Updated {cur} -> {value}");
+            }
+            else
+            {
+                SdtdConsole.Instance.Output($"Already set to {value}; no change");
+            }
+        }
+
+        private void UpdateTherapyCostMultiplier(List<string> @params)
+        {
+            if (@params.Count == 2)
+            {
+                SdtdConsole.Instance.Output($@"{Values.SingleValueNamesAndDescriptionsDict[Values.NameTherapyCostMultiplier]}
+{Commands[0]} set {Values.NameTherapyCostMultiplier} <cost-multiplier>");
+                return;
+            }
+            if (!int.TryParse(@params[2], out var value))
+            {
+                SdtdConsole.Instance.Output($"Unable to parse value; expecting int");
+                return;
+            }
+            var cur = Config.TherapyCostMultiplier;
+            if (Config.SetTherapyCostMultiplier(value))
             {
                 SdtdConsole.Instance.Output($"Updated {cur} -> {value}");
             }

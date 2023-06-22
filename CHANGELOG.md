@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [2.0.0]
 
 - add console command to view skill tracker
+- add cost options for memory services
 - add custom dialog box for shop confirmations
 - add dialog purchasing system for therapy
   - replaces `Grandpa's Fergit'n Elixir`

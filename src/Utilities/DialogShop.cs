@@ -159,9 +159,9 @@ namespace Amnesia.Utilities
             switch (product)
             {
                 case Product.Treatment:
-                    return 1200 * level;
+                    return Config.TreatmentCostBase + (Config.TreatmentCostMultiplier * level);
                 case Product.Therapy:
-                    return 600 * level;
+                    return Config.TherapyCostBase + (Config.TherapyCostMultiplier * level);
             }
             return -1;
         }

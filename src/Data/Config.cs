@@ -21,6 +21,15 @@ namespace Amnesia.Data
         /// <summary>The number of levels to lose on memory loss; if this is set to 0, memory loss will cause player to reset to LongTermMemoryLevel.</summary>
         public static int LevelPenalty { get; private set; } = 0;
 
+        /// <summary>Base cost of Treatment.</summary>
+        public static int TreatmentCostBase { get; private set; } = 0;
+        /// <summary>Level Multplier cost of Treatment.</summary>
+        public static int TreatmentCostMultiplier { get; private set; } = 1200;
+        /// <summary>Base cost of Therapy.</summary>
+        public static int TherapyCostBase { get; private set; } = 0;
+        /// <summary>Level Multplier cost of Therapy.</summary>
+        public static int TherapyCostMultiplier { get; private set; } = 600;
+
         /// <summary>Maximum length of time allowed for buff that boost xp growth.</summary>
         public static int PositiveOutlookMaxTime { get; private set; } = 3600; // 1 hr
         /// <summary>Length of time for buff that boosts xp growth at first-time server join.</summary>
@@ -83,6 +92,11 @@ namespace Amnesia.Data
 {Values.NameProtectMemoryDuringBloodmoon}: {ProtectMemoryDuringBloodmoon}
 {Values.NameProtectMemoryDuringPvp}: {ProtectMemoryDuringPvp}
 
+{Values.NameTreatmentCostBase}: {TreatmentCostBase}
+{Values.NameTreatmentCostMultiplier}: {TreatmentCostMultiplier}
+{Values.NameTherapyCostBase}: {TherapyCostBase}
+{Values.NameTherapyCostMultiplier}: {TherapyCostMultiplier}
+
 {Values.NameForgetLevelsAndSkills}: {ForgetLevelsAndSkills}
 {Values.NameForgetBooks}: {ForgetBooks}
 {Values.NameForgetCrafting}: {ForgetCrafting}
@@ -133,6 +147,66 @@ namespace Amnesia.Data
             {
                 player.SetCVar(Values.CVarLevelPenalty, LevelPenalty);
             }
+            return true;
+        }
+
+        /// <summary>
+        /// Update the base cost of treatment.
+        /// </summary>
+        /// <param key="value">The value to use.</param>
+        public static bool SetTreatmentCostBase(int value)
+        {
+            if (TreatmentCostBase == value)
+            {
+                return false;
+            }
+            TreatmentCostBase = Math.Max(0, value);
+            _ = Save();
+            return true;
+        }
+
+        /// <summary>
+        /// Update the level multiplier cost of treatment.
+        /// </summary>
+        /// <param key="value">The value to use.</param>
+        public static bool SetTreatmentCostMultiplier(int value)
+        {
+            if (TreatmentCostMultiplier == value)
+            {
+                return false;
+            }
+            TreatmentCostMultiplier = Math.Max(0, value);
+            _ = Save();
+            return true;
+        }
+
+        /// <summary>
+        /// Update the base cost of therapy.
+        /// </summary>
+        /// <param key="value">The value to use.</param>
+        public static bool SetTherapyCostBase(int value)
+        {
+            if (TherapyCostBase == value)
+            {
+                return false;
+            }
+            TherapyCostBase = Math.Max(0, value);
+            _ = Save();
+            return true;
+        }
+
+        /// <summary>
+        /// Update the level multiplier cost of therapy.
+        /// </summary>
+        /// <param key="value">The value to use.</param>
+        public static bool SetTherapyCostMultiplier(int value)
+        {
+            if (TherapyCostMultiplier == value)
+            {
+                return false;
+            }
+            TherapyCostMultiplier = Math.Max(0, value);
+            _ = Save();
             return true;
         }
 
@@ -423,6 +497,11 @@ namespace Amnesia.Data
                     new XElement(Values.NameProtectMemoryDuringBloodmoon, ProtectMemoryDuringBloodmoon),
                     new XElement(Values.NameProtectMemoryDuringPvp, ProtectMemoryDuringPvp),
 
+                    new XElement(Values.NameTreatmentCostBase, TreatmentCostBase),
+                    new XElement(Values.NameTreatmentCostMultiplier, TreatmentCostMultiplier),
+                    new XElement(Values.NameTherapyCostBase, TherapyCostBase),
+                    new XElement(Values.NameTherapyCostMultiplier, TherapyCostMultiplier),
+
                     new XElement(Values.NameForgetLevelsAndSkills, ForgetLevelsAndSkills),
                     new XElement(Values.NameForgetBooks, ForgetBooks),
                     new XElement(Values.NameForgetCrafting, ForgetCrafting),
@@ -471,6 +550,11 @@ namespace Amnesia.Data
 
                 ProtectMemoryDuringBloodmoon = ParseBool(config, Values.NameProtectMemoryDuringBloodmoon, ProtectMemoryDuringBloodmoon);
                 ProtectMemoryDuringPvp = ParseBool(config, Values.NameProtectMemoryDuringPvp, ProtectMemoryDuringPvp);
+
+                TreatmentCostBase = ParseInt(config, Values.NameTreatmentCostBase, TreatmentCostBase);
+                TreatmentCostMultiplier = ParseInt(config, Values.NameTreatmentCostMultiplier, TreatmentCostMultiplier);
+                TherapyCostBase = ParseInt(config, Values.NameTherapyCostBase, TherapyCostBase);
+                TherapyCostMultiplier = ParseInt(config, Values.NameTherapyCostMultiplier, TherapyCostMultiplier);
 
                 ForgetLevelsAndSkills = ParseBool(config, Values.NameForgetLevelsAndSkills, ForgetLevelsAndSkills);
                 ForgetBooks = ParseBool(config, Values.NameForgetBooks, ForgetBooks);
