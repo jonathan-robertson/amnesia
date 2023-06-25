@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [2.0.0]
+## [2.0.0] - 2023-06-25
 
 - add console command to view skill tracker
 - add cost options for memory services
@@ -14,12 +14,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - replaces `Grandpa's Fergit'n Elixir`
 - add dialog purchasing system for treatments
   - replaces `Trader Jen's Memory Boosters`
+- add `ForgetCrafting` config option
+  - support for A21's crafting skill reset
+- add journal entry on login
 - add `LevelPenalty` config option
   - instead of resetting to a target level, optionally lose a fixed number of levels
 - add player skill/perk tracking
   - memory loss no longer unassigns skill points that were retained
-- add `ForgetCrafting` config option
-  - support for A21's crafting skill reset
 - fix positive outlook xp time format
   - the way this worked had changed in A21
 - improve admin console feedback on update

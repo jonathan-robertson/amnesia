@@ -1,4 +1,12 @@
 <config>
+    <append xpath="/gameevents/action_sequence[@name='game_first_spawn']">
+        <action class="AddJournalTip">
+            <property name="tip_name" value="amnesiaJournalTip00" />
+            <property name="show_window" value="false" />
+            <property name="phase" value="4" />
+        </action>
+    </append>
+
     <append xpath="/gameevents">
         <action_sequence name="amnesia_pay_from_bag">
             <action class="RemoveItems">
