@@ -1,0 +1,20 @@
+<config>
+    <append xpath="/windows">
+        <window name="amnesiaDialogShopCannotAfford" width="603" height="363" pos="-300, 150" controller="TipWindow" anchor="CenterCenter" pivot="center" depth="15" cursor_area="true">
+            <tip_header text="Memory Services" />
+            <tip_body text="You [decea3]do not have the necessary funds[-] for this procedure. Please return when you do." />
+        </window>
+        <window name="amnesiaDialogShopTreatmentUnnecessary" width="603" height="363" pos="-300, 150" controller="TipWindow" anchor="CenterCenter" pivot="center" depth="15" cursor_area="true">
+            <tip_header text="Memory Treatment" />
+            <tip_body text="You have no need of Treatment since [decea3]your memory is already healthy[-]. Please come again if you need these services in the future." />
+        </window>
+        <window name="amnesiaDialogShopTreatmentComplete" width="603" height="363" pos="-300, 150" controller="TipWindow" anchor="CenterCenter" pivot="center" depth="15" cursor_area="true">
+            <tip_header text="Memory Treatment" />
+            <tip_body text="Your treatment is now complete and [00ff80]your memory has returned to a health state[-]. Please come again!" />
+        </window>
+        <window name="amnesiaDialogShopTherapyComplete" width="603" height="363" pos="-300, 150" controller="TipWindow" anchor="CenterCenter" pivot="center" depth="15" cursor_area="true">
+            <tip_header text="Memory Treatment" />
+            <tip_body text="Your therapy is now complete and [00ff80]your skill points can be reassigned[-]. Please come again!" />
+        </window>
+    </append>
+</config>

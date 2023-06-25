@@ -8,58 +8,74 @@ namespace Amnesia.Handlers
 {
     internal class SavePlayerData
     {
-        private static readonly ModLog<SavePlayerData> log = new ModLog<SavePlayerData>();
+        private static readonly ModLog<SavePlayerData> _log = new ModLog<SavePlayerData>();
 
         public static void Handle(ClientInfo clientInfo, PlayerDataFile playerDataFile)
         {
             if (!Config.Loaded) { return; }
             try
             {
+                DialogShop.UpdateMoneyTracker(playerDataFile.id, playerDataFile.inventory, playerDataFile.bag);
+
+                if (clientInfo == null
+                    || !GameManager.Instance.World.Players.dict.TryGetValue(clientInfo.entityId, out var player))
+                {
+                    _log.Error($"SavePlayerData called for player {playerDataFile.id} who was not online; this is not expected!");
+                    return;
+                }
+
+                // note: on first call, record is not expected to be loaded; should be fine after that
+                if (PlayerRecord.Entries.TryGetValue(playerDataFile.id, out var record))
+                {
+                    record.SetLevel(player.Progression.Level);
+                    record.ValidateAndRepairChangeIntegrity(player);
+                }
+
                 if (!ModApi.Obituary.ContainsKey(clientInfo.entityId))
                 {
                     return;
                 }
                 _ = ModApi.Obituary.Remove(clientInfo.entityId);
 
-                if (clientInfo == null || !GameManager.Instance.World.Players.dict.TryGetValue(clientInfo.entityId, out var player))
-                {
-                    log.Warn("EntityWasKilled event sent from a non-player client... may want to investigate");
-                    return; // exit early, do not interrupt other mods from processing event
-                }
-
+                // Check/Give Fragile Memory 
                 if (!player.Buffs.HasBuff(Values.BuffFragileMemory))
                 {
                     _ = player.Buffs.AddBuff(Values.BuffFragileMemory);
-                    log.Info($"{clientInfo.InternalId.CombinedString} ({player.GetDebugName()}) died and will not be reset, but now has a Fragile Memory.");
-                    return; // let player know it's time for memory boosters
-                }
-
-                if ((Config.ForgetActiveQuests || Config.ForgetInactiveQuests) && QuestHelper.ResetQuests(player))
-                {
-                    // TODO: actually just redesign quest resets to issue remote admin call for client to run locally (an amazing feature!)
-                    // =================================================
-
-                    // TODO: fix NRE that client experiences after getting kicked
-                    // TODO: delay for a bit?
-
-                    // Safe disconnection that allows the client to affirm the disconnection? - still experiences NRE on disconnection :P
-                    //clientInfo.SendPackage(NetPackageManager.GetPackage<NetPackagePlayerDenied>()
-                    //    .Setup(new GameUtils.KickPlayerData(GameUtils.EKickReason.ManualKick, 0, default(DateTime), API.QuestResetKickReason)));
-
-                    //ConnectionManager.Instance.DisconnectClient(clientInfo);
-
-                    GameUtils.KickPlayerForClientInfo(clientInfo, new GameUtils.KickPlayerData(GameUtils.EKickReason.ManualKick, 0, default, Config.QuestResetKickReason));
-                    _ = ThreadManager.StartCoroutine(SaveLater(2.0f, clientInfo, player));
+                    _log.Info($"{clientInfo.InternalId.CombinedString} ({player.GetDebugName()}) died and will not be reset, but now has a Fragile Memory.");
                     return;
                 }
 
+                // Reset Quests
+                // TODO: discontinuing for now since it doesn't work properly: disconnection and wiping doesn't work together
+                //  Instead, maybe revisit this and refer back to how Amnesia 1.x.x handled things to see if it can be reproduced
+                //// TODO: auto-kick for quest relationship refresh would happen here
+                //if (Config.ForgetNonIntroQuests)
+                //{
+                //    var changed = QuestHelper.RemoveNonIntroQuests(clientInfo, playerDataFile);
+                //    // TODO: send net package? Unfortunately, these approaches don't work :[
+                //    //clientInfo.SendPackage(NetPackageManager.GetPackage<NetPackagePlayerData>().Setup(player));
+                //    //clientInfo.SendPackage(NetPackageManager.GetPackage<NetPackagePlayerId>().Setup(player.entityId, player.TeamNumber, clientInfo.latestPlayerData, 4));
+                //    if (changed)
+                //    {
+                //        GameUtils.KickPlayerForClientInfo(clientInfo, new GameUtils.KickPlayerData(GameUtils.EKickReason.ManualKick, 0, default, Config.QuestResetKickReason));
+
+                //        playerDataFile.bModifiedSinceLastSave = true;
+                //        playerDataFile.bDead = true;
+                //        playerDataFile.Save(GameIO.GetPlayerDataDir(), clientInfo.InternalId.CombinedString);
+
+                //        //_ = ThreadManager.StartCoroutine(SaveLater(2.0f, clientInfo, player));
+                //        // TODO: send packet to open URL in browser for auto re-login?
+                //        return;
+                //    }
+                //}
+
                 // Reset Player
-                log.Info($"{clientInfo.InternalId.CombinedString} ({player.GetDebugName()}) died and has suffered memory loss.");
-                PlayerHelper.ResetPlayer(player);
+                _log.Info($"{clientInfo.InternalId.CombinedString} ({player.GetDebugName()}) died and has suffered memory loss.");
+                PlayerHelper.Rewind(player, record, Config.LevelPenalty > 0 ? Config.LevelPenalty : record.Level - Config.LongTermMemoryLevel);
             }
             catch (Exception e)
             {
-                log.Error("Failed to handle OnSavePlayerData", e);
+                _log.Error("Failed to handle OnSavePlayerData", e);
             }
         }
 
@@ -88,7 +104,6 @@ namespace Amnesia.Handlers
                     new MapChunkDatabase.DirectoryPlayerId(GameIO.GetPlayerDataDir(),
                     clientInfo.InternalId.CombinedString),
                     null,
-                    false,
                     true);
             }
         }

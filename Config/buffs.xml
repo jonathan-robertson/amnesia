@@ -1,24 +1,14 @@
 ﻿<config>
     <append xpath="/buffs/buff[@name='buffStatusCheck02']">
         <effect_group name="amnesiaJournalEntries">
-            <triggered_effect trigger="onSelfEnteredGame" action="AddJournalEntry" journal="amnesiaJournalTip" />
+            <triggered_effect trigger="onSelfEnteredGame" action="AddJournalEntry" journal="amnesiaJournalTip00" />
         </effect_group>
     </append>
-
 
     <set xpath="/buffs/buff[@name='buffNewbieCoat']/effect_group/requirement[@name='PlayerLevel']/@value">@amnesiaLongTermMemoryLevel</set>
     <set xpath="/buffs/buff[@name='buffNewbieCoat']/effect_group/triggered_effect/requirement[@name='PlayerLevel']/@value">@amnesiaLongTermMemoryLevel</set>
 
     <append xpath="/buffs">
-        <!-- TODO: remove for 2.0.0 - deprecated: keeping around until then for backwards compatibility -->
-        <buff name="buffAmnesiaHardenedMemory" remove_on_death="false" hidden="true">
-            <duration value="0" />
-            <stack_type value="ignore" />
-            <effect_group>
-                <triggered_effect trigger="onSelfBuffRemove" action="ShowToolbeltMessage" message_key="buffAmnesiaHardenedMemoryRemoveTooltip" />
-            </effect_group>
-        </buff>
-
         <buff name="buffAmnesiaFragileMemory" name_key="buffAmnesiaFragileMemoryName" description_key="buffAmnesiaFragileMemoryDesc" icon="ui_game_symbol_intellect" icon_color="255,128,0" remove_on_death="false">
             <duration value="0" />
             <stack_type value="ignore" />
@@ -27,7 +17,6 @@
 
             <effect_group>
                 <triggered_effect trigger="onSelfBuffStart" action="ShowToolbeltMessage" message_key="buffAmnesiaFragileMemoryStartTooltip" />
-                <triggered_effect trigger="onSelfBuffRemove" action="ShowToolbeltMessage" message_key="buffAmnesiaFragileMemoryRemoveTooltip" />
                 <passive_effect name="BuffBlink" operation="base_set" value="2" duration="0,3" tags="buffAmnesiaFragileMemory" />
             </effect_group>
         </buff>
@@ -52,7 +41,7 @@
 
         <buff name="buffAmnesiaPositiveOutlook" name_key="buffAmnesiaPositiveOutlookName" description_key="buffAmnesiaPositiveOutlookDesc" icon="ui_game_symbol_xp" icon_color="0,255,128" remove_on_death="false">
             <duration value="0" />
-            <display_value value="amnesiaPositiveOutlookRemTime" />
+            <display_value value="$amnesiaPositiveOutlookRemTime" />
             <display_value_format value="time" />
 
             <effect_group name="activeEffects">
@@ -62,12 +51,14 @@
             </effect_group>
             <effect_group name="update">
                 <triggered_effect trigger="onSelfBuffUpdate" action="ModifyCVar" cvar="amnesiaPositiveOutlookRemTime" operation="subtract" value="1" />
+                <triggered_effect trigger="onSelfBuffUpdate" action="ModifyCVar" cvar="$amnesiaPositiveOutlookRemTime" operation="set" value="@amnesiaPositiveOutlookRemTime" />
                 <triggered_effect trigger="onSelfBuffUpdate" action="RemoveBuff" buff="buffAmnesiaPositiveOutlook">
                     <requirement name="CVarCompare" cvar="amnesiaPositiveOutlookRemTime" operation="LTE" value="0" />
                 </triggered_effect>
             </effect_group>
             <effect_group name="cleanup">
                 <triggered_effect trigger="onSelfBuffRemove" action="ModifyCVar" cvar="amnesiaPositiveOutlookRemTime" operation="set" value="0" />
+                <triggered_effect trigger="onSelfBuffRemove" action="ModifyCVar" cvar="$amnesiaPositiveOutlookRemTime" operation="set" value="0" />
             </effect_group>
         </buff>
 
@@ -105,6 +96,31 @@
             <effect_group name="cleanup">
                 <triggered_effect trigger="onSelfBuffRemove" action="ModifyCVar" cvar="$postBloodmoonProtectionTime" operation="set" value="0" />
                 <triggered_effect trigger="onSelfBuffRemove" action="ShowToolbeltMessage" message_key="buffAmnesiaBloodmoonLifeProtectionEndTooltip" />
+            </effect_group>
+        </buff>
+
+        <buff name="buffAmnesiaTryBuyTreatment" hidden="true" remove_on_death="false">
+            <stack_type value="ignore" />
+            <duration value="0" />
+            <!-- wait for server to process and remove this, along with buffAmnesiaFragileMemory -->
+            <effect_group>
+                <triggered_effect trigger="onSelfEnteredGame" action="RemoveBuff" buff="buffAmnesiaTryBuyTreatment" />
+            </effect_group>
+        </buff>
+        <buff name="buffAmnesiaTryBuyTherapy" hidden="true" remove_on_death="false">
+            <stack_type value="ignore" />
+            <duration value="0" />
+            <!-- wait for server to process and remove this -->
+            <effect_group>
+                <triggered_effect trigger="onSelfEnteredGame" action="RemoveBuff" buff="buffAmnesiaTryBuyTherapy" />
+            </effect_group>
+        </buff>
+        <buff name="buffAmnesiaRequestChangeCallback" hidden="true" remove_on_death="false">
+            <stack_type value="ignore" />
+            <duration value="0" />
+            <!-- wait for server to process and remove this, along with buffAmnesiaFragileMemory -->
+            <effect_group>
+                <triggered_effect trigger="onSelfEnteredGame" action="RemoveBuff" buff="buffAmnesiaRequestChangeCallback" />
             </effect_group>
         </buff>
     </append>

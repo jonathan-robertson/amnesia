@@ -6,15 +6,70 @@ namespace Amnesia.Utilities
 {
     internal class PlayerHelper
     {
-        private static readonly ModLog<PlayerHelper> log = new ModLog<PlayerHelper>();
+        private static readonly ModLog<PlayerHelper> _log = new ModLog<PlayerHelper>();
+
+        public static bool TryGetClientInfo(int entityId, out ClientInfo clientInfo)
+        {
+            clientInfo = ConnectionManager.Instance.Clients.ForEntityId(entityId);
+            if (clientInfo == null)
+            {
+                _log.Error($"Could not retrieve remote player connection for {entityId}");
+                return false;
+            }
+            return true;
+        }
+
+        public static bool TryGetClientInfoAndEntityPlayer(World world, int entityId, out ClientInfo clientInfo, out EntityPlayer player)
+        {
+            clientInfo = ConnectionManager.Instance.Clients.ForEntityId(entityId);
+            if (clientInfo == null)
+            {
+                _log.Error($"Could not retrieve remote player connection for {entityId}");
+                player = null;
+                return false;
+            }
+            if (!world.Players.dict.TryGetValue(entityId, out player))
+            {
+                _log.Error($"Could not retrieve player for {entityId}");
+                return false;
+            }
+            return true;
+        }
+
+        public static void Respec(EntityPlayer player)
+        {
+            if (!PlayerRecord.Entries.TryGetValue(player.entityId, out var record))
+            {
+                _log.Error($"Unable to find player record under {player.entityId} for Respec Request.");
+                return;
+            }
+
+            if (!TryGetClientInfo(player.entityId, out var clientInfo))
+            {
+                _log.Error($"Unable to find client info for player {player.entityId}.");
+                return;
+            }
+
+            record.Respec(clientInfo, player);
+            ConnectionManager.Instance.SendPackage(NetPackageManager.GetPackage<NetPackagePlayerStats>().Setup(player), false, player.entityId);
+        }
 
         /// <remarks>Most of the following core logic was lifted from ActionResetPlayerData.PerformTargetAction</remarks>
-        public static void ResetPlayer(EntityPlayer player)
+        public static void Rewind(EntityPlayer player, PlayerRecord record, int levelsToRewind)
         {
             var needsSave = false;
 
+            if (Config.ForgetKdr)
+            {
+                needsSave = true;
+                player.Died = 0;
+                player.KilledPlayers = 0;
+                player.KilledZombies = 0;
+            }
+
             if (Config.ForgetSchematics)
             {
+                needsSave = true;
                 var recipes = CraftingManager.GetRecipes();
                 for (var i = 0; i < recipes.Count; i++)
                 {
@@ -25,47 +80,27 @@ namespace Amnesia.Utilities
                 }
             }
 
-            // Zero out Player KD Stats
-            if (Config.ForgetKdr)
-            {
-                player.Died = 0;
-                player.KilledPlayers = 0;
-                player.KilledZombies = 0;
-                needsSave = true;
-            }
-
             if (Config.ForgetLevelsAndSkills)
             {
-                player.Progression.ResetProgression(Config.ForgetBooks);
-                player.Progression.Level = Config.LongTermMemoryLevel;
-                player.Progression.ExpToNextLevel = player.Progression.GetExpForNextLevel();
-                player.Progression.SkillPoints = Config.LongTermMemoryLevel - 1;
+                needsSave = true;
+                var targetLevel = Math.Max(Config.LongTermMemoryLevel, player.Progression.Level - levelsToRewind);
 
-                // Return all skill points rewarded from completed quest; should cover vanilla quest_BasicSurvival8, for example
-                if (!Config.ForgetIntroQuests)
-                {
-                    try
-                    {
-                        for (var i = 0; i < player.QuestJournal.quests.Count; i++)
-                        {
-                            if (player.QuestJournal.quests[i].CurrentState == Quest.QuestState.Completed)
-                            {
-                                var rewards = player.QuestJournal.quests[i].Rewards;
-                                for (var j = 0; j < rewards.Count; j++)
-                                {
-                                    if (rewards[j] is RewardSkillPoints)
-                                    {
-                                        player.Progression.SkillPoints += Convert.ToInt32((rewards[j] as RewardSkillPoints).Value);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        log.Error("Failed to scan for completed skillpoints.", e);
-                    }
-                }
+                // Reset skills
+                //  NOTE: this flushes all skill points and reapplies points from quests (self-healing from mistakes)
+                //        if we want to support dynamic/unlimited skill points in the future, we should refactor how reset works.
+
+                // Reset spent skill points
+                player.Progression.ResetProgression(true, Config.ForgetBooks, Config.ForgetCrafting);
+
+                // Update level
+                player.Progression.Level = targetLevel;
+                player.Progression.ExpToNextLevel = player.Progression.GetExpForNextLevel();
+                record.SetLevel(player.Progression.Level);
+
+                // Update skills and skill points
+                player.Progression.SkillPoints = player.QuestJournal.GetRewardedSkillPoints();
+                player.Progression.SkillPoints += Progression.SkillPointsPerLevel * (targetLevel - 1);
+                record.ReapplySkills(player);
 
                 // Inform client cycles of level adjustment for health/stamina/food/water max values
                 player.SetCVar("$LastPlayerLevel", player.Progression.Level);
@@ -77,8 +112,6 @@ namespace Amnesia.Utilities
                 player.SetCVar("$xpFromLootLast", 0);
                 player.SetCVar("$xpFromHarvestingLast", 0);
                 player.SetCVar("$xpFromKillLast", 0);
-
-                needsSave = true;
             }
 
             if (needsSave)
@@ -92,7 +125,7 @@ namespace Amnesia.Utilities
             _ = player.Buffs.AddBuff(Values.BuffMemoryLoss);
             if (Config.PositiveOutlookTimeOnMemoryLoss > 0)
             {
-                log.Trace($"{player.GetDebugName()} will receive the Positive Outlook buff.");
+                _log.Trace($"{player.GetDebugName()} will receive the Positive Outlook buff.");
                 player.SetCVar(Values.CVarPositiveOutlookRemTime, Config.PositiveOutlookTimeOnMemoryLoss);
                 _ = player.Buffs.AddBuff(Values.BuffPositiveOutlook);
             }
@@ -112,6 +145,17 @@ namespace Amnesia.Utilities
                 _ = player.Buffs.AddBuff(Values.BuffPositiveOutlook);
             }
             return targetValue;
+        }
+
+        public static void TriggerGameEvent(ClientInfo clientInfo, EntityPlayer player, string eventName)
+        {
+            _ = GameEventManager.Current.HandleAction(eventName, null, player, false);
+            clientInfo.SendPackage(NetPackageManager.GetPackage<NetPackageGameEventResponse>().Setup(eventName, clientInfo.entityId, "", "", NetPackageGameEventResponse.ResponseTypes.Approved));
+        }
+
+        public static void OpenWindow(ClientInfo clientInfo, string windowGroupName)
+        {
+            clientInfo.SendPackage(NetPackageManager.GetPackage<NetPackageConsoleCmdClient>().Setup($"xui open {windowGroupName}", true));
         }
 
         /// <summary>

@@ -1,0 +1,3 @@
+<config>
+    <remove xpath="/lootcontainers/lootgroup/item[@name='drinkJarGrandpasForgettingElixir']" />
+</config>

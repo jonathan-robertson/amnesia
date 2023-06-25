@@ -6,7 +6,7 @@ namespace Amnesia.Handlers
 {
     internal class PlayerSpawnedInWorld
     {
-        private static readonly ModLog<PlayerSpawnedInWorld> log = new ModLog<PlayerSpawnedInWorld>();
+        private static readonly ModLog<PlayerSpawnedInWorld> _log = new ModLog<PlayerSpawnedInWorld>();
 
         /// <summary>
         /// Handle player spawning into world.
@@ -26,16 +26,22 @@ namespace Amnesia.Handlers
                 }
                 switch (respawnType)
                 {
+                    // TODO: case RespawnType.NewGame: // local player creating a new game
                     case RespawnType.EnterMultiplayer: // first-time login for new player
                         _ = PlayerHelper.AddPositiveOutlookTime(player, Config.PositiveOutlookTimeOnFirstJoin);
-                        RefundHardenedMemory(clientInfo, player); // TODO: deprecated; remove in 2.0.0
                         HandleStandardRespawnSteps(player);
+                        DialogShop.UpdatePrices(player);
+                        DialogShop.UpdateMoneyTracker(player.entityId, player.inventory.GetSlots(), player.bag.GetSlots());
+                        PlayerRecord.Load(clientInfo);
                         break;
+                    // TODO: case RespawnType.LoadedGame: // local player loading existing game
                     case RespawnType.JoinMultiplayer: // existing player rejoining
                         // grace period should continue only so long as you don't disconnect
                         player.Buffs.RemoveBuff(Values.BuffPostBloodmoonLifeProtection);
-                        RefundHardenedMemory(clientInfo, player); // TODO: deprecated; remove in 2.0.0
                         HandleStandardRespawnSteps(player);
+                        DialogShop.UpdatePrices(player);
+                        DialogShop.UpdateMoneyTracker(player.entityId, player.inventory.GetSlots(), player.bag.GetSlots());
+                        PlayerRecord.Load(clientInfo);
                         break;
                     case RespawnType.Died: // existing player returned from death
                         _ = PlayerHelper.AddPositiveOutlookTime(player, Config.PositiveOutlookTimeOnMemoryLoss);
@@ -45,7 +51,7 @@ namespace Amnesia.Handlers
             }
             catch (Exception e)
             {
-                log.Error("Failed to handle PlayerSpawnedInWorld event.", e);
+                _log.Error("Failed to handle PlayerSpawnedInWorld event.", e);
             }
         }
 
@@ -61,6 +67,10 @@ namespace Amnesia.Handlers
             if (player.GetCVar(Values.CVarLongTermMemoryLevel) != Config.LongTermMemoryLevel)
             {
                 player.SetCVar(Values.CVarLongTermMemoryLevel, Config.LongTermMemoryLevel);
+            }
+            if (player.GetCVar(Values.CVarLevelPenalty) != Config.LevelPenalty)
+            {
+                player.SetCVar(Values.CVarLevelPenalty, Config.LevelPenalty);
             }
 
             // Remove Positive Outlook if admin disabled it since player's last login
@@ -87,19 +97,6 @@ namespace Amnesia.Handlers
                 // remove/clean up since protection is inactive
                 player.Buffs.RemoveBuff(Values.BuffBloodmoonLifeProtection);
                 player.Buffs.RemoveBuff(Values.BuffPostBloodmoonLifeProtection);
-            }
-        }
-
-        /// <summary>
-        /// Temporary method to automatically refund any players with the Hardened Memory buff from version 1.0.0.
-        /// </summary>
-        /// <param name="player">EntityPlayer to check buffs for and refund if hardened.</param>
-        private static void RefundHardenedMemory(ClientInfo clientInfo, EntityPlayer player) // TODO: deprecated; remove in 2.0.0
-        {
-            if (player.Buffs.HasBuff(Values.BuffHardenedMemory))
-            {
-                PlayerHelper.GiveItem(clientInfo, player, Values.NameMemoryBoosters);
-                player.Buffs.RemoveBuff(Values.BuffHardenedMemory);
             }
         }
     }

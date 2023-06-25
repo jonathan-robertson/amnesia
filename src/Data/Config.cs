@@ -9,15 +9,26 @@ namespace Amnesia.Data
 {
     internal class Config
     {
-        private static readonly ModLog<Config> log = new ModLog<Config>();
+        private static readonly ModLog<Config> _log = new ModLog<Config>();
         private static readonly string filename = Path.Combine(GameIO.GetSaveGameDir(), "amnesia.xml");
 
-        public static string QuestResetKickReason { get; private set; } = "This server is configured to erase some settings from your player file when you die for the final time. Please reconnect whenever you're ready.";
+        public static string QuestResetKickReason { get; private set; } = "This server is configured to erase some settings from your player file when you die and lose memory. Please reconnect whenever you're ready.";
 
         public static bool Loaded { get; private set; } = false;
 
-        /// <summary>The level players will be reset to on memory loss and the level at which losing memory on death starts.</summary>
+        /// <summary>The level at which Amnesia mechanics activate and below which the player will never be reset.</summary>
         public static int LongTermMemoryLevel { get; private set; } = 1;
+        /// <summary>The number of levels to lose on memory loss; if this is set to 0, memory loss will cause player to reset to LongTermMemoryLevel.</summary>
+        public static int LevelPenalty { get; private set; } = 0;
+
+        /// <summary>Base cost of Treatment.</summary>
+        public static int TreatmentCostBase { get; private set; } = 0;
+        /// <summary>Level Multplier cost of Treatment.</summary>
+        public static int TreatmentCostMultiplier { get; private set; } = 1200;
+        /// <summary>Base cost of Therapy.</summary>
+        public static int TherapyCostBase { get; private set; } = 0;
+        /// <summary>Level Multplier cost of Therapy.</summary>
+        public static int TherapyCostMultiplier { get; private set; } = 600;
 
         /// <summary>Maximum length of time allowed for buff that boost xp growth.</summary>
         public static int PositiveOutlookMaxTime { get; private set; } = 3600; // 1 hr
@@ -53,17 +64,14 @@ namespace Amnesia.Data
         public static bool ForgetLevelsAndSkills { get; private set; } = true;
         /// <summary>Whether books should be forgotten on memory loss.</summary>
         public static bool ForgetBooks { get; private set; } = false;
+        /// <summary>Whether crafting magazine progress should be forgotten on memory loss.</summary>
+        public static bool ForgetCrafting { get; private set; } = false;
         /// <summary>Whether schematics should be forgotten on memory loss.</summary>
         public static bool ForgetSchematics { get; private set; } = false;
         /// <summary>Whether players/zombies killed and times died should be forgotten on memory loss.</summary>
         public static bool ForgetKdr { get; private set; } = false;
-
-        /// <summary>Whether ongoing quests should be forgotten on memory loss.</summary>
-        public static bool ForgetActiveQuests { get; private set; } = false;
-        /// <summary>Whether completed quests (AND TRADER TIER LEVELS) should be forgotten on memory loss.</summary>
-        public static bool ForgetInactiveQuests { get; private set; } = false;
-        /// <summary>Whether the intro quests should be forgotten/reset on memory loss.</summary>
-        public static bool ForgetIntroQuests { get; private set; } = false;
+        /// <summary>Whether to forget shareable quests (and trader tier levels) on memory loss.</summary>
+        public static bool ForgetNonIntroQuests { get; private set; } = false;
 
         public static string PrintPositiveOutlookTimeOnMemoryLoss()
         {
@@ -74,6 +82,7 @@ namespace Amnesia.Data
         {
             return $@"=== Amnesia Configuration ===
 {Values.NameLongTermMemoryLevel}: {LongTermMemoryLevel}
+{Values.NameLevelPenalty}: {LevelPenalty}
 
 {Values.NamePositiveOutlookMaxTime}: {PositiveOutlookMaxTime}
 {Values.NamePositiveOutlookTimeOnFirstJoin}: {PositiveOutlookTimeOnFirstJoin}
@@ -83,26 +92,28 @@ namespace Amnesia.Data
 {Values.NameProtectMemoryDuringBloodmoon}: {ProtectMemoryDuringBloodmoon}
 {Values.NameProtectMemoryDuringPvp}: {ProtectMemoryDuringPvp}
 
+{Values.NameTreatmentCostBase}: {TreatmentCostBase}
+{Values.NameTreatmentCostMultiplier}: {TreatmentCostMultiplier}
+{Values.NameTherapyCostBase}: {TherapyCostBase}
+{Values.NameTherapyCostMultiplier}: {TherapyCostMultiplier}
+
 {Values.NameForgetLevelsAndSkills}: {ForgetLevelsAndSkills}
 {Values.NameForgetBooks}: {ForgetBooks}
+{Values.NameForgetCrafting}: {ForgetCrafting}
 {Values.NameForgetSchematics}: {ForgetSchematics}
 {Values.NameForgetKdr}: {ForgetKdr}
-
-== Experimental Features (require player disconnection on final death) ==
-{Values.NameForgetActiveQuests}: {ForgetActiveQuests}
-{Values.NameForgetInactiveQuests}: {ForgetInactiveQuests}
-{Values.NameForgetIntroQuests}: {ForgetIntroQuests}";
+{Values.NameForgetNonIntroQuests}: {ForgetNonIntroQuests}";
         }
 
         /// <summary>
         /// Update the long term memory level. This will determine when Amnesia activates and the level players will be reset to on death.
         /// </summary>
         /// <param key="value">The new level to use for long term memory.</param>
-        public static void SetLongTermMemoryLevel(int value)
+        public static bool SetLongTermMemoryLevel(int value)
         {
             if (LongTermMemoryLevel == value)
             {
-                return;
+                return false;
             }
             LongTermMemoryLevel = Math.Max(1, value);
             _ = Save();
@@ -115,24 +126,99 @@ namespace Amnesia.Data
                     {
                         _ = player.Buffs.AddBuff(Values.BuffNewbieCoat);
                     }
-                    if (player.Buffs.HasBuff(Values.BuffHardenedMemory)) // TODO: deprecated; remove in 2.0.0
-                    {
-                        player.Buffs.RemoveBuff(Values.BuffHardenedMemory);
-                        PlayerHelper.GiveItem(player, Values.NameMemoryBoosters);
-                    }
                 }
             }
+            return true;
+        }
+
+        /// <summary>
+        /// Update the level penalty. This will determine the number of lost levels experience when Memory is lost.
+        /// </summary>
+        /// <param key="value">The new level to use for Level Penalty.</param>
+        public static bool SetLevelPenalty(int value)
+        {
+            if (LevelPenalty == value)
+            {
+                return false;
+            }
+            LevelPenalty = Math.Max(0, value);
+            _ = Save();
+            foreach (var player in GameManager.Instance.World.Players.list)
+            {
+                player.SetCVar(Values.CVarLevelPenalty, LevelPenalty);
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// Update the base cost of treatment.
+        /// </summary>
+        /// <param key="value">The value to use.</param>
+        public static bool SetTreatmentCostBase(int value)
+        {
+            if (TreatmentCostBase == value)
+            {
+                return false;
+            }
+            TreatmentCostBase = Math.Max(0, value);
+            _ = Save();
+            return true;
+        }
+
+        /// <summary>
+        /// Update the level multiplier cost of treatment.
+        /// </summary>
+        /// <param key="value">The value to use.</param>
+        public static bool SetTreatmentCostMultiplier(int value)
+        {
+            if (TreatmentCostMultiplier == value)
+            {
+                return false;
+            }
+            TreatmentCostMultiplier = Math.Max(0, value);
+            _ = Save();
+            return true;
+        }
+
+        /// <summary>
+        /// Update the base cost of therapy.
+        /// </summary>
+        /// <param key="value">The value to use.</param>
+        public static bool SetTherapyCostBase(int value)
+        {
+            if (TherapyCostBase == value)
+            {
+                return false;
+            }
+            TherapyCostBase = Math.Max(0, value);
+            _ = Save();
+            return true;
+        }
+
+        /// <summary>
+        /// Update the level multiplier cost of therapy.
+        /// </summary>
+        /// <param key="value">The value to use.</param>
+        public static bool SetTherapyCostMultiplier(int value)
+        {
+            if (TherapyCostMultiplier == value)
+            {
+                return false;
+            }
+            TherapyCostMultiplier = Math.Max(0, value);
+            _ = Save();
+            return true;
         }
 
         /// <summary>
         /// Generously update max time for the positive outlook buff.
         /// </summary>
         /// <param key="timeInSeconds">The new value to limit max time to (generally represented as timeInSeconds).</param>
-        public static void SetPositiveOutlookMaxTime(int timeInSeconds)
+        public static bool SetPositiveOutlookMaxTime(int timeInSeconds)
         {
             if (PositiveOutlookMaxTime == timeInSeconds)
             {
-                return;
+                return false;
             }
             PositiveOutlookMaxTime = Math.Max(0, timeInSeconds);
             _ = Save();
@@ -153,6 +239,7 @@ namespace Amnesia.Data
                 }
                 player.SetCVar(Values.CVarPositiveOutlookMaxTime, PositiveOutlookMaxTime);
             }
+            return true;
         }
 
         /// <summary>
@@ -160,14 +247,15 @@ namespace Amnesia.Data
         /// </summary>
         /// <param key="timeInSeconds">The number of seconds to grant.</param>
         /// <remarks>Set to <= zero to disable.</remarks>
-        public static void SetPositiveOutlookTimeOnFirstJoin(int timeInSeconds)
+        public static bool SetPositiveOutlookTimeOnFirstJoin(int timeInSeconds)
         {
             if (PositiveOutlookTimeOnFirstJoin == timeInSeconds)
             {
-                return;
+                return false;
             }
             PositiveOutlookTimeOnFirstJoin = Math.Min(PositiveOutlookMaxTime, Math.Max(0, timeInSeconds));
             _ = Save();
+            return true;
         }
 
         /// <summary>
@@ -175,14 +263,15 @@ namespace Amnesia.Data
         /// </summary>
         /// <param key="timeInSeconds">The number of seconds to grant.</param>
         /// <remarks>Set to <= zero to disable.</remarks>
-        public static void SetPositiveOutlookTimeOnMemoryLoss(int timeInSeconds)
+        public static bool SetPositiveOutlookTimeOnMemoryLoss(int timeInSeconds)
         {
             if (PositiveOutlookTimeOnMemoryLoss == timeInSeconds)
             {
-                return;
+                return false;
             }
             PositiveOutlookTimeOnMemoryLoss = Math.Min(PositiveOutlookMaxTime, Math.Max(0, timeInSeconds));
             _ = Save();
+            return true;
         }
 
         /// <summary>
@@ -252,11 +341,11 @@ namespace Amnesia.Data
         /// Enable or disable whether memory can be lost during Blood Moon.
         /// </summary>
         /// <param key="value">New value to use.</param>
-        public static void SetProtectMemoryDuringBloodmoon(bool value)
+        public static bool SetProtectMemoryDuringBloodmoon(bool value)
         {
             if (ProtectMemoryDuringBloodmoon == value)
             {
-                return;
+                return false;
             }
             ProtectMemoryDuringBloodmoon = value;
             _ = Save();
@@ -275,118 +364,112 @@ namespace Amnesia.Data
                     player.Buffs.RemoveBuff(Values.BuffPostBloodmoonLifeProtection);
                 }
             }
+            return true;
         }
 
         /// <summary>
         /// Enable or disable whether memory can be lost to PVP.
         /// </summary>
         /// <param key="value">New value to use.</param>
-        public static void SetProtectMemoryDuringPvp(bool value)
+        public static bool SetProtectMemoryDuringPvp(bool value)
         {
             if (ProtectMemoryDuringPvp == value)
             {
-                return;
+                return false;
             }
             ProtectMemoryDuringPvp = value;
             _ = Save();
+            return true;
         }
 
         /// <summary>
         /// Enable or disable ForgetLevelsAndSkills on memory loss.
         /// </summary>
         /// <param key="value">New value to use.</param>
-        public static void SetForgetLevelsAndSkills(bool value)
+        public static bool SetForgetLevelsAndSkills(bool value)
         {
             if (ForgetLevelsAndSkills == value)
             {
-                return;
+                return false;
             }
             ForgetLevelsAndSkills = value;
             _ = Save();
+            return true;
         }
 
         /// <summary>
         /// Enable or disable ForgetBooks on memory loss.
         /// </summary>
         /// <param key="value">New value to use.</param>
-        public static void SetForgetBooks(bool value)
+        public static bool SetForgetBooks(bool value)
         {
             if (ForgetBooks == value)
             {
-                return;
+                return false;
             }
             ForgetBooks = value;
             _ = Save();
+            return true;
+        }
+
+        /// <summary>
+        /// Enable or disable ForgetCrafting on memory loss.
+        /// </summary>
+        /// <param key="value">New value to use.</param>
+        public static bool SetForgetCrafting(bool value)
+        {
+            if (ForgetCrafting == value)
+            {
+                return false;
+            }
+            ForgetCrafting = value;
+            _ = Save();
+            return true;
         }
 
         /// <summary>
         /// Enable or disable ForgetSchematics on memory loss.
         /// </summary>
         /// <param key="value">New value to use.</param>
-        public static void SetForgetSchematics(bool value)
+        public static bool SetForgetSchematics(bool value)
         {
             if (ForgetSchematics == value)
             {
-                return;
+                return false;
             }
             ForgetSchematics = value;
             _ = Save();
+            return true;
         }
 
         /// <summary>
         /// Enable or disable ForgetKdr on memory loss.
         /// </summary>
         /// <param key="value">New value to use.</param>
-        public static void SetForgetKdr(bool value)
+        public static bool SetForgetKdr(bool value)
         {
             if (ForgetKdr == value)
             {
-                return;
+                return false;
             }
             ForgetKdr = value;
             _ = Save();
+            return true;
         }
 
         /// <summary>
-        /// Enable or disable ForgetActiveQuests on memory loss.
+        /// Enable or disable ForgetNonIntroQuests on memory loss.
         /// </summary>
-        /// <param key="value">New value to use.</param>
-        public static void SetForgetActiveQuests(bool value)
+        /// <param name="value">New value to use.</param>
+        public static bool SetForgetNonIntroQuests(bool value)
         {
-            if (ForgetActiveQuests == value)
+            if (ForgetNonIntroQuests == value)
             {
-                return;
+                return false;
             }
-            ForgetActiveQuests = value;
+            ForgetNonIntroQuests = value;
             _ = Save();
-        }
-
-        /// <summary>
-        /// Enable or disable ForgetIntroQuests on memory loss.
-        /// </summary>
-        /// <param key="value">New value to use.</param>
-        public static void SetForgetIntroQuests(bool value)
-        {
-            if (ForgetIntroQuests == value)
-            {
-                return;
-            }
-            ForgetIntroQuests = value;
-            _ = Save();
-        }
-
-        /// <summary>
-        /// Enable or disable ForgetInactiveQuests on memory loss.
-        /// </summary>
-        /// <param key="value">New value to use.</param>
-        public static void SetForgetInactiveQuests(bool value)
-        {
-            if (ForgetInactiveQuests == value)
-            {
-                return;
-            }
-            ForgetInactiveQuests = value;
-            _ = Save();
+            return true;
         }
 
         public static bool Save()
@@ -404,6 +487,7 @@ namespace Amnesia.Data
 
                 new XElement("config",
                     new XElement(Values.NameLongTermMemoryLevel, LongTermMemoryLevel),
+                    new XElement(Values.NameLevelPenalty, LevelPenalty),
 
                     new XElement(Values.NamePositiveOutlookMaxTime, PositiveOutlookMaxTime),
                     new XElement(Values.NamePositiveOutlookTimeOnFirstJoin, PositiveOutlookTimeOnFirstJoin),
@@ -413,21 +497,25 @@ namespace Amnesia.Data
                     new XElement(Values.NameProtectMemoryDuringBloodmoon, ProtectMemoryDuringBloodmoon),
                     new XElement(Values.NameProtectMemoryDuringPvp, ProtectMemoryDuringPvp),
 
+                    new XElement(Values.NameTreatmentCostBase, TreatmentCostBase),
+                    new XElement(Values.NameTreatmentCostMultiplier, TreatmentCostMultiplier),
+                    new XElement(Values.NameTherapyCostBase, TherapyCostBase),
+                    new XElement(Values.NameTherapyCostMultiplier, TherapyCostMultiplier),
+
                     new XElement(Values.NameForgetLevelsAndSkills, ForgetLevelsAndSkills),
                     new XElement(Values.NameForgetBooks, ForgetBooks),
+                    new XElement(Values.NameForgetCrafting, ForgetCrafting),
                     new XElement(Values.NameForgetSchematics, ForgetSchematics),
                     new XElement(Values.NameForgetKdr, ForgetKdr),
 
-                    new XElement(Values.NameForgetActiveQuests, ForgetActiveQuests),
-                    new XElement(Values.NameForgetInactiveQuests, ForgetInactiveQuests),
-                    new XElement(Values.NameForgetIntroQuests, ForgetIntroQuests)
+                    new XElement(Values.NameForgetNonIntroQuests, ForgetNonIntroQuests)
                 ).Save(filename);
-                log.Info($"Successfully saved {filename}");
+                _log.Info($"Successfully saved {filename}");
                 return true;
             }
             catch (Exception e)
             {
-                log.Error($"Failed to save {filename}", e);
+                _log.Error($"Failed to save {filename}", e);
                 return false;
             }
         }
@@ -438,6 +526,7 @@ namespace Amnesia.Data
             {
                 var config = XElement.Load(filename);
                 LongTermMemoryLevel = ParseInt(config, Values.NameLongTermMemoryLevel, LongTermMemoryLevel);
+                LevelPenalty = ParseInt(config, Values.NameLevelPenalty, LevelPenalty);
 
                 PositiveOutlookMaxTime = ParseInt(config, Values.NamePositiveOutlookMaxTime, PositiveOutlookMaxTime);
                 PositiveOutlookTimeOnFirstJoin = ParseInt(config, Values.NamePositiveOutlookTimeOnFirstJoin, PositiveOutlookTimeOnFirstJoin);
@@ -448,7 +537,7 @@ namespace Amnesia.Data
                 {
                     if (!int.TryParse(entry.Attribute("value").Value, out var intValue))
                     {
-                        log.Error($"Unable to parse value; expecting int");
+                        _log.Error($"Unable to parse value; expecting int");
                         return;
                     }
                     PositiveOutlookTimeOnKill.Add(entry.Attribute("name").Value, new TimeOnKill
@@ -462,25 +551,29 @@ namespace Amnesia.Data
                 ProtectMemoryDuringBloodmoon = ParseBool(config, Values.NameProtectMemoryDuringBloodmoon, ProtectMemoryDuringBloodmoon);
                 ProtectMemoryDuringPvp = ParseBool(config, Values.NameProtectMemoryDuringPvp, ProtectMemoryDuringPvp);
 
+                TreatmentCostBase = ParseInt(config, Values.NameTreatmentCostBase, TreatmentCostBase);
+                TreatmentCostMultiplier = ParseInt(config, Values.NameTreatmentCostMultiplier, TreatmentCostMultiplier);
+                TherapyCostBase = ParseInt(config, Values.NameTherapyCostBase, TherapyCostBase);
+                TherapyCostMultiplier = ParseInt(config, Values.NameTherapyCostMultiplier, TherapyCostMultiplier);
+
                 ForgetLevelsAndSkills = ParseBool(config, Values.NameForgetLevelsAndSkills, ForgetLevelsAndSkills);
                 ForgetBooks = ParseBool(config, Values.NameForgetBooks, ForgetBooks);
+                ForgetCrafting = ParseBool(config, Values.NameForgetCrafting, ForgetCrafting);
                 ForgetSchematics = ParseBool(config, Values.NameForgetSchematics, ForgetSchematics);
                 ForgetKdr = ParseBool(config, Values.NameForgetKdr, ForgetKdr);
 
-                ForgetActiveQuests = ParseBool(config, Values.NameForgetActiveQuests, ForgetActiveQuests);
-                ForgetInactiveQuests = ParseBool(config, Values.NameForgetInactiveQuests, ForgetInactiveQuests);
-                ForgetIntroQuests = ParseBool(config, Values.NameForgetIntroQuests, ForgetIntroQuests);
-                log.Info($"Successfully loaded {filename}");
+                ForgetNonIntroQuests = ParseBool(config, Values.NameForgetNonIntroQuests, ForgetNonIntroQuests);
+                _log.Info($"Successfully loaded {filename}");
                 Loaded = true;
             }
             catch (FileNotFoundException)
             {
-                log.Info($"No file detected, creating a config with defaults under {filename}");
+                _log.Info($"No file detected, creating a config with defaults under {filename}");
                 Loaded = Save();
             }
             catch (Exception e)
             {
-                log.Error($"Failed to load {filename}; Amnesia will remain disabled until server restart - fix file (possibly delete or try updating settings) then try restarting server.", e);
+                _log.Error($"Failed to load {filename}; Amnesia will remain disabled until server restart - fix file (possibly delete or try updating settings) then try restarting server.", e);
                 Loaded = false;
             }
         }
@@ -495,7 +588,7 @@ namespace Amnesia.Data
                 }
             }
             catch (Exception) { }
-            log.Warn($"Unable to parse {name} from {filename}.\nFalling back to a default value of {fallback}.\nTry updating any setting to write the default option to this file.");
+            _log.Warn($"Unable to parse {name} from {filename}.\nFalling back to a default value of {fallback}.\nTry updating any setting to write the default option to this file.");
             return fallback;
         }
 
@@ -509,7 +602,7 @@ namespace Amnesia.Data
                 }
             }
             catch (Exception) { }
-            log.Warn($"Unable to parse {name} from {filename}.\nFalling back to a default value of {fallback}.\nTry updating any setting to write the default option to this file.");
+            _log.Warn($"Unable to parse {name} from {filename}.\nFalling back to a default value of {fallback}.\nTry updating any setting to write the default option to this file.");
             return fallback;
         }
     }

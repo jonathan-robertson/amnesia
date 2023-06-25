@@ -1,0 +1,49 @@
+<config>
+    <append xpath="/gameevents/action_sequence[@name='game_first_spawn']">
+        <action class="AddJournalTip">
+            <property name="tip_name" value="amnesiaJournalTip00" />
+            <property name="show_window" value="false" />
+            <property name="phase" value="4" />
+        </action>
+    </append>
+
+    <append xpath="/gameevents">
+        <action_sequence name="amnesia_pay_from_bag">
+            <action class="RemoveItems">
+                <property name="items_location" value="Backpack" />
+                <property name="items_tags" value="amnesiaCurrency" />
+            </action>
+        </action_sequence>
+        <action_sequence name="amnesia_pay_from_blt">
+            <action class="RemoveItems">
+                <property name="items_location" value="Toolbelt" />
+                <property name="items_tags" value="amnesiaCurrency" />
+            </action>
+        </action_sequence>
+        <action_sequence name="amnesia_request_change">
+            <action class="AddBuff">
+                <property name="buff_name" value="buffAmnesiaRequestChangeCallback" />
+                <property name="check_already_exists" value="false" />
+            </action>
+        </action_sequence>
+
+        <action_sequence name="amnesia_dialog_shop_cannot_afford">
+            <action class="PlaySound">
+                <property name="sound" value="bow_fire_abort" />
+                <property name="inside_head" value="true" />
+            </action>
+        </action_sequence>
+        <action_sequence name="amnesia_dialog_shop_unnecessary">
+            <action class="PlaySound">
+                <property name="sound" value="bow_fire_cancel" />
+                <property name="inside_head" value="true" />
+            </action>
+        </action_sequence>
+        <action_sequence name="amnesia_dialog_shop_purchased">
+            <action class="PlaySound">
+                <property name="sound" value="ui_trader_purchase" />
+                <property name="inside_head" value="true" />
+            </action>
+        </action_sequence>
+    </append>
+</config>

@@ -8,6 +8,8 @@ namespace Amnesia.Commands
 {
     internal class ConsoleCmdAmnesia : ConsoleCmdAbstract
     {
+        private static readonly ModLog<ConsoleCmdAmnesia> _log = new ModLog<ConsoleCmdAmnesia>();
+
         private static readonly string[] Commands = new string[]
         {
             "amnesia",
@@ -23,28 +25,31 @@ namespace Amnesia.Commands
                 { "players", "show players and their amnesia-related info" },
                 { "grant <user id / player name / entity id> <timeInSeconds>", "grant player some bonus xp time" },
                 { "fragile <user id / player name / entity id> <true/false>", "give or remove fragile memory debuff" },
+                { "skills <user id / player name / entity id>", "show skill/perk records in order they were purchased by the given player" },
+                { "money", "debugging command to list tracked money for all online players and any pending change owed to any players" },
+                { "respec", "debugging command to respec self" },
+                { "reset <levels-to-rewind>", "debugging command to reset self" },
                 { "config", "show current amnesia configuration" },
                 { "set", "show the single-value fields you can adjust" },
                 { "set <field>", "describe how you can update this field" },
                 { "set <field> <valueToAdd>", "update a standard field with a new valueToAdd" },
-                { "list", "show the complex config fields you can adjust" },
+                { "list", "show the complex fields you can adjust" },
                 { "list <complex-field>", "show contents of complex field" },
-                { "list <complex-field> add <key> <name> <value>", "add or update a complex field" },
-                { "list <complex-field> rem <key>", "add or update a complex field" },
-                { "list <complex-field> clear", "add or update a complex field" },
-                { "test", "admin command which triggers reset on self for testing purposes" },
+                { "list <complex-field> add <key> <name> <value>", "add or update an entry for a complex field" },
+                { "list <complex-field> rem <key>", "remove an entry from a complex field" },
+                { "list <complex-field> clear", "clear all entries from a complex field" },
             };
 
             var i = 1; var j = 1;
             help = $"Usage:\n  {string.Join("\n  ", dict.Keys.Select(command => $"{i++}. {GetCommands()[0]} {command}").ToList())}\nDescription Overview\n{string.Join("\n", dict.Values.Select(description => $"{j++}. {description}").ToList())}";
         }
 
-        public override string[] GetCommands()
+        protected override string[] getCommands()
         {
             return Commands;
         }
 
-        public override string GetDescription()
+        protected override string getDescription()
         {
             return "Configure or adjust settings for the Amnesia mod.";
         }
@@ -72,22 +77,35 @@ namespace Amnesia.Commands
                     case "players":
                         HandleShowPlayers();
                         return;
-                    case "test":
-                        HandleTest(_params, _senderInfo);
+                    case "respec":
+                        HandleRespec(_params, _senderInfo);
+                        return;
+                    case "reset":
+                        HandleReset(_params, _senderInfo);
                         return;
                     case "grant":
-                        if (_params.Count != 3)
+                        if (_params.Count == 3)
                         {
-                            break;
+                            HandleGrant(_params);
+                            return;
                         }
-                        HandleGrant(_params);
-                        return;
+                        break;
                     case "fragile":
-                        if (_params.Count != 3)
+                        if (_params.Count == 3)
                         {
-                            break;
+                            HandleFragile(_params);
+                            return;
                         }
-                        HandleFragile(_params);
+                        break;
+                    case "skills":
+                        if (_params.Count == 2)
+                        {
+                            HandleSkills(_params);
+                            return;
+                        }
+                        break;
+                    case "money":
+                        HandleMoney();
                         return;
                     case "config":
                         SdtdConsole.Instance.Output(Config.AsString());
@@ -123,21 +141,57 @@ namespace Amnesia.Commands
             }
         }
 
-        private void HandleTest(List<string> @params, CommandSenderInfo senderInfo)
+        private void HandleRespec(List<string> @params, CommandSenderInfo senderInfo)
         {
-            if (@params.Count == 2 && @params[1].EqualsCaseInsensitive("confirm"))
+            if (senderInfo.RemoteClientInfo == null
+                || !GameManager.Instance.World.Players.dict.TryGetValue(senderInfo.RemoteClientInfo.entityId, out var player)
+                || !PlayerRecord.Entries.TryGetValue(player.entityId, out _))
             {
-                if (senderInfo.RemoteClientInfo == null || !GameManager.Instance.World.Players.dict.TryGetValue(senderInfo.RemoteClientInfo.entityId, out var playerToReset))
-                {
-                    SdtdConsole.Instance.Output("RemoteClientInfo and/or player is null; if using telnet, you need to actually be inside the game instead.");
-                    return;
-                }
-                PlayerHelper.ResetPlayer(playerToReset);
+                SdtdConsole.Instance.Output("RemoteClientInfo and/or player is null; if using telnet, you need to actually be inside the game instead.");
+                return;
+            }
+
+            try
+            {
+                PlayerHelper.Respec(player);
+                SdtdConsole.Instance.Output("Your player has been respec'd.");
+            }
+            catch (Exception e)
+            {
+                _log.Error("Failed to reset", e);
+            }
+        }
+
+        private void HandleReset(List<string> @params, CommandSenderInfo senderInfo)
+        {
+            if (senderInfo.RemoteClientInfo == null
+                || !GameManager.Instance.World.Players.dict.TryGetValue(senderInfo.RemoteClientInfo.entityId, out var player)
+                || !PlayerRecord.Entries.TryGetValue(player.entityId, out var record))
+            {
+                SdtdConsole.Instance.Output("RemoteClientInfo and/or player is null; if using telnet, you need to actually be inside the game instead.");
+                return;
+            }
+
+            if (!int.TryParse(@params[1], out var levelsToRewind))
+            {
+                SdtdConsole.Instance.Output("ERROR: Expecting second parameter to be of type int.");
+                return;
+            }
+
+            if (@params.Count < 3 || !@params[2].EqualsCaseInsensitive("confirm"))
+            {
+                SdtdConsole.Instance.Output($"Running this command will allow you to test your amnesia configurations by resetting YOUR OWN character.\nDue to the nature of how the game updates, it's recommended to only reset right after logging out/in.\nIf you're sure you want to do this, run \"{GetCommands()[0]} reset {levelsToRewind} confirm\"");
+                return;
+            }
+
+            try
+            {
+                PlayerHelper.Rewind(player, record, levelsToRewind);
                 SdtdConsole.Instance.Output("Your player was reset. Some UI elements might not have updated; schematics on your toolbelt, for example, may need to be moved to another slot to indicate they now need to be learned.");
             }
-            else
+            catch (Exception e)
             {
-                SdtdConsole.Instance.Output($"Running this command will allow you to test your amnesia configurations by wiping YOUR OWN character.\nThis ONLY TESTS non-experimental features and will not trigger a disconnection.\nIf you're sure you want to do this, run \"{GetCommands()[0]} test confirm\"");
+                _log.Error("Failed to reset", e);
             }
         }
 
@@ -179,6 +233,57 @@ namespace Amnesia.Commands
             }
             player.Buffs.RemoveBuff(Values.BuffFragileMemory);
             SdtdConsole.Instance.Output($"Successfully removed {Values.BuffFragileMemory} from {player.GetDebugName()}.");
+        }
+
+        private void HandleSkills(List<string> @params)
+        {
+            var clientInfo = ConsoleHelper.ParseParamIdOrName(@params[1], true, false);
+            if (clientInfo == null || !GameManager.Instance.World.Players.dict.TryGetValue(clientInfo.entityId, out _))
+            {
+                SdtdConsole.Instance.Output("Unable to find this player; note: player must be online");
+                return;
+            }
+            if (!PlayerRecord.Entries.TryGetValue(clientInfo.entityId, out var record))
+            {
+                SdtdConsole.Instance.Output($"Unable to find an active record for player {clientInfo.entityId}");
+                return;
+            }
+            for (var i = 0; i < record.Changes.Count; i++)
+            {
+                SdtdConsole.Instance.Output($"{i + 1,3}. {record.Changes[i].Item1}: {record.Changes[i].Item2}");
+            }
+            if (record.Changes.Count == 0)
+            {
+                SdtdConsole.Instance.Output("========= no recorded changes =========");
+            }
+            SdtdConsole.Instance.Output($"====================================\nCurrent Level: {record.Level}");
+        }
+
+        private void HandleMoney()
+        {
+            SdtdConsole.Instance.Output($"  ID   | MoneyBlt | MoneyBag | MoneyTot | Player Name");
+            var players = GameManager.Instance.World.Players.list;
+            for (var i = 0; i < players.Count; i++)
+            {
+                _ = DialogShop.BltMoney.TryGetValue(players[i].entityId, out var blt);
+                _ = DialogShop.BagMoney.TryGetValue(players[i].entityId, out var bag);
+                var tot = blt + bag;
+                SdtdConsole.Instance.Output($"{players[i].entityId,6} | {blt,8} | {bag,8} | {tot,8} | {players[i].GetDebugName()}");
+            }
+
+            if (DialogShop.Change.Count == 0)
+            {
+                SdtdConsole.Instance.Output("[no change owed to any player]");
+            }
+            else
+            {
+                var list = new List<string>();
+                foreach (var kvp in DialogShop.Change)
+                {
+                    list.Add($"{kvp.Key}={kvp.Value}");
+                }
+                SdtdConsole.Instance.Output($"Change owed (entityId=amount): [{string.Join(", ", list)}]");
+            }
         }
 
         private void RouteListRequest(List<string> @params)
@@ -267,6 +372,11 @@ namespace Amnesia.Commands
                 UpdateLongTermMemoryLevel(@params);
                 return;
             }
+            if (Values.NameLevelPenalty.EqualsCaseInsensitive(@params[1]))
+            {
+                UpdateLevelPenalty(@params);
+                return;
+            }
             if (Values.NamePositiveOutlookMaxTime.EqualsCaseInsensitive(@params[1]))
             {
                 UpdatePositiveOutlookMaxTime(@params);
@@ -292,6 +402,26 @@ namespace Amnesia.Commands
                 UpdateProtectMemoryDuringPvp(@params);
                 return;
             }
+            if (Values.NameTreatmentCostBase.EqualsCaseInsensitive(@params[1]))
+            {
+                UpdateTreatmentCostBase(@params);
+                return;
+            }
+            if (Values.NameTreatmentCostMultiplier.EqualsCaseInsensitive(@params[1]))
+            {
+                UpdateTreatmentCostMultiplier(@params);
+                return;
+            }
+            if (Values.NameTherapyCostBase.EqualsCaseInsensitive(@params[1]))
+            {
+                UpdateTherapyCostBase(@params);
+                return;
+            }
+            if (Values.NameTherapyCostMultiplier.EqualsCaseInsensitive(@params[1]))
+            {
+                UpdateTherapyCostMultiplier(@params);
+                return;
+            }
             if (Values.NameForgetLevelsAndSkills.EqualsCaseInsensitive(@params[1]))
             {
                 UpdateForgetLevelsAndSkills(@params);
@@ -300,6 +430,11 @@ namespace Amnesia.Commands
             if (Values.NameForgetBooks.EqualsCaseInsensitive(@params[1]))
             {
                 UpdateForgetBooks(@params);
+                return;
+            }
+            if (Values.NameForgetCrafting.EqualsCaseInsensitive(@params[1]))
+            {
+                UpdateForgetCrafting(@params);
                 return;
             }
             if (Values.NameForgetSchematics.EqualsCaseInsensitive(@params[1]))
@@ -312,19 +447,9 @@ namespace Amnesia.Commands
                 UpdateForgetKdr(@params);
                 return;
             }
-            if (Values.NameForgetActiveQuests.EqualsCaseInsensitive(@params[1]))
+            if (Values.NameForgetNonIntroQuests.EqualsCaseInsensitive(@params[1]))
             {
-                UpdateForgetActiveQuests(@params);
-                return;
-            }
-            if (Values.NameForgetInactiveQuests.EqualsCaseInsensitive(@params[1]))
-            {
-                UpdateForgetInactiveQuests(@params);
-                return;
-            }
-            if (Values.NameForgetIntroQuests.EqualsCaseInsensitive(@params[1]))
-            {
-                UpdateForgetIntroQuests(@params);
+                UpdateForgetNonIntroQuests(@params);
                 return;
             }
             SdtdConsole.Instance.Output($"Invald request; run '{Commands[0]} set' to see a list of options.");
@@ -343,7 +468,135 @@ namespace Amnesia.Commands
                 SdtdConsole.Instance.Output($"Unable to parse value; expecting int");
                 return;
             }
-            Config.SetLongTermMemoryLevel(value);
+            var cur = Config.LongTermMemoryLevel;
+            if (Config.SetLongTermMemoryLevel(value))
+            {
+                SdtdConsole.Instance.Output($"Updated {cur} -> {value}");
+            }
+            else
+            {
+                SdtdConsole.Instance.Output($"Already set to {value}; no change");
+            }
+        }
+
+        private void UpdateLevelPenalty(List<string> @params)
+        {
+            if (@params.Count == 2)
+            {
+                SdtdConsole.Instance.Output($@"{Values.SingleValueNamesAndDescriptionsDict[Values.NameLevelPenalty]}
+{Commands[0]} set {Values.NameLevelPenalty} <level>");
+                return;
+            }
+            if (!int.TryParse(@params[2], out var value))
+            {
+                SdtdConsole.Instance.Output($"Unable to parse value; expecting int");
+                return;
+            }
+            var cur = Config.LevelPenalty;
+            if (Config.SetLevelPenalty(value))
+            {
+                SdtdConsole.Instance.Output($"Updated {cur} -> {value}");
+            }
+            else
+            {
+                SdtdConsole.Instance.Output($"Already set to {value}; no change");
+            }
+        }
+
+        private void UpdateTreatmentCostBase(List<string> @params)
+        {
+            if (@params.Count == 2)
+            {
+                SdtdConsole.Instance.Output($@"{Values.SingleValueNamesAndDescriptionsDict[Values.NameTreatmentCostBase]}
+{Commands[0]} set {Values.NameTreatmentCostBase} <base-cost>");
+                return;
+            }
+            if (!int.TryParse(@params[2], out var value))
+            {
+                SdtdConsole.Instance.Output($"Unable to parse value; expecting int");
+                return;
+            }
+            var cur = Config.TreatmentCostBase;
+            if (Config.SetTreatmentCostBase(value))
+            {
+                SdtdConsole.Instance.Output($"Updated {cur} -> {value}");
+            }
+            else
+            {
+                SdtdConsole.Instance.Output($"Already set to {value}; no change");
+            }
+        }
+
+        private void UpdateTreatmentCostMultiplier(List<string> @params)
+        {
+            if (@params.Count == 2)
+            {
+                SdtdConsole.Instance.Output($@"{Values.SingleValueNamesAndDescriptionsDict[Values.NameTreatmentCostMultiplier]}
+{Commands[0]} set {Values.NameTreatmentCostMultiplier} <cost-multiplier>");
+                return;
+            }
+            if (!int.TryParse(@params[2], out var value))
+            {
+                SdtdConsole.Instance.Output($"Unable to parse value; expecting int");
+                return;
+            }
+            var cur = Config.TreatmentCostMultiplier;
+            if (Config.SetTreatmentCostMultiplier(value))
+            {
+                SdtdConsole.Instance.Output($"Updated {cur} -> {value}");
+            }
+            else
+            {
+                SdtdConsole.Instance.Output($"Already set to {value}; no change");
+            }
+        }
+
+        private void UpdateTherapyCostBase(List<string> @params)
+        {
+            if (@params.Count == 2)
+            {
+                SdtdConsole.Instance.Output($@"{Values.SingleValueNamesAndDescriptionsDict[Values.NameTherapyCostBase]}
+{Commands[0]} set {Values.NameTherapyCostBase} <base-cost>");
+                return;
+            }
+            if (!int.TryParse(@params[2], out var value))
+            {
+                SdtdConsole.Instance.Output($"Unable to parse value; expecting int");
+                return;
+            }
+            var cur = Config.TherapyCostBase;
+            if (Config.SetTherapyCostBase(value))
+            {
+                SdtdConsole.Instance.Output($"Updated {cur} -> {value}");
+            }
+            else
+            {
+                SdtdConsole.Instance.Output($"Already set to {value}; no change");
+            }
+        }
+
+        private void UpdateTherapyCostMultiplier(List<string> @params)
+        {
+            if (@params.Count == 2)
+            {
+                SdtdConsole.Instance.Output($@"{Values.SingleValueNamesAndDescriptionsDict[Values.NameTherapyCostMultiplier]}
+{Commands[0]} set {Values.NameTherapyCostMultiplier} <cost-multiplier>");
+                return;
+            }
+            if (!int.TryParse(@params[2], out var value))
+            {
+                SdtdConsole.Instance.Output($"Unable to parse value; expecting int");
+                return;
+            }
+            var cur = Config.TherapyCostMultiplier;
+            if (Config.SetTherapyCostMultiplier(value))
+            {
+                SdtdConsole.Instance.Output($"Updated {cur} -> {value}");
+            }
+            else
+            {
+                SdtdConsole.Instance.Output($"Already set to {value}; no change");
+            }
         }
 
         private void UpdatePositiveOutlookMaxTime(List<string> @params)
@@ -359,7 +612,15 @@ namespace Amnesia.Commands
                 SdtdConsole.Instance.Output($"Unable to parse value; expecting int");
                 return;
             }
-            Config.SetPositiveOutlookMaxTime(value);
+            var cur = Config.PositiveOutlookMaxTime;
+            if (Config.SetPositiveOutlookMaxTime(value))
+            {
+                SdtdConsole.Instance.Output($"Updated {cur} -> {value}");
+            }
+            else
+            {
+                SdtdConsole.Instance.Output($"Already set to {value}; no change");
+            }
         }
 
         private void UpdatePositiveOutlookTimeOnFirstJoin(List<string> @params)
@@ -375,7 +636,15 @@ namespace Amnesia.Commands
                 SdtdConsole.Instance.Output($"Unable to parse value; expecting int");
                 return;
             }
-            Config.SetPositiveOutlookTimeOnFirstJoin(value);
+            var cur = Config.PositiveOutlookTimeOnFirstJoin;
+            if (Config.SetPositiveOutlookTimeOnFirstJoin(value))
+            {
+                SdtdConsole.Instance.Output($"Updated {cur} -> {value}");
+            }
+            else
+            {
+                SdtdConsole.Instance.Output($"Already set to {value}; no change");
+            }
         }
 
         private void UpdatePositiveOutlookTimeOnMemoryLoss(List<string> @params)
@@ -391,7 +660,15 @@ namespace Amnesia.Commands
                 SdtdConsole.Instance.Output($"Unable to parse value; expecting int");
                 return;
             }
-            Config.SetPositiveOutlookTimeOnMemoryLoss(value);
+            var cur = Config.PositiveOutlookTimeOnMemoryLoss;
+            if (Config.SetPositiveOutlookTimeOnMemoryLoss(value))
+            {
+                SdtdConsole.Instance.Output($"Updated {cur} -> {value}");
+            }
+            else
+            {
+                SdtdConsole.Instance.Output($"Already set to {value}; no change");
+            }
         }
 
         private void UpdateProtectMemoryDuringBloodmoon(List<string> @params)
@@ -407,7 +684,15 @@ namespace Amnesia.Commands
                 SdtdConsole.Instance.Output($"Unable to parse value; expecting bool");
                 return;
             }
-            Config.SetProtectMemoryDuringBloodmoon(value);
+            var cur = Config.ProtectMemoryDuringBloodmoon;
+            if (Config.SetProtectMemoryDuringBloodmoon(value))
+            {
+                SdtdConsole.Instance.Output($"Updated {cur} -> {value}");
+            }
+            else
+            {
+                SdtdConsole.Instance.Output($"Already set to {value}; no change");
+            }
         }
 
         private void UpdateProtectMemoryDuringPvp(List<string> @params)
@@ -423,7 +708,15 @@ namespace Amnesia.Commands
                 SdtdConsole.Instance.Output($"Unable to parse value; expecting bool");
                 return;
             }
-            Config.SetProtectMemoryDuringPvp(value);
+            var cur = Config.ProtectMemoryDuringPvp;
+            if (Config.SetProtectMemoryDuringPvp(value))
+            {
+                SdtdConsole.Instance.Output($"Updated {cur} -> {value}");
+            }
+            else
+            {
+                SdtdConsole.Instance.Output($"Already set to {value}; no change");
+            }
         }
 
         private void UpdateForgetLevelsAndSkills(List<string> @params)
@@ -439,7 +732,15 @@ namespace Amnesia.Commands
                 SdtdConsole.Instance.Output($"Unable to parse value; expecting bool");
                 return;
             }
-            Config.SetForgetLevelsAndSkills(value);
+            var cur = Config.ForgetLevelsAndSkills;
+            if (Config.SetForgetLevelsAndSkills(value))
+            {
+                SdtdConsole.Instance.Output($"Updated {cur} -> {value}");
+            }
+            else
+            {
+                SdtdConsole.Instance.Output($"Already set to {value}; no change");
+            }
         }
 
         private void UpdateForgetBooks(List<string> @params)
@@ -455,7 +756,39 @@ namespace Amnesia.Commands
                 SdtdConsole.Instance.Output($"Unable to parse value; expecting bool");
                 return;
             }
-            Config.SetForgetBooks(value);
+            var cur = Config.ForgetBooks;
+            if (Config.SetForgetBooks(value))
+            {
+                SdtdConsole.Instance.Output($"Updated {cur} -> {value}");
+            }
+            else
+            {
+                SdtdConsole.Instance.Output($"Already set to {value}; no change");
+            }
+        }
+
+        private void UpdateForgetCrafting(List<string> @params)
+        {
+            if (@params.Count == 2)
+            {
+                SdtdConsole.Instance.Output($@"{Values.SingleValueNamesAndDescriptionsDict[Values.NameForgetCrafting]}
+{Commands[0]} set {Values.NameForgetCrafting} <true|false>");
+                return;
+            }
+            if (!bool.TryParse(@params[2], out var value))
+            {
+                SdtdConsole.Instance.Output($"Unable to parse value; expecting bool");
+                return;
+            }
+            var cur = Config.ForgetCrafting;
+            if (Config.SetForgetCrafting(value))
+            {
+                SdtdConsole.Instance.Output($"Updated {cur} -> {value}");
+            }
+            else
+            {
+                SdtdConsole.Instance.Output($"Already set to {value}; no change");
+            }
         }
 
         private void UpdateForgetSchematics(List<string> @params)
@@ -471,7 +804,15 @@ namespace Amnesia.Commands
                 SdtdConsole.Instance.Output($"Unable to parse value; expecting bool");
                 return;
             }
-            Config.SetForgetSchematics(value);
+            var cur = Config.ForgetSchematics;
+            if (Config.SetForgetSchematics(value))
+            {
+                SdtdConsole.Instance.Output($"Updated {cur} -> {value}");
+            }
+            else
+            {
+                SdtdConsole.Instance.Output($"Already set to {value}; no change");
+            }
         }
 
         private void UpdateForgetKdr(List<string> @params)
@@ -487,15 +828,23 @@ namespace Amnesia.Commands
                 SdtdConsole.Instance.Output($"Unable to parse value; expecting bool");
                 return;
             }
-            Config.SetForgetKdr(value);
+            var cur = Config.ForgetKdr;
+            if (Config.SetForgetKdr(value))
+            {
+                SdtdConsole.Instance.Output($"Updated {cur} -> {value}");
+            }
+            else
+            {
+                SdtdConsole.Instance.Output($"Already set to {value}; no change");
+            }
         }
 
-        private void UpdateForgetActiveQuests(List<string> @params)
+        private void UpdateForgetNonIntroQuests(List<string> @params)
         {
             if (@params.Count == 2)
             {
-                SdtdConsole.Instance.Output($@"{Values.SingleValueNamesAndDescriptionsDict[Values.NameForgetActiveQuests]}
-{Commands[0]} set {Values.NameForgetActiveQuests} <true|false>");
+                SdtdConsole.Instance.Output($@"{Values.SingleValueNamesAndDescriptionsDict[Values.NameForgetNonIntroQuests]}
+{Commands[0]} set {Values.NameForgetNonIntroQuests} <true|false>");
                 return;
             }
             if (!bool.TryParse(@params[2], out var value))
@@ -503,39 +852,15 @@ namespace Amnesia.Commands
                 SdtdConsole.Instance.Output($"Unable to parse value; expecting bool");
                 return;
             }
-            Config.SetForgetActiveQuests(value);
-        }
-
-        private void UpdateForgetInactiveQuests(List<string> @params)
-        {
-            if (@params.Count == 2)
+            var cur = Config.ForgetNonIntroQuests;
+            if (Config.SetForgetNonIntroQuests(value))
             {
-                SdtdConsole.Instance.Output($@"{Values.SingleValueNamesAndDescriptionsDict[Values.NameForgetInactiveQuests]}
-{Commands[0]} set {Values.NameForgetInactiveQuests} <true|false>");
-                return;
+                SdtdConsole.Instance.Output($"Updated {cur} -> {value}");
             }
-            if (!bool.TryParse(@params[2], out var value))
+            else
             {
-                SdtdConsole.Instance.Output($"Unable to parse value; expecting bool");
-                return;
+                SdtdConsole.Instance.Output($"Already set to {value}; no change");
             }
-            Config.SetForgetInactiveQuests(value);
-        }
-
-        private void UpdateForgetIntroQuests(List<string> @params)
-        {
-            if (@params.Count == 2)
-            {
-                SdtdConsole.Instance.Output($@"{Values.SingleValueNamesAndDescriptionsDict[Values.NameForgetIntroQuests]}
-{Commands[0]} set {Values.NameForgetInactiveQuests} <true|false>");
-                return;
-            }
-            if (!bool.TryParse(@params[2], out var value))
-            {
-                SdtdConsole.Instance.Output($"Unable to parse value; expecting bool");
-                return;
-            }
-            Config.SetForgetIntroQuests(value);
         }
     }
 }
