@@ -162,6 +162,10 @@ namespace Amnesia.Data
             }
             TreatmentCostBase = Math.Max(0, value);
             _ = Save();
+            foreach (var player in GameManager.Instance.World.Players.list)
+            {
+                DialogShop.UpdatePrices(player);
+            }
             return true;
         }
 
@@ -177,6 +181,10 @@ namespace Amnesia.Data
             }
             TreatmentCostMultiplier = Math.Max(0, value);
             _ = Save();
+            foreach (var player in GameManager.Instance.World.Players.list)
+            {
+                DialogShop.UpdatePrices(player);
+            }
             return true;
         }
 
@@ -192,6 +200,10 @@ namespace Amnesia.Data
             }
             TherapyCostBase = Math.Max(0, value);
             _ = Save();
+            foreach (var player in GameManager.Instance.World.Players.list)
+            {
+                DialogShop.UpdatePrices(player);
+            }
             return true;
         }
 
@@ -207,6 +219,10 @@ namespace Amnesia.Data
             }
             TherapyCostMultiplier = Math.Max(0, value);
             _ = Save();
+            foreach (var player in GameManager.Instance.World.Players.list)
+            {
+                DialogShop.UpdatePrices(player);
+            }
             return true;
         }
 

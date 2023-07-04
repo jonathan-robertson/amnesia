@@ -27,8 +27,7 @@ namespace Amnesia.Data
 
         // game_events
         public static string GameEventPayFromBag { get; private set; } = "amnesia_pay_from_bag";
-        public static string GameEventPayFromBlt { get; private set; } = "amnesia_pay_from_blt";
-        public static string GameEventRequestChg { get; private set; } = "amnesia_request_change";
+        public static string GameEventPayFromAll { get; private set; } = "amnesia_pay_from_all";
         public static string GameEventShopCannotAfford { get; private set; } = "amnesia_dialog_shop_cannot_afford";
         public static string GameEventShopUnnecessary { get; private set; } = "amnesia_dialog_shop_unnecessary";
         public static string GameEventShopPurchased { get; private set; } = "amnesia_dialog_shop_purchased";

@@ -12,18 +12,48 @@
             <action class="RemoveItems">
                 <property name="items_location" value="Backpack" />
                 <property name="items_tags" value="amnesiaCurrency" />
+                <property name="phase" value="1" />
             </action>
         </action_sequence>
-        <action_sequence name="amnesia_pay_from_blt">
+        <action_sequence name="amnesia_pay_from_bag_with_change">
             <action class="RemoveItems">
-                <property name="items_location" value="Toolbelt" />
+                <property name="items_location" value="Backpack" />
                 <property name="items_tags" value="amnesiaCurrency" />
+                <property name="phase" value="1" />
             </action>
-        </action_sequence>
-        <action_sequence name="amnesia_request_change">
             <action class="AddBuff">
                 <property name="buff_name" value="buffAmnesiaRequestChangeCallback" />
                 <property name="check_already_exists" value="false" />
+                <property name="phase" value="2" />
+            </action>
+        </action_sequence>
+        <action_sequence name="amnesia_pay_from_all">
+            <action class="RemoveItems">
+                <property name="items_location" value="Backpack" />
+                <property name="items_tags" value="amnesiaCurrency" />
+                <property name="phase" value="1" />
+            </action>
+            <action class="RemoveItems">
+                <property name="items_location" value="Toolbelt" />
+                <property name="items_tags" value="amnesiaCurrency" />
+                <property name="phase" value="2" />
+            </action>
+        </action_sequence>
+        <action_sequence name="amnesia_pay_from_all_with_change">
+            <action class="RemoveItems">
+                <property name="items_location" value="Backpack" />
+                <property name="items_tags" value="amnesiaCurrency" />
+                <property name="phase" value="1" />
+            </action>
+            <action class="RemoveItems">
+                <property name="items_location" value="Toolbelt" />
+                <property name="items_tags" value="amnesiaCurrency" />
+                <property name="phase" value="2" />
+            </action>
+            <action class="AddBuff">
+                <property name="buff_name" value="buffAmnesiaRequestChangeCallback" />
+                <property name="check_already_exists" value="false" />
+                <property name="phase" value="3" />
             </action>
         </action_sequence>
 

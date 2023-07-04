@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.2] - 2023-07-04
+
+- improve logging, simplify logic for purchase
+  - `[Amnesia.Utilities.DialogShop] player 171 (Kanaverum | EOS_000[truncated for example]) purchased Therapy from trader: 12442+0 = 12442 - 600 = 11842`
+  - `[Amnesia.Utilities.DialogShop] player 171 (Kanaverum | EOS_000[truncated for example]) requested Treatment from trader but doesn't have a Fragile Memory to heal.`
+  - *these kinds of important actions are now always logged even when debug-mode is disabled (they're real important, after all)*
+- live-update prices when admin changes them
+  - *even when players are looking right at the price in the trader dialog menu!*
+
 ## [2.0.1] - 2023-06-30
 
 - update to support a21 b324 (stable)

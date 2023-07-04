@@ -15,8 +15,8 @@ namespace Amnesia.Utilities
         private static readonly ItemValue CASINO_COIN_ITEM_VALUE = ItemClass.GetItem("casinoCoin", false);
         private static readonly FastTags moneyTag = FastTags.Parse("amnesiaCurrency");
 
-        public static Dictionary<int, int> BagMoney { get; private set; } = new Dictionary<int, int>();
         public static Dictionary<int, int> BltMoney { get; private set; } = new Dictionary<int, int>();
+        public static Dictionary<int, int> BagMoney { get; private set; } = new Dictionary<int, int>();
         public static Dictionary<int, int> Change { get; private set; } = new Dictionary<int, int>();
 
         public static void UpdateMoneyTracker(int entityId, ItemStack[] ___toolbelt = null, ItemStack[] ___bag = null)
@@ -39,7 +39,7 @@ namespace Amnesia.Utilities
                 BagMoney[entityId] = bagMoney;
                 bag = bagMoney;
             }
-            if (changed)
+            if (changed && ModApi.DebugMode)
             {
                 _log.Debug($"Held Money changed for player {entityId} (blt: {blt}, bag: {bag}, total: {blt + bag})");
             }
@@ -92,22 +92,31 @@ namespace Amnesia.Utilities
             if (PlayerHelper.TryGetClientInfoAndEntityPlayer(entity.world, entity.entityId, out var clientInfo, out var player))
             {
                 player.Buffs.RemoveBuff(Values.BuffTryBuyTreatment);
+
+                var playerName = player.GetDebugName();
+                var userId = ClientInfoHelper.GetUserIdentifier(clientInfo);
+
                 if (!player.Buffs.HasBuff(Values.BuffFragileMemory))
                 {
-                    _log.Trace($"player {player.GetDebugName()} requested Treatment from trader but doesn't have the necessary money {Values.BuffFragileMemory}.");
+                    _log.Info($"player {player.entityId} ({playerName} | {userId}) requested Treatment from trader but doesn't have a Fragile Memory to heal.");
                     PlayerHelper.OpenWindow(clientInfo, Values.WindowShopTreatmentUnnecessary);
                     PlayerHelper.TriggerGameEvent(clientInfo, player, Values.GameEventShopUnnecessary);
+                    return;
                 }
-                else if (DialogShop.TryPurchase(clientInfo, player, DialogShop.GetCost(player.Progression.Level, Product.Treatment)))
+
+                _ = BltMoney.TryGetValue(player.entityId, out var blt);
+                _ = BagMoney.TryGetValue(player.entityId, out var bag);
+                var cost = GetCost(player.Progression.Level, Product.Treatment);
+                if (TryPurchase(clientInfo, player, blt, bag, cost, out var change))
                 {
-                    _log.Trace($"player {player.GetDebugName()} purchased Treatment from trader.");
+                    _log.Info($"player {player.entityId} ({playerName} | {userId}) purchased Treatment from trader: {blt}+{bag} = {blt + bag} - {cost} = {change}");
                     player.Buffs.RemoveBuff(Values.BuffFragileMemory);
                     PlayerHelper.OpenWindow(clientInfo, Values.WindowShopTreatmentComplete);
                     PlayerHelper.TriggerGameEvent(clientInfo, player, Values.GameEventShopPurchased);
                 }
                 else
                 {
-                    _log.Trace($"player {player.GetDebugName()} requested Treatment from trader but doesn't have enough money.");
+                    _log.Info($"player {player.entityId} ({playerName} | {userId}) requested Treatment from trader but doesn't have enough money: {blt}+{bag} = {blt + bag} < {cost}");
                     PlayerHelper.OpenWindow(clientInfo, Values.WindowShopCannotAfford);
                     PlayerHelper.TriggerGameEvent(clientInfo, player, Values.GameEventShopCannotAfford);
                 }
@@ -121,16 +130,23 @@ namespace Amnesia.Utilities
             if (PlayerHelper.TryGetClientInfoAndEntityPlayer(entity.world, entity.entityId, out var clientInfo, out var player))
             {
                 player.Buffs.RemoveBuff(Values.BuffTryBuyTherapy);
-                if (DialogShop.TryPurchase(clientInfo, player, DialogShop.GetCost(player.Progression.Level, Product.Therapy)))
+
+                var playerName = player.GetDebugName();
+                var userId = ClientInfoHelper.GetUserIdentifier(clientInfo);
+
+                _ = BltMoney.TryGetValue(player.entityId, out var blt);
+                _ = BagMoney.TryGetValue(player.entityId, out var bag);
+                var cost = GetCost(player.Progression.Level, Product.Therapy);
+                if (TryPurchase(clientInfo, player, blt, bag, cost, out var change))
                 {
-                    _log.Trace($"player {player.GetDebugName()} purchased Therapy from trader.");
+                    _log.Info($"player {player.entityId} ({playerName} | {userId}) purchased Therapy from trader: {blt}+{bag} = {blt + bag} - {cost} = {change}");
                     PlayerHelper.Respec(player);
                     PlayerHelper.OpenWindow(clientInfo, Values.WindowShopTherapyComplete);
                     PlayerHelper.TriggerGameEvent(clientInfo, player, Values.GameEventShopPurchased);
                 }
                 else
                 {
-                    _log.Trace($"player {player.GetDebugName()} requested Therapy from trader but doesn't have enough money.");
+                    _log.Info($"player {player.entityId} ({playerName} | {userId}) requested Therapy from trader but doesn't have enough money: {blt}+{bag} = {blt + bag} < {cost}");
                     PlayerHelper.OpenWindow(clientInfo, Values.WindowShopCannotAfford);
                     PlayerHelper.TriggerGameEvent(clientInfo, player, Values.GameEventShopCannotAfford);
                 }
@@ -166,44 +182,35 @@ namespace Amnesia.Utilities
             return -1;
         }
 
-        private static bool TryPurchase(ClientInfo clientInfo, EntityPlayer player, int cost)
+        private static bool TryPurchase(ClientInfo clientInfo, EntityPlayer player, int _blt, int _bag, int _cost, out int change)
         {
-            if (CanAfford(player.entityId, cost))
+            if (!CanAfford(player.entityId, _cost))
             {
-                _log.Trace($"player {player.GetDebugName()} could afford {cost}");
-                Pay(clientInfo, player, cost);
-                return true;
+                _log.Trace($"player {player.GetDebugName()} could NOT afford {_cost}");
+                change = -1;
+                return false;
             }
-            _log.Trace($"player {player.GetDebugName()} could NOT afford {cost}");
-            return false;
-        }
 
-        private static void Pay(ClientInfo clientInfo, EntityPlayer player, int cost)
-        {
-            _log.Trace($"player {player.GetDebugName()} charge attempt for {cost}");
-            if (BagMoney.TryGetValue(clientInfo.entityId, out var bag))
+            _log.Trace($"player {player.GetDebugName()} could afford {_cost}");
+            string eventName;
+            if (_bag >= _cost)
             {
-                PlayerHelper.TriggerGameEvent(clientInfo, player, Values.GameEventPayFromBag);
-                if (bag >= cost)
-                {
-                    if (bag > cost)
-                    {
-                        Change.Add(player.entityId, bag - cost);
-                        PlayerHelper.TriggerGameEvent(clientInfo, player, Values.GameEventRequestChg);
-                    }
-                    return;
-                }
-                cost -= bag;
+                change = _bag - _cost;
+                eventName = Values.GameEventPayFromBag;
             }
-            if (BltMoney.TryGetValue(clientInfo.entityId, out var blt))
+            else
             {
-                PlayerHelper.TriggerGameEvent(clientInfo, player, Values.GameEventPayFromBlt);
-                if (blt > cost)
-                {
-                    Change.Add(player.entityId, blt - cost);
-                    PlayerHelper.TriggerGameEvent(clientInfo, player, Values.GameEventRequestChg);
-                }
+                change = _bag + _blt - _cost;
+                eventName = Values.GameEventPayFromAll;
             }
+
+            if (change > 0)
+            {
+                Change.Add(player.entityId, change);
+                eventName += "_with_change";
+            }
+            PlayerHelper.TriggerGameEvent(clientInfo, player, eventName);
+            return true;
         }
 
         private static bool CanAfford(int entityId, int amount)
