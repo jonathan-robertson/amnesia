@@ -8,10 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [TODO]
 
 - add mechanic to detect/fix too many skill points
-- fix purchase log to clarify total, amount removed from inventory, change given back
 
 ## [2.0.3] - ?
 
+- fix purchase log to clarify total & change
 - fix respec to no longer give extra skill points
 
 ## [2.0.2] - 2023-07-04

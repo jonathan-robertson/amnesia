@@ -93,30 +93,22 @@ namespace Amnesia.Utilities
             {
                 player.Buffs.RemoveBuff(Values.BuffTryBuyTreatment);
 
-                var playerName = player.GetDebugName();
-                var userId = ClientInfoHelper.GetUserIdentifier(clientInfo);
-
                 if (!player.Buffs.HasBuff(Values.BuffFragileMemory))
                 {
-                    _log.Info($"player {player.entityId} ({playerName} | {userId}) requested Treatment from trader but doesn't have a Fragile Memory to heal.");
+                    _log.Info($"player {player.entityId} ({player.GetDebugName()} | {ClientInfoHelper.GetUserIdentifier(clientInfo)}) requested Treatment from trader but doesn't have a Fragile Memory to heal.");
                     PlayerHelper.OpenWindow(clientInfo, Values.WindowShopTreatmentUnnecessary);
                     PlayerHelper.TriggerGameEvent(clientInfo, player, Values.GameEventShopUnnecessary);
                     return;
                 }
 
-                _ = BltMoney.TryGetValue(player.entityId, out var blt);
-                _ = BagMoney.TryGetValue(player.entityId, out var bag);
-                var cost = GetCost(player.Progression.Level, Product.Treatment);
-                if (TryPurchase(clientInfo, player, blt, bag, cost, out var change))
+                if (TryPurchase(clientInfo, player, Product.Treatment))
                 {
-                    _log.Info($"player {player.entityId} ({playerName} | {userId}) purchased Treatment from trader: {blt}+{bag} = {blt + bag} - {cost} = {change}");
                     player.Buffs.RemoveBuff(Values.BuffFragileMemory);
                     PlayerHelper.OpenWindow(clientInfo, Values.WindowShopTreatmentComplete);
                     PlayerHelper.TriggerGameEvent(clientInfo, player, Values.GameEventShopPurchased);
                 }
                 else
                 {
-                    _log.Info($"player {player.entityId} ({playerName} | {userId}) requested Treatment from trader but doesn't have enough money: {blt}+{bag} = {blt + bag} < {cost}");
                     PlayerHelper.OpenWindow(clientInfo, Values.WindowShopCannotAfford);
                     PlayerHelper.TriggerGameEvent(clientInfo, player, Values.GameEventShopCannotAfford);
                 }
@@ -130,23 +122,16 @@ namespace Amnesia.Utilities
             if (PlayerHelper.TryGetClientInfoAndEntityPlayer(entity.world, entity.entityId, out var clientInfo, out var player))
             {
                 player.Buffs.RemoveBuff(Values.BuffTryBuyTherapy);
+                player.Buffs.RemoveBuff(Values.BuffRespec);
 
-                var playerName = player.GetDebugName();
-                var userId = ClientInfoHelper.GetUserIdentifier(clientInfo);
-
-                _ = BltMoney.TryGetValue(player.entityId, out var blt);
-                _ = BagMoney.TryGetValue(player.entityId, out var bag);
-                var cost = GetCost(player.Progression.Level, Product.Therapy);
-                if (TryPurchase(clientInfo, player, blt, bag, cost, out var change))
+                if (TryPurchase(clientInfo, player, Product.Therapy))
                 {
-                    _log.Info($"player {player.entityId} ({playerName} | {userId}) purchased Therapy from trader: {blt}+{bag} = {blt + bag} - {cost} = {change}");
                     PlayerHelper.Respec(player);
                     PlayerHelper.OpenWindow(clientInfo, Values.WindowShopTherapyComplete);
                     PlayerHelper.TriggerGameEvent(clientInfo, player, Values.GameEventShopPurchased);
                 }
                 else
                 {
-                    _log.Info($"player {player.entityId} ({playerName} | {userId}) requested Therapy from trader but doesn't have enough money: {blt}+{bag} = {blt + bag} < {cost}");
                     PlayerHelper.OpenWindow(clientInfo, Values.WindowShopCannotAfford);
                     PlayerHelper.TriggerGameEvent(clientInfo, player, Values.GameEventShopCannotAfford);
                 }
@@ -182,25 +167,32 @@ namespace Amnesia.Utilities
             return -1;
         }
 
-        private static bool TryPurchase(ClientInfo clientInfo, EntityPlayer player, int _blt, int _bag, int _cost, out int change)
+        private static bool TryPurchase(ClientInfo clientInfo, EntityPlayer player, Product product)
         {
-            if (!CanAfford(player.entityId, _cost))
+            var playerName = player.GetDebugName();
+            var userId = ClientInfoHelper.GetUserIdentifier(clientInfo);
+            _ = BltMoney.TryGetValue(player.entityId, out var blt);
+            _ = BagMoney.TryGetValue(player.entityId, out var bag);
+            var cost = GetCost(player.Progression.Level, product);
+
+            if (!CanAfford(player.entityId, cost))
             {
-                _log.Trace($"player {player.GetDebugName()} could NOT afford {_cost}");
-                change = -1;
+                _log.Info($"player {player.entityId} ({playerName} | {userId}) requested Therapy from trader but doesn't have enough money: {blt}+{bag} = {blt + bag} < {cost}");
                 return false;
             }
 
-            _log.Trace($"player {player.GetDebugName()} could afford {_cost}");
+            int change;
             string eventName;
-            if (_bag >= _cost)
+            if (bag >= cost)
             {
-                change = _bag - _cost;
+                change = bag - cost;
+                _log.Info($"player {player.entityId} ({playerName} | {userId}) purchased {product} from trader with coins from bag: {bag} - {cost} = {change} in change due");
                 eventName = Values.GameEventPayFromBag;
             }
             else
             {
-                change = _bag + _blt - _cost;
+                change = bag + blt - cost;
+                _log.Info($"player {player.entityId} ({playerName} | {userId}) purchased {product} from trader with coins from bag and belt: {blt}+{bag} = {blt + bag} - {cost} = {change} in change due");
                 eventName = Values.GameEventPayFromAll;
             }
 
