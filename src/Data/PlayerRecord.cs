@@ -168,15 +168,11 @@ namespace Amnesia.Data
         /// Respec player, returning/unassigning all skill points but leaving level the same.
         /// </summary>
         /// <param name="player">Player to respec.</param>
-        public void Respec(ClientInfo clientInfo, EntityPlayer player)
+        public void Respec(EntityPlayer player)
         {
-            player.Progression.ResetProgression(true);
+            _ = player.Buffs.AddBuff(Values.BuffRespec);
             Changes.Clear();
             Save();
-            player.Progression.bProgressionStatsChanged = true;
-            player.bPlayerStatsChanged = true;
-            ConnectionManager.Instance.SendPackage(NetPackageManager.GetPackage<NetPackagePlayerStats>().Setup(player), false, player.entityId);
-
         }
 
         /// <summary>

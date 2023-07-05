@@ -44,14 +44,7 @@ namespace Amnesia.Utilities
                 return;
             }
 
-            if (!TryGetClientInfo(player.entityId, out var clientInfo))
-            {
-                _log.Error($"Unable to find client info for player {player.entityId}.");
-                return;
-            }
-
-            record.Respec(clientInfo, player);
-            ConnectionManager.Instance.SendPackage(NetPackageManager.GetPackage<NetPackagePlayerStats>().Setup(player), false, player.entityId);
+            record.Respec(player);
         }
 
         /// <remarks>Most of the following core logic was lifted from ActionResetPlayerData.PerformTargetAction</remarks>
@@ -151,6 +144,37 @@ namespace Amnesia.Utilities
         {
             _ = GameEventManager.Current.HandleAction(eventName, null, player, false);
             clientInfo.SendPackage(NetPackageManager.GetPackage<NetPackageGameEventResponse>().Setup(eventName, clientInfo.entityId, "", "", NetPackageGameEventResponse.ResponseTypes.Approved));
+        }
+
+        /// <summary>
+        /// Try parsing and returning player progression data from the given PlayerDataFile.
+        /// </summary>
+        /// <param name="playerDataFile">PlayerDataFile containing the latest progression information.</param>
+        /// <param name="player">EntityPlayer containing the active data we'll cache the PlayerDataFile.Progression info into.</param>
+        /// <param name="progression">Parsed progression data from the given PlayerDataFile.</param>
+        /// <returns>Whether the Progression data could be parsed.</returns>
+        public static bool TryReadProgression(PlayerDataFile playerDataFile, EntityPlayer player, out Progression progression)
+        {
+            try
+            {
+                if (playerDataFile.progressionData.Length > 0L)
+                {
+                    using (var pooledBinaryReader = MemoryPools.poolBinaryReader.AllocSync(false))
+                    {
+                        // TODO: is a sync lock necessary?
+                        pooledBinaryReader.SetBaseStream(playerDataFile.progressionData);
+                        playerDataFile.progressionData.Position = 0L;
+                        progression = Progression.Read(pooledBinaryReader, player);
+                        return true;
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                _log.Error($"Failed to sync progression data for {player.entityId}", e);
+            }
+            progression = default;
+            return false;
         }
 
         public static void OpenWindow(ClientInfo clientInfo, string windowGroupName)

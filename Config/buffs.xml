@@ -123,6 +123,18 @@
                 <triggered_effect trigger="onSelfEnteredGame" action="RemoveBuff" buff="buffAmnesiaRequestChangeCallback" />
             </effect_group>
         </buff>
+
+        <buff name="buffAmnesiaRespec" hidden="true" remove_on_death="false">
+            <stack_type value="ignore" />
+            <duration value="2" />
+            <effect_group tiered="false" name="respec">
+                <triggered_effect trigger="onSelfBuffStart" action="ResetProgression" reset_skills="true" />
+                <triggered_effect trigger="onSelfBuffStart" action="ModifyStats" stat="Health" operation="subtract" value="1" />
+                <triggered_effect trigger="onSelfBuffStart" action="ModifyStats" stat="Health" operation="add" value="1" />
+                <triggered_effect trigger="onSelfBuffStart" action="AddBuff" buff="buffPerkAbilityUpdate" />
+                <triggered_effect trigger="onSelfBuffStart" action="PlaySound" sound="twitch_timechange" play_in_head="true" />
+            </effect_group>
+        </buff>
     </append>
     <!-- TODO: explore how onCombatEntered works: perhaps a screen effect could be added when on last life onCombatEntered as a reminder -->
 </config>

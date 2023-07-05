@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [TODO]
+
+- add mechanic to detect/fix too many skill points
+- fix purchase log to clarify total, amount removed from inventory, change given back
+
+## [2.0.3] - ?
+
+- fix respec to no longer give extra skill points
+
 ## [2.0.2] - 2023-07-04
 
 - improve logging, simplify logic for purchase
