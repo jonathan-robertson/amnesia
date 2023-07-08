@@ -24,6 +24,7 @@ namespace Amnesia.Data
         public static string BuffTryBuyTreatment { get; private set; } = "buffAmnesiaTryBuyTreatment";
         public static string BuffTryBuyTherapy { get; private set; } = "buffAmnesiaTryBuyTherapy";
         public static string BuffRequestChangeCallback { get; private set; } = "buffAmnesiaRequestChangeCallback";
+        public static string BuffRespec { get; private set; } = "buffAmnesiaRespec";
 
         // game_events
         public static string GameEventPayFromBag { get; private set; } = "amnesia_pay_from_bag";
@@ -37,6 +38,7 @@ namespace Amnesia.Data
         public static string WindowShopTreatmentUnnecessary { get; private set; } = "amnesiaDialogShopTreatmentUnnecessaryWindowGroup";
         public static string WindowShopTreatmentComplete { get; private set; } = "amnesiaDialogShopTreatmentCompleteWindowGroup";
         public static string WindowShopTherapyComplete { get; private set; } = "amnesiaDialogShopTherapyCompleteWindowGroup";
+        public static string WindowSkillPointIntegrityCheckReduced { get; private set; } = "amnesiaSkillPointIntegrityCheckReducedWindowGroup";
 
         // names
         public static string NameLongTermMemoryLevel { get; private set; } = "LongTermMemoryLevel";
