@@ -1,4 +1,5 @@
 <config>
+    <!-- dialog shop -->
     <append xpath="/windows">
         <window name="amnesiaDialogShopCannotAfford" width="603" height="363" pos="-300, 150" controller="TipWindow" anchor="CenterCenter" pivot="center" depth="15" cursor_area="true">
             <tip_header text="Memory Services" />
@@ -15,6 +16,14 @@
         <window name="amnesiaDialogShopTherapyComplete" width="603" height="363" pos="-300, 150" controller="TipWindow" anchor="CenterCenter" pivot="center" depth="15" cursor_area="true">
             <tip_header text="Memory Treatment" />
             <tip_body text="Your therapy is now complete and [00ff80]your skill points can be reassigned[-]. Please come again!" />
+        </window>
+    </append>
+
+    <!-- skill point integrity check -->
+    <append xpath="/windows">
+        <window name="amnesiaSkillPointIntegrityCheckReduced" width="603" height="363" pos="-300, 150" controller="TipWindow" anchor="CenterCenter" pivot="center" depth="15" cursor_area="true">
+            <tip_header text="Amnesia Skill Point Integrity Check" />
+            <tip_body text="You were found to have too many skill points due to a bug in a previous version of the Amnesia Mod; [decea3]these skill points have been removed, along with any skills purchased with these points[-]. Please reach out to the admin if you have any questions." />
         </window>
     </append>
 </config>

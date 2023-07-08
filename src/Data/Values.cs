@@ -38,6 +38,7 @@ namespace Amnesia.Data
         public static string WindowShopTreatmentUnnecessary { get; private set; } = "amnesiaDialogShopTreatmentUnnecessaryWindowGroup";
         public static string WindowShopTreatmentComplete { get; private set; } = "amnesiaDialogShopTreatmentCompleteWindowGroup";
         public static string WindowShopTherapyComplete { get; private set; } = "amnesiaDialogShopTherapyCompleteWindowGroup";
+        public static string WindowSkillPointIntegrityCheckReduced { get; private set; } = "amnesiaSkillPointIntegrityCheckReducedWindowGroup";
 
         // names
         public static string NameLongTermMemoryLevel { get; private set; } = "LongTermMemoryLevel";

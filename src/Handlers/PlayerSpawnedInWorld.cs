@@ -32,7 +32,7 @@ namespace Amnesia.Handlers
                         HandleStandardRespawnSteps(player);
                         DialogShop.UpdatePrices(player);
                         DialogShop.UpdateMoneyTracker(player.entityId, player.inventory.GetSlots(), player.bag.GetSlots());
-                        PlayerRecord.Load(clientInfo);
+                        _ = PlayerRecord.TryLoad(clientInfo, out _, player);
                         break;
                     // TODO: case RespawnType.LoadedGame: // local player loading existing game
                     case RespawnType.JoinMultiplayer: // existing player rejoining
@@ -41,7 +41,10 @@ namespace Amnesia.Handlers
                         HandleStandardRespawnSteps(player);
                         DialogShop.UpdatePrices(player);
                         DialogShop.UpdateMoneyTracker(player.entityId, player.inventory.GetSlots(), player.bag.GetSlots());
-                        PlayerRecord.Load(clientInfo);
+                        if (PlayerRecord.TryLoad(clientInfo, out var record, player))
+                        {
+                            PlayerHelper.SkillPointIntegrityCheck(clientInfo, player, clientInfo.latestPlayerData, record);
+                        }
                         break;
                     case RespawnType.Died: // existing player returned from death
                         _ = PlayerHelper.AddPositiveOutlookTime(player, Config.PositiveOutlookTimeOnMemoryLoss);

@@ -146,6 +146,98 @@ namespace Amnesia.Utilities
             clientInfo.SendPackage(NetPackageManager.GetPackage<NetPackageGameEventResponse>().Setup(eventName, clientInfo.entityId, "", "", NetPackageGameEventResponse.ResponseTypes.Approved));
         }
 
+        public static void SkillPointIntegrityCheck(ClientInfo clientInfo, EntityPlayer player, PlayerDataFile playerDataFile, PlayerRecord record)
+        {
+            //if (playerDataFile.progressionData.Length <= 0L)
+            //{
+            //    return;
+            //}
+            //// overwrite this stored player instance with received player data file info; trust the PlayerDataFile
+            //playerDataFile.ToPlayer(player);
+
+            if (!TryReadProgression(playerDataFile, player, out var progression)) { return; }
+
+            var current = CountCurrentSKillPoints(progression, out _, out var currentUnassignedSkillPoints);
+            var expected = CountExpectedSkillPoints(progression, playerDataFile.questJournal);
+
+            if (current == expected) { return; }
+
+            if (current < expected)
+            {
+                _log.Error($"player {player.entityId} ({player.GetDebugName()} | {ClientInfoHelper.GetUserIdentifier(clientInfo)}) was found to have too few skill points based on player level and quests; doing nothing for now, but this is unexpected and should probably have a solution built to address it!");
+                return;
+            }
+            // note: from this point forward, we handle the case: current > expected
+
+            _log.Info($"player {player.entityId} ({player.GetDebugName()} | {ClientInfoHelper.GetUserIdentifier(clientInfo)}) was found to have too many skill points based on player level and quests; reducing now.");
+
+            var skillPointsToRemove = current - expected;
+            if (skillPointsToRemove <= currentUnassignedSkillPoints)
+            {
+                progression.SkillPoints = currentUnassignedSkillPoints - skillPointsToRemove;
+                _log.Info($"Removed {skillPointsToRemove} unassigned skill points from player {player.entityId} ({player.GetDebugName()} | {ClientInfoHelper.GetUserIdentifier(clientInfo)}).");
+            }
+            else
+            {
+                progression.ResetProgression(_resetSkills: true);
+                progression.SkillPoints -= skillPointsToRemove;
+                record.ReapplySkills(player);
+                _log.Info($"Reset progression for, removed {skillPointsToRemove} skill points from, and reapplied all affordable skill points to player {player.entityId} ({player.GetDebugName()} | {ClientInfoHelper.GetUserIdentifier(clientInfo)}).");
+            }
+
+            player.Progression = progression; // update player progression data
+            SavePlayerDataFile(clientInfo, player);
+            SyncPlayerStatChanges(player, true);
+            OpenWindow(clientInfo, Values.WindowSkillPointIntegrityCheckReduced);
+        }
+
+        public static void SavePlayerDataFile(ClientInfo clientInfo, EntityPlayer player)
+        {
+            var pdf = new PlayerDataFile();
+            pdf.FromPlayer(player);
+            clientInfo.latestPlayerData = pdf;
+            pdf.Save(GameIO.GetPlayerDataDir(), clientInfo.InternalId.CombinedString);
+        }
+
+        public static void SyncPlayerStatChanges(EntityPlayer player, bool progressionChanged = false)
+        {
+            player.bPlayerStatsChanged = true;
+            player.Progression.bProgressionStatsChanged = progressionChanged;
+            ConnectionManager.Instance.SendPackage(NetPackageManager.GetPackage<NetPackagePlayerStats>().Setup(player), false, player.entityId);
+        }
+
+        public static int CountCurrentSKillPoints(Progression progression, out int assignedSkillPoints, out int unassignedSkillPoints)
+        {
+            assignedSkillPoints = 0;
+            foreach (var kvp in Progression.ProgressionClasses)
+            {
+                switch (kvp.Value.Type)
+                {
+                    case ProgressionType.Attribute:
+                        for (var i = progression.GetProgressionValue(kvp.Key).Level; i > 1; i--)
+                        {
+                            assignedSkillPoints += kvp.Value.CalculatedCostForLevel(i);
+                        }
+                        continue;
+                    case ProgressionType.Perk:
+                        for (var i = progression.GetProgressionValue(kvp.Key).Level; i > 0; i--)
+                        {
+                            assignedSkillPoints += kvp.Value.CalculatedCostForLevel(i);
+                        }
+                        continue;
+                    default:
+                        continue;
+                }
+            }
+            unassignedSkillPoints = progression.SkillPoints;
+            return unassignedSkillPoints + assignedSkillPoints;
+        }
+
+        public static int CountExpectedSkillPoints(Progression progression, QuestJournal questJournal)
+        {
+            return (Progression.SkillPointsPerLevel * progression.Level) + questJournal.GetRewardedSkillPoints();
+        }
+
         /// <summary>
         /// Try parsing and returning player progression data from the given PlayerDataFile.
         /// </summary>

@@ -12,5 +12,8 @@
         <window_group name="amnesiaDialogShopTherapyCompleteWindowGroup">
             <window name="amnesiaDialogShopTherapyComplete" />
         </window_group>
+        <window_group name="amnesiaSkillPointIntegrityCheckReducedWindowGroup">
+            <window name="amnesiaSkillPointIntegrityCheckReduced" />
+        </window_group>
     </append>
 </config>

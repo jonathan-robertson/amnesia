@@ -5,12 +5,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [TODO]
+## [2.0.3] - 2023-07-08
 
 - add mechanic to detect/fix too many skill points
-
-## [2.0.3] - ?
-
 - fix purchase log to clarify total & change
 - fix respec to no longer give extra skill points
 

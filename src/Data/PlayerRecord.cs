@@ -28,21 +28,26 @@ namespace Amnesia.Data
         public int Level { get; private set; } = 0;
         public List<(string, int)> Changes { get; private set; } = new List<(string, int)>();
 
-        public static void Load(ClientInfo clientInfo)
+        public static bool TryLoad(ClientInfo clientInfo, out PlayerRecord playerRecord, EntityPlayer player = null)
         {
             var entityId = ClientInfoHelper.SafelyGetEntityIdFor(clientInfo);
             var userIdentifier = ClientInfoHelper.GetUserIdentifier(clientInfo);
+            var playerShortReference = $"{entityId} / {userIdentifier.CombinedString}";
             if (Entries.ContainsKey(entityId))
             {
-                _log.Error($"Player Record is already loaded for player {entityId} / {userIdentifier.CombinedString} and this is NOT expected.");
-                return;
+                _log.Error($"Player Record is already loaded for player {playerShortReference} and this is NOT expected.");
+                playerRecord = default;
+                return false;
             }
-            if (!GameManager.Instance.World.Players.dict.TryGetValue(entityId, out var player))
+            if (player == null && !GameManager.Instance.World.Players.dict.TryGetValue(entityId, out player))
             {
-                _log.Error($"Could not find player at {entityId} / {userIdentifier.CombinedString} even though one is logging in with this info.");
-                return;
+                _log.Error($"Could not find player at {playerShortReference} even though one is logging in with this info.");
+                playerRecord = default;
+                return false;
             }
-            var playerRecord = new PlayerRecord(entityId, userIdentifier, player.Progression.Level, player.Progression.SkillPoints);
+            var playerLongReference = $"{entityId} ({player.GetDebugName()} | {userIdentifier.CombinedString})";
+
+            playerRecord = new PlayerRecord(entityId, userIdentifier, player.Progression.Level, player.Progression.SkillPoints);
             var filename = Path.Combine(GameIO.GetPlayerDataDir(), $"{userIdentifier}.apr");
             try
             {
@@ -55,16 +60,16 @@ namespace Amnesia.Data
                     var level = int.Parse(changes[i].Attributes[LEVEL].Value);
                     playerRecord.Changes.Add((name, level));
                 }
-                _log.Info($"Successfully loaded {filename}");
+                _log.Info($"Successfully loaded record data for player {playerLongReference} from {filename}");
             }
             catch (FileNotFoundException)
             {
-                _log.Info($"No player record file found for player {entityId}; creating a new one with defaults under {filename}");
+                _log.Info($"No player record file found for player {playerLongReference} at {filename}; creating a new one with defaults under {filename}");
                 playerRecord.Save();
             }
             catch (Exception e)
             {
-                _log.Error($"Failed to load player record file {filename}; attempting to recover from backup.", e);
+                _log.Error($"Failed to load record data for player {playerLongReference} from {filename}; attempting to recover from backup.", e);
 
                 // TODO: try to recover from backup
 
@@ -72,13 +77,14 @@ namespace Amnesia.Data
                 var failureFilename = filename + ".failure";
 
                 // otherwise, create default
-                _log.Info($"Unable to recover player record for player {entityId}; creating a new one with defaults under {filename}; admin can attempt to inspect backup file {failureFilename}");
+                _log.Info($"Unable to recover record data for player {playerLongReference}; creating a new one with defaults under {filename}; admin can attempt to inspect backup file {failureFilename}");
                 playerRecord.Save();
             }
             finally
             {
                 Entries.Add(entityId, playerRecord);
             }
+            return true;
         }
 
         public static void Unload(ClientInfo clientInfo)
