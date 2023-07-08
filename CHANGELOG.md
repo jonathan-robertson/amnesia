@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - add mechanic to detect/fix too many skill points
 - fix purchase log to clarify total & change
 - fix respec to no longer give extra skill points
+- update support invite link
 
 ## [2.0.2] - 2023-07-04
 
