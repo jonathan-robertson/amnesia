@@ -157,14 +157,14 @@ namespace Amnesia.Utilities
 
             if (!TryReadProgression(playerDataFile, player, out var progression)) { return; }
 
-            var current = CountCurrentSKillPoints(progression, out _, out var currentUnassignedSkillPoints);
-            var expected = CountExpectedSkillPoints(progression, playerDataFile.questJournal);
+            var current = CountCurrentSKillPoints(progression, out var assignedSkillPoints, out var currentUnassignedSkillPoints);
+            var expected = CountExpectedSkillPoints(progression, playerDataFile.questJournal, out int expectedFromLevels, out int expectedFromQuests);
 
             if (current == expected) { return; }
 
             if (current < expected)
             {
-                _log.Error($"player {player.entityId} ({player.GetDebugName()} | {ClientInfoHelper.GetUserIdentifier(clientInfo)}) was found to have too few skill points based on player level and quests; doing nothing for now, but this is unexpected and should probably have a solution built to address it!");
+                _log.Error($"player {player.entityId} ({player.GetDebugName()} | {ClientInfoHelper.GetUserIdentifier(clientInfo)}) was expected to have {expected} skill points ({expectedFromLevels} from levels and {expectedFromQuests} from quests), but found to only have {current} ({assignedSkillPoints} assigned and {currentUnassignedSkillPoints} unassigned)");
                 return;
             }
             // note: from this point forward, we handle the case: current > expected
@@ -233,9 +233,11 @@ namespace Amnesia.Utilities
             return unassignedSkillPoints + assignedSkillPoints;
         }
 
-        public static int CountExpectedSkillPoints(Progression progression, QuestJournal questJournal)
+        public static int CountExpectedSkillPoints(Progression progression, QuestJournal questJournal, out int skillPointsFromLevels, out int skillPointsFromQuests)
         {
-            return (Progression.SkillPointsPerLevel * progression.Level) + questJournal.GetRewardedSkillPoints();
+            skillPointsFromLevels = (Progression.SkillPointsPerLevel * progression.Level);
+            skillPointsFromQuests = questJournal.GetRewardedSkillPoints();
+            return skillPointsFromLevels + skillPointsFromQuests;
         }
 
         /// <summary>
