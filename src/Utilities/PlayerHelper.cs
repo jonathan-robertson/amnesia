@@ -148,23 +148,15 @@ namespace Amnesia.Utilities
 
         public static void SkillPointIntegrityCheck(ClientInfo clientInfo, EntityPlayer player, PlayerDataFile playerDataFile, PlayerRecord record)
         {
-            //if (playerDataFile.progressionData.Length <= 0L)
-            //{
-            //    return;
-            //}
-            //// overwrite this stored player instance with received player data file info; trust the PlayerDataFile
-            //playerDataFile.ToPlayer(player);
-
             if (!TryReadProgression(playerDataFile, player, out var progression)) { return; }
 
-            var current = CountCurrentSKillPoints(progression, out _, out var currentUnassignedSkillPoints);
-            var expected = CountExpectedSkillPoints(progression, playerDataFile.questJournal);
+            var current = CountCurrentSKillPoints(progression, out var assignedSkillPoints, out var currentUnassignedSkillPoints);
+            var expected = CountExpectedSkillPoints(progression, playerDataFile.questJournal, out var expectedFromLevels, out var expectedFromQuests);
 
             if (current == expected) { return; }
-
             if (current < expected)
             {
-                _log.Error($"player {player.entityId} ({player.GetDebugName()} | {ClientInfoHelper.GetUserIdentifier(clientInfo)}) was found to have too few skill points based on player level and quests; doing nothing for now, but this is unexpected and should probably have a solution built to address it!");
+                _log.Warn($"player {player.entityId} ({player.GetDebugName()} | {ClientInfoHelper.GetUserIdentifier(clientInfo)}) was expected to have {expected} skill points ({expectedFromLevels} from levels and {expectedFromQuests} from quests), but found to only have {current} ({assignedSkillPoints} assigned and {currentUnassignedSkillPoints} unassigned)");
                 return;
             }
             // note: from this point forward, we handle the case: current > expected
@@ -233,9 +225,11 @@ namespace Amnesia.Utilities
             return unassignedSkillPoints + assignedSkillPoints;
         }
 
-        public static int CountExpectedSkillPoints(Progression progression, QuestJournal questJournal)
+        public static int CountExpectedSkillPoints(Progression progression, QuestJournal questJournal, out int skillPointsFromLevels, out int skillPointsFromQuests)
         {
-            return (Progression.SkillPointsPerLevel * progression.Level) + questJournal.GetRewardedSkillPoints();
+            skillPointsFromLevels = Progression.SkillPointsPerLevel * (progression.Level - 1);
+            skillPointsFromQuests = questJournal.GetRewardedSkillPoints();
+            return skillPointsFromLevels + skillPointsFromQuests;
         }
 
         /// <summary>
