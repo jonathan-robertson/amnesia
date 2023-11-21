@@ -1,6 +1,6 @@
 # Amnesia
 
-[![🧪 Tested On](https://img.shields.io/badge/🧪%20Tested%20On-A21%20b324-blue.svg)](https://7daystodie.com/) [![📦 Automated Release](https://github.com/jonathan-robertson/amnesia/actions/workflows/release.yml/badge.svg)](https://github.com/jonathan-robertson/amnesia/actions/workflows/release.yml)
+[![🧪 Tested On](https://img.shields.io/badge/🧪%20Tested%20On-A21.2%20b30-blue.svg)](https://7daystodie.com/) [![📦 Automated Release](https://github.com/jonathan-robertson/amnesia/actions/workflows/release.yml/badge.svg)](https://github.com/jonathan-robertson/amnesia/actions/workflows/release.yml)
 
 ![amnesia social image](https://github.com/jonathan-robertson/amnesia/raw/media/amnesia-logo-social.jpg)
 
@@ -31,7 +31,7 @@ As you may have guessed, this mod adds a RogueLike element to 7 Days to Die in a
 
 ### Support
 
-🗪 If you would like support for this mod, please feel free to reach out via [Discord](https://discord.gg/hYa2sNHXya).
+🗪 If you would like support for this mod, please feel free to reach out to me via [Discord](https://discord.gg/hYa2sNHXya) (my username is `kanaverum`).
 
 ## Features
 
